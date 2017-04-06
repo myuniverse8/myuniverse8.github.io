@@ -78,6 +78,7 @@ processMediaObjPhotos = function(mediaObj) {
     var i = 0;
     var j = 0;
     var nextUrl = '';
+    var contentDiv;
 
     var itemsLength = mediaObj.items.length;
 
@@ -86,14 +87,14 @@ processMediaObjPhotos = function(mediaObj) {
 
         var photoTxt = '<a class="darken" target="_blank" href="' + mediaObj.items[i].link + '"><img src="' + mediaObj.items[i].images.thumbnail.url + '" data-likes-count="' + mediaObj.items[i].likes.count + '" data-comments-count="' + mediaObj.items[i].comments.count + '"></img></a>';
 
-        // var node = document.createElement("li"); // Create a <li> node
-        var node = document.createElement("div");
+        var node = document.createElement("li"); // Create a <li> node
+        // var node = document.createElement("div");
         node.innerHTML = photoTxt;
         node.classList.add("photo");
-        // document.getElementById("mylist").appendChild(node);
-
-        var contentDiv = document.getElementById("content");
-        contentDiv.classList.add("photos");
+        contentDiv = document.getElementById("mylist");
+        //contentDiv = document.getElementById("content");
+        //contentDiv.classList.add("photos");
+        
         contentDiv.appendChild(node);
 
         if (i === (itemsLength - 1)) {
