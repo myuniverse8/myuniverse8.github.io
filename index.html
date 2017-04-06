@@ -5,27 +5,36 @@
     <title>MyInstCockpit</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
-    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="js/jquery-mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
     <script type="text/javascript" src="js/myinstacockpit.js"></script>
 </head>
 
 <body>
-    <label for="nickname">Nickname:</label>
-    <input type="text" id="nickname" name="nickname" value="myuniverse8" placeholder="Enter instagram name here">
+    <div>
+        <label for="nickname">Nickname:</label>
+        <input type="text" id="nickname" name="nickname" value="myuniverse8" placeholder="Enter instagram name here">
+    </div>
 
-    <label for="myInclPostCaption">include post captions</label>
-    <input type="checkbox" id="myInclPostCaption" name="myInclPostCaption" checked>
+    <div>
+        <label for="myInclPostCaption">include post captions</label>
+        <input type="checkbox" id="myInclPostCaption" name="myInclPostCaption" checked>
+    </div>
 
-    <label for="myInclOwnComments">include own comments</label>
-    <input type="checkbox" id="myInclOwnComments" name="myInclOwnComments" checked>
+    <div>
+        <label for="myInclOwnComments">include own comments</label>
+        <input type="checkbox" id="myInclOwnComments" name="myInclOwnComments" checked>
+    </div>
 
-    <label for="testmode">process only last 20 records</label>
-    <input type="checkbox" id="testmode" name="testmode" checked>
+    <div>
+        <label for="testmode">process only last 20 records</label>
+        <input type="checkbox" id="testmode" name="testmode" checked>
+    </div>
 
-    <button class="ui-btn ui-btn-inline ui-shadow ui-corner-all" type="button" onclick="photosBtnClick()">Photos</button>
-    <button class="ui-btn ui-btn-inline ui-shadow ui-corner-all" type="button" onclick="commentsBtnClick()">Comments</button>
+    <div>
+        <a href="#" onclick="photosBtnClick()">Photos</a>
+        <a href="#" onclick="commentsBtnClick()">Comments</a>
+    </div>
+
 </body>
 
 </html>
