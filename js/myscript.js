@@ -97,32 +97,37 @@ processMediaObjComments = function(mediaObj) {
     var i = 0;
     var j = 0;
     var nextUrl = '';
+    var photoScr;
+    var commentTxt;
+    var node;
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-        //console.log(mediaObj.items[i]);
+        console.log(mediaObj.items[i]);
+
+        if (mediaObj.items[i].caption) {
+          photoScr = mediaObj.items[i].images.standard_resolution.url;
+          photoScr = photoScr.replace('s640x640', 's1080x1080');
+          commentTxt = mediaObj.items[i].caption.from.username + ': ' + mediaObj.items[i].caption.text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
+          node = document.createElement("li");
+          node.innerHTML = commentTxt;
+          document.getElementById("myList").appendChild(node);
+        }
 
         var commentsObj = mediaObj.items[i].comments;
         if (commentsObj.count > 0) {
             for (j = 0; j < commentsObj.data.length; j++) {
-                if (commentsObj.data[j].from.username != myNickname) {
+                //if (commentsObj.data[j].from.username != myNickname) {
                     //    if ( commentsObj.data[j].from.username == mynickname ){
                     // console.log(mediaObj.items[i]);
-
-                    var photoScr = mediaObj.items[i].images.standard_resolution.url;
+                    photoScr = mediaObj.items[i].images.standard_resolution.url;
                     photoScr = photoScr.replace('s640x640', 's1080x1080');
-                    // console.log(commentsObj.data[j].created_time);
-                    var timeSec = commentsObj.data[j].created_time;
-                    var commentDate = new Date(+timeSec);
-                    // console.log(commentDate);
-                    var commentTxt = commentsObj.data[j].from.username + ': ' + commentsObj.data[j].text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
-                    var node = document.createElement("LI"); // Create a <li> node
+                    commentTxt = commentsObj.data[j].from.username + ': ' + commentsObj.data[j].text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>)';
+                    node = document.createElement("li");
                     node.innerHTML = commentTxt;
-                    // var textnode = document.createTextNode(commentTxt);       // Create a text node
-                    // node.appendChild(textnode);                              // Append the text to <li>
-                    document.getElementById("myList").appendChild(node); // Append <li> to <ul> with id="myList"
-                }
+                    document.getElementById("myList").appendChild(node);
+              //  }
             }
         }
         if (i === (itemsLength - 1)) {
