@@ -5,11 +5,11 @@ body {
 
 div .photo {
   display: inline;
-  padding: 3px;
+  padding: 1px;
 }
 
 div.photos {
-  margin: 5px;
+  margin: 1px;
 }
 
 /* Pictures */
