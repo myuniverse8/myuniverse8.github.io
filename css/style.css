@@ -1,15 +1,5 @@
-body {
-  padding: 0px;
-  margin: 0px;
-}
-
-div .photo {
-  display: inline;
-  padding: 1px;
-}
-
-div.photos {
-  margin: 1px;
+p {
+  color: red;
 }
 
 .myul {
@@ -25,28 +15,3 @@ div.photos {
   .myul img {
     border: 1px solid black;
   }
-
-
-/* Pictures */
-a.darken img {
-  border: 1px black solid;
-}
-
-a.darken:hover img {
-    opacity: 0.4;
-}
-
-/* Buttons */
-a.button:link, a.button:visited {
-    background-color: #white;
-    color: black;
-    padding: 5px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border: 1px solid black;
-}
-
-a.button:hover, a.button:active {
-    background-color: gray;
-}

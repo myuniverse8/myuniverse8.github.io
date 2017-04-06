@@ -1,46 +1,23 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>MyInstCockpit</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css">
-    <script type="text/javascript" src="js/myinstacockpit.js"></script>
+<title>MyInstCockpit</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script type="text/javascript" src="js/myinstacockpit.js"></script>
 </head>
-
 <body>
-    <div>
-        <label for="nickname">Nickname:</label>
-        <input type="text" id="nickname" name="nickname" value="myuniverse8" placeholder="Enter instagram name here">
-    </div>
+  <label for="nickname">Nickname:</label>
+  <input type="text" id="nickname" name="nickname" value="myuniverse8">
+  <br>
+  <label for="testmode">TestMode:</label>
+  <input type="checkbox" id="testmode" name="testmode" checked>
+  <!-- <label for="tags">Tags:</label>
+  <input type="text" id="tags" name="tags" value="">
+  <br> -->
+  <br>
 
-    <div>
-        <label for="myInclPostCaption">include post captions</label>
-        <input type="checkbox" id="myInclPostCaption" name="myInclPostCaption" checked>
-    </div>
-
-    <div>
-        <label for="myInclOwnComments">include own comments</label>
-        <input type="checkbox" id="myInclOwnComments" name="myInclOwnComments" checked>
-    </div>
-
-    <div>
-        <label for="testmode">process only last 20 records</label>
-        <input type="checkbox" id="testmode" name="testmode" checked>
-    </div>
-
-    <div>
-        <a class="button" href="javascript:photosBtnClick()">Photos</a>
-        <a class="button" href="javascript:commentsBtnClick()">Comments</a>
-    </div>
-<!-- 
-    <div class="tab">
-      <button class="tablinks" onclick="openCity(event, 'London')">Pictures</button>
-      <button class="tablinks" onclick="openCity(event, 'Paris')">Comments</button>
-      <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tags</button>
-    </div> -->
-
+  <button type="button" onclick="photosBtnClick()">Photos</button>
+  <button type="button" onclick="commentsBtnClick()">Comments</button>
 </body>
-
 </html>
