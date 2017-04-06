@@ -12,10 +12,26 @@ div.photos {
   margin: 5px;
 }
 
+/* Pictures */
 a.darken img {
   border: 1px black solid;
 }
 
 a.darken:hover img {
     opacity: 0.4;
+}
+
+/* Buttons */
+a.button:link, a.button:visited {
+    background-color: #white;
+    color: black;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid black;
+}
+
+a.button:hover, a.button:active {
+    background-color: gray;
 }
