@@ -82,7 +82,7 @@ processMediaObjPhotos = function(mediaObj) {
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-        console.log(mediaObj.items[i]);
+        //console.log(mediaObj.items[i]);
 
         var photoTxt = '<a class="darken" target="_blank" href="' + mediaObj.items[i].link + '"><img src="' + mediaObj.items[i].images.thumbnail.url + '" data-likes-count="' + mediaObj.items[i].likes.count + '" data-comments-count="' + mediaObj.items[i].comments.count + '"></img></a>';
 
@@ -116,6 +116,7 @@ processMediaObjComments = function(mediaObj) {
     var nextUrl = '';
     var commentTxt = '';
     var node;
+    var photoScr;
 
     var itemsLength = mediaObj.items.length;
     var contentDiv = document.getElementById("content");
@@ -126,6 +127,8 @@ processMediaObjComments = function(mediaObj) {
 
         if (myPostCaption === 'X') {
             if (mediaObj.items[i].caption) {
+                photoScr = mediaObj.items[i].images.standard_resolution.url;
+                photoScr = photoScr.replace('s640x640', 's1080x1080');
                 commentTxt = '<a target="_blank" href="' + mediaObj.items[i].link + '"><button class="ui-btn ui-btn-inline ui-shadow ui-corner-all" type="button">' + mediaObj.items[i].caption.from.username + ': ' + mediaObj.items[i].caption.text + '</button></a> <a target="_blank" href="' + photoScr + '"><button class="ui-btn ui-btn-inline ui-shadow ui-corner-all" type="button">big photo</button></a>';
                 node = document.createElement("div");
                 node.classList.add("comment");
@@ -145,7 +148,7 @@ processMediaObjComments = function(mediaObj) {
 
                 // console.log(mediaObj.items[i]);
 
-                var photoScr = mediaObj.items[i].images.standard_resolution.url;
+                photoScr = mediaObj.items[i].images.standard_resolution.url;
                 photoScr = photoScr.replace('s640x640', 's1080x1080');
                 // console.log(commentsObj.data[j].created_time);
                 var timeSec = commentsObj.data[j].created_time;
