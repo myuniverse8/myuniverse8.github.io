@@ -73,9 +73,6 @@ window.onload = function() {
     myEndda.setMinutes(0);
     myEndda.setSeconds(0);
 
-    //console.log(myBegda);
-    //console.log(myEndda);
-
     myTitle = myNickname + '(';
 
     if (myComments === 'X') {
@@ -123,12 +120,16 @@ collectData = function(mediaObj) {
     var fullSizeLnk = '';
     var d;
     var dateForSearch;
+    var dateForSearchComm;
     var stopSearch = '';
+    var addPost = '';
     var myInitialDate = new Date('1970-01-01:00:00:00');
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
+        addPost = '';
+
         //console.log(mediaObj.items[i]);
         d = new Date(+mediaObj.items[i].created_time * 1000);
         // console.log('date: ' + d);
@@ -159,10 +160,22 @@ collectData = function(mediaObj) {
         if (commentsObj.count > 0) {
             for (j = 0; j < commentsObj.data.length; j++) {
                 d = new Date(+commentsObj.data[j].created_time * 1000);
+                dateForSearchComm = d;
+                dateForSearchComm.setHours(0);
+                dateForSearchComm.setMinutes(0);
+                dateForSearchComm.setSeconds(0);
+
                 var comment = new MyComment(d,
                     commentsObj.data[j].from.username,
                     commentsObj.data[j].text);
                 post.addComment(comment);
+                if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
+                    addPost = 'X';
+                } else {
+                    if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
+                        addPost = 'X';
+                    }
+                }
             }
         }
 
@@ -174,14 +187,21 @@ collectData = function(mediaObj) {
             }
         }
 
-        if ( (myBegda.getTime() == myInitialDate.getTime()) || (myEndda.getTime() == myInitialDate.getTime()) )  {
-            myCockpit.addPost(post);
-        } else {
-            if ( (dateForSearch >= myBegda) & (dateForSearch <= myEndda) ) {
+        if (myComments !== 'X') {
+            if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
                 myCockpit.addPost(post);
+            } else {
+                if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
+                    myCockpit.addPost(post);
+                }
+                if (dateForSearch < myBegda) {
+                    stopSearch = 'X';
+                }
             }
-            if (dateForSearch < myBegda) {
-                stopSearch = 'X';
+        } else {
+            if (addPost === 'X') {
+                myCockpit.addPost(post);
+                addPost = '';
             }
         }
 
