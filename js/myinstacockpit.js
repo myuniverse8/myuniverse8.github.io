@@ -4,6 +4,9 @@ var myUrl = '';
 var myTestMode = '';
 var myWinName = '';
 
+
+
+
 function photosBtnClick() {
   getCurrentValues();
   winName = 'myphotos_' + myNickname;

@@ -3,16 +3,61 @@ var myUrl = '';
 var myComments = '';
 var myTestMode = '';
 var myTitle = '';
+var posts = [];
+var myCockpit;
+var lastPostProcessed = 0;
+
+function MyCockpit() {
+    this.posts = [];
+}
+
+MyCockpit.prototype.addPost = function(post) {
+    this.posts.push(post);
+}
+
+function MyPost(id, link, user, date, location, caption, thumbnail, bigphoto, likescnt, commentscnt) {
+    this.id = id;
+    this.link = link;
+    this.user = user;
+    this.date = date;
+    this.location = location;
+    this.caption = caption;
+    this.thumbnail = thumbnail;
+    this.bigsizelink = bigphoto;
+    this.likescnt = likescnt;
+    this.commentscnt = commentscnt;
+
+    this.comments = [];
+    this.likes = [];
+}
+
+MyPost.prototype.addComment = function(comment) {
+    this.comments.push(comment);
+}
+
+MyPost.prototype.addLike = function(like) {
+    this.likes.push(like);
+}
+
+function MyComment(date, user, text) {
+    this.date = date;
+    this.user = user;
+    this.text = text;
+};
+
+function MyLike(user) {
+    this.user = user;
+};
 
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 }
 
 window.onload = function() {
-    myNickname = getURLParameter('nickname');
-    // myUrl = 'https://crossorigin.me/https://www.instagram.com/' + myNickname + '/media/';
-    myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
+    myCockpit = new MyCockpit();
 
+    myNickname = getURLParameter('nickname');
+    myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
     myComments = getURLParameter('comments');
     myTestMode = getURLParameter('testmode');
 
@@ -27,6 +72,7 @@ window.onload = function() {
     }
 
     document.title = myTitle;
+
     loadData(myUrl);
 };
 
@@ -45,96 +91,68 @@ loadData = function(mediaUrl) {
             console.log(xhr.status + ': ' + xhr.statusText);
         } else {
             var mediaObj = JSON.parse(xhr.responseText);
+            collectData(mediaObj);
+
             if (myComments === 'X') {
-                processMediaObjComments(mediaObj);
+                processMediaObjComments();
             } else {
-                processMediaObjPhotos(mediaObj);
+                processMediaObjPhotos();
             }
         }
     }
 }
 
-getDateStr = function (d) {
-  var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-  var month = (d.getMonth()+1) < 10 ? '0' + (d.getMonth()+1) : (d.getMonth()+1);
-  var hours = d.getHours() < 10 ? '0' + d.getHours() :  d.getHours();
-  var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-  return date + "-" + month + "-" + d.getFullYear() + " " + hours + ":" + minutes;
-}
-
-processMediaObjPhotos = function(mediaObj) {
+collectData = function(mediaObj) {
     var i = 0;
     var j = 0;
     var nextUrl = '';
-
-    var itemsLength = mediaObj.items.length;
-
-    for (i = 0; i < itemsLength; i++) {
-        //console.log(mediaObj.items[i]);
-
-        var photoTxt = '<a target="_blank" href="' + mediaObj.items[i].link + '"><img src="' + mediaObj.items[i].images.thumbnail.url + '"></img></a>';
-
-        var node = document.createElement("LI"); // Create a <li> node
-        node.innerHTML = photoTxt;
-        document.getElementById("myList").appendChild(node);
-
-        if (i === (itemsLength - 1)) {
-            nextUrl = myUrl + '?max_id=' + mediaObj.items[i].id;
-        } else {
-            nextUrl = '';
-        }
-    }
-
-    if (nextUrl !== '') {
-        if (myTestMode !== 'X') {
-            loadData(nextUrl);
-        }
-    }
-}
-
-processMediaObjComments = function(mediaObj) {
-    var i = 0;
-    var j = 0;
-    var nextUrl = '';
-    var photoScr;
-    var commentTxt;
-    var node;
+    var fullSizeLnk = '';
     var d;
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-          console.log(mediaObj.items[i]);
+        //console.log(mediaObj.items[i]);
+        d = new Date(+mediaObj.items[i].created_time * 1000);
 
-        d = new Date( +mediaObj.items[i].created_time * 1000 );
+        fullSizeLnk = mediaObj.items[i].images.standard_resolution.url;
+        fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
 
-        photoScr = mediaObj.items[i].images.standard_resolution.url;
-        photoScr = photoScr.replace('s640x640', 's1080x1080');
-        if (mediaObj.items[i].caption) {
-          commentTxt = '<b>' + getDateStr(d) + ' - post : ' + mediaObj.items[i].caption.text + '</b> (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
-        } else {
-          commentTxt = '<b>' + getDateStr(d) + ' - post : nocaption </b> (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
-        }
-        node = document.createElement("li");
-        node.innerHTML = commentTxt;
-        document.getElementById("myList").appendChild(node);
+        var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
+        var location = mediaObj.items[i].location ? mediaObj.items[i].location.name : '';
+        var post = new MyPost(mediaObj.items[i].id,
+            mediaObj.items[i].link,
+            mediaObj.items[i].user.username,
+            d,
+            location,
+            caption,
+            mediaObj.items[i].images.thumbnail.url,
+            fullSizeLnk,
+            mediaObj.items[i].likes.count,
+            mediaObj.items[i].comments.count
+        );
 
         var commentsObj = mediaObj.items[i].comments;
         if (commentsObj.count > 0) {
             for (j = 0; j < commentsObj.data.length; j++) {
-                //if (commentsObj.data[j].from.username != myNickname) {
-                    //    if ( commentsObj.data[j].from.username == mynickname ){
-                    // console.log(mediaObj.items[i]);
-                    d = new Date( +commentsObj.data[j].created_time * 1000 );
-                    photoScr = mediaObj.items[i].images.standard_resolution.url;
-                    photoScr = photoScr.replace('s640x640', 's1080x1080');
-                    commentTxt = getDateStr(d) + ' - comment : ' + commentsObj.data[j].from.username + ': ' + commentsObj.data[j].text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>)';
-                    node = document.createElement("li");
-                    node.innerHTML = commentTxt;
-                    document.getElementById("myList").appendChild(node);
-              //  }
+                d = new Date(+commentsObj.data[j].created_time * 1000);
+                var comment = new MyComment(d,
+                    commentsObj.data[j].from.username,
+                    commentsObj.data[j].text);
+                post.addComment(comment);
             }
         }
+
+        var likesObj = mediaObj.items[i].likes;
+        if (likesObj.count > 0) {
+            for (j = 0; j < likesObj.data.length; j++) {
+                var like = new MyLike(likesObj.data[j].username);
+                post.addLike(like);
+            }
+        }
+
+        myCockpit.addPost(post);
+
         if (i === (itemsLength - 1)) {
             nextUrl = myUrl + '?max_id=' + mediaObj.items[i].id;
         } else {
@@ -147,4 +165,61 @@ processMediaObjComments = function(mediaObj) {
             loadData(nextUrl);
         }
     }
+}
+
+getDateStr = function(d) {
+    var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+    var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
+    var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+    var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+    return date + "-" + month + "-" + d.getFullYear() + " " + hours + ":" + minutes;
+}
+
+processMediaObjPhotos = function(mediaObj) {
+  var i;
+  var postsLength = myCockpit.posts.length;
+
+  for (i = lastPostProcessed; i < postsLength; i++) {
+        var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
+        var node = document.createElement("li");
+        node.innerHTML = photoTxt;
+        document.getElementById("myList").appendChild(node);
+  }
+
+  lastPostProcessed = i;
+}
+
+processMediaObjComments = function(mediaObj) {
+    var i = 0;
+    var j = 0;
+    var commentTxt;
+    var node;
+
+    var postsLength = myCockpit.posts.length;
+
+    for (i = lastPostProcessed; i < postsLength; i++) {
+        var commentsLength = myCockpit.posts[i].commentscnt;
+
+        if (myCockpit.posts[i].caption !== '') {
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : ' + myCockpit.posts[i].caption + '</b> (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+        } else {
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : nocaption </b> (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+        }
+        node = document.createElement("li");
+        node.innerHTML = commentTxt;
+        document.getElementById("myList").appendChild(node);
+
+        var commentsObj = myCockpit.posts[i].comments;
+        var commentsLength = commentsObj.length;
+        if (commentsLength > 0) {
+            for (j = 0; j < commentsLength; j++) {
+                commentTxt = getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)';
+                node = document.createElement("li");
+                node.innerHTML = commentTxt;
+                document.getElementById("myList").appendChild(node);
+            }
+        }
+    }
+
+    lastPostProcessed = i;
 }
