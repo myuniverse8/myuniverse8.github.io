@@ -168,12 +168,14 @@ collectData = function(mediaObj) {
                 var comment = new MyComment(d,
                     commentsObj.data[j].from.username,
                     commentsObj.data[j].text);
-                post.addComment(comment);
+
                 if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
                     addPost = 'X';
+                    post.addComment(comment);
                 } else {
                     if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
                         addPost = 'X';
+                        post.addComment(comment);
                     }
                 }
             }
