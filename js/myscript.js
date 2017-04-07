@@ -174,12 +174,15 @@ collectData = function(mediaObj) {
             }
         }
 
-        if ( ( ( myBegda !== myInitialDate) & ( myEndda !== myInitialDate) ) & ( (dateForSearch >= myBegda) & (dateForSearch <= myEndda) ) ) {
+        if ( (myBegda.getTime() == myInitialDate.getTime()) || (myEndda.getTime() == myInitialDate.getTime()) )  {
             myCockpit.addPost(post);
-        }
-
-        if ((myEndda !== myInitialDate) & (dateForSearch > myEndda)) {
-            stopSearch = 'X';
+        } else {
+            if ( (dateForSearch >= myBegda) & (dateForSearch <= myEndda) ) {
+                myCockpit.addPost(post);
+            }
+            if (dateForSearch < myBegda) {
+                stopSearch = 'X';
+            }
         }
 
         if (i === (itemsLength - 1)) {
