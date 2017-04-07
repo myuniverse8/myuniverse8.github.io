@@ -6,6 +6,8 @@ var myTitle = '';
 var posts = [];
 var myCockpit;
 var lastPostProcessed = 0;
+var myBegda;
+var myEndda;
 
 function MyCockpit() {
     this.posts = [];
@@ -60,6 +62,19 @@ window.onload = function() {
     myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
     myComments = getURLParameter('comments');
     myTestMode = getURLParameter('testmode');
+    myBegda = new Date(getURLParameter('begda'));
+    myEndda = new Date(getURLParameter('endda'));
+
+    myBegda.setHours(0);
+    myBegda.setMinutes(0);
+    myBegda.setSeconds(0);
+
+    myEndda.setHours(0);
+    myEndda.setMinutes(0);
+    myEndda.setSeconds(0);
+
+    //console.log(myBegda);
+    //console.log(myEndda);
 
     myTitle = myNickname + '(';
 
@@ -79,7 +94,6 @@ window.onload = function() {
 loadData = function(mediaUrl) {
     var xhr = new XMLHttpRequest();
 
-    // xhr.open('GET', mediaUrl, false);
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
@@ -88,7 +102,7 @@ loadData = function(mediaUrl) {
         if (xhr.readyState != 4) return;
 
         if (xhr.status != 200) {
-            console.log(xhr.status + ': ' + xhr.statusText);
+            console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
         } else {
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
@@ -108,12 +122,21 @@ collectData = function(mediaObj) {
     var nextUrl = '';
     var fullSizeLnk = '';
     var d;
+    var dateForSearch;
+    var stopSearch = '';
+    var myInitialDate = new Date('1970-01-01:00:00:00');
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
         //console.log(mediaObj.items[i]);
         d = new Date(+mediaObj.items[i].created_time * 1000);
+        // console.log('date: ' + d);
+        dateForSearch = d;
+        dateForSearch.setHours(0);
+        dateForSearch.setMinutes(0);
+        dateForSearch.setSeconds(0);
+        // console.log('dateforsearch: ' + dateForSearch);
 
         fullSizeLnk = mediaObj.items[i].images.standard_resolution.url;
         fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
@@ -151,7 +174,13 @@ collectData = function(mediaObj) {
             }
         }
 
-        myCockpit.addPost(post);
+        if ( ( ( myBegda !== myInitialDate) & ( myEndda !== myInitialDate) ) & ( (dateForSearch >= myBegda) & (dateForSearch <= myEndda) ) ) {
+            myCockpit.addPost(post);
+        }
+
+        if ((myEndda !== myInitialDate) & (dateForSearch > myEndda)) {
+            stopSearch = 'X';
+        }
 
         if (i === (itemsLength - 1)) {
             nextUrl = myUrl + '?max_id=' + mediaObj.items[i].id;
@@ -161,7 +190,7 @@ collectData = function(mediaObj) {
     }
 
     if (nextUrl !== '') {
-        if (myTestMode !== 'X') {
+        if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
             loadData(nextUrl);
         }
     }
@@ -176,17 +205,17 @@ getDateStr = function(d) {
 }
 
 processMediaObjPhotos = function(mediaObj) {
-  var i;
-  var postsLength = myCockpit.posts.length;
+    var i;
+    var postsLength = myCockpit.posts.length;
 
-  for (i = lastPostProcessed; i < postsLength; i++) {
+    for (i = lastPostProcessed; i < postsLength; i++) {
         var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
         document.getElementById("myList").appendChild(node);
-  }
+    }
 
-  lastPostProcessed = i;
+    lastPostProcessed = i;
 }
 
 processMediaObjComments = function(mediaObj) {
