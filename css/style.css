@@ -2,16 +2,22 @@ p {
   color: red;
 }
 
-.myul {
+ul.photos {
     list-style: none; /* Remove list bullets */
     padding: 0;
     margin: 0;
 }
-  .myul li {
+  ul.photos li {
     margin-left: 5px;
     display: inline;
   }
 
-  .myul img {
+  ul.photos img {
     border: 1px solid black;
   }
+
+ul.comments {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+}

@@ -20,7 +20,9 @@ window.onload = function() {
 
     if (myComments === 'X') {
         myTitle = myTitle + 'comments)';
+        document.getElementById("myList").classList.add("comments");
     } else {
+        document.getElementById("myList").classList.add("photos");
         myTitle = myTitle + 'photos)';
     }
 
@@ -50,17 +52,14 @@ loadData = function(mediaUrl) {
             }
         }
     }
-    //
-    // if (xhr.status != 200) {
-    //     console.log(xhr.status + ': ' + xhr.statusText);
-    // } else {
-    //     var mediaObj = JSON.parse(xhr.responseText);
-    //     if (myComments === 'X') {
-    //         processMediaObjComments(mediaObj);
-    //     } else {
-    //         processMediaObjPhotos(mediaObj);
-    //     }
-    // }
+}
+
+getDateStr = function (d) {
+  var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+  var month = (d.getMonth()+1) < 10 ? '0' + (d.getMonth()+1) : (d.getMonth()+1);
+  var hours = d.getHours() < 10 ? '0' + d.getHours() :  d.getHours();
+  var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+  return date + "-" + month + "-" + d.getFullYear() + " " + hours + ":" + minutes;
 }
 
 processMediaObjPhotos = function(mediaObj) {
@@ -100,20 +99,25 @@ processMediaObjComments = function(mediaObj) {
     var photoScr;
     var commentTxt;
     var node;
+    var d;
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-        console.log(mediaObj.items[i]);
+          console.log(mediaObj.items[i]);
 
+        d = new Date( +mediaObj.items[i].created_time * 1000 );
+
+        photoScr = mediaObj.items[i].images.standard_resolution.url;
+        photoScr = photoScr.replace('s640x640', 's1080x1080');
         if (mediaObj.items[i].caption) {
-          photoScr = mediaObj.items[i].images.standard_resolution.url;
-          photoScr = photoScr.replace('s640x640', 's1080x1080');
-          commentTxt = mediaObj.items[i].caption.from.username + ': ' + mediaObj.items[i].caption.text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
-          node = document.createElement("li");
-          node.innerHTML = commentTxt;
-          document.getElementById("myList").appendChild(node);
+          commentTxt = '<b>' + getDateStr(d) + ' - post : ' + mediaObj.items[i].caption.text + '</b> (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
+        } else {
+          commentTxt = '<b>' + getDateStr(d) + ' - post : nocaption </b> (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>, <a target="_blank" href="' + photoScr + '">big photo</a>)';
         }
+        node = document.createElement("li");
+        node.innerHTML = commentTxt;
+        document.getElementById("myList").appendChild(node);
 
         var commentsObj = mediaObj.items[i].comments;
         if (commentsObj.count > 0) {
@@ -121,9 +125,10 @@ processMediaObjComments = function(mediaObj) {
                 //if (commentsObj.data[j].from.username != myNickname) {
                     //    if ( commentsObj.data[j].from.username == mynickname ){
                     // console.log(mediaObj.items[i]);
+                    d = new Date( +commentsObj.data[j].created_time * 1000 );
                     photoScr = mediaObj.items[i].images.standard_resolution.url;
                     photoScr = photoScr.replace('s640x640', 's1080x1080');
-                    commentTxt = commentsObj.data[j].from.username + ': ' + commentsObj.data[j].text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>)';
+                    commentTxt = getDateStr(d) + ' - comment : ' + commentsObj.data[j].from.username + ': ' + commentsObj.data[j].text + ' (<a target="_blank" href="' + mediaObj.items[i].link + '">post</a>)';
                     node = document.createElement("li");
                     node.innerHTML = commentTxt;
                     document.getElementById("myList").appendChild(node);
