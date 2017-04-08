@@ -49,3 +49,11 @@ function getCurrentValues() {
     myUseDates = 'X';
   };
 }
+
+toggleDatesCheckbox = function(element) {
+    if (element.checked === true) {
+        $("div#dates").show();
+    } else {
+        $("div#dates").hide();
+    }
+}

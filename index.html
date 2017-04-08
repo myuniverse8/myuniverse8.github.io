@@ -5,33 +5,34 @@
     <title>MyInstCockpit</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
     <script type="text/javascript" src="js/myinstacockpit.js"></script>
 </head>
 
 <body>
-    <div>
+    <div class="elements">
         <label for="nickname">Nickname</label>
         <input type="text" id="nickname" name="nickname" value="myuniverse8" placeholder="Enter nickname">
     </div>
-    <div>
+    <div class="elements">
+        <label for="dates">filter data using dates</label>
+        <input type="checkbox" id="dates" name="dates" onchange="toggleDatesCheckbox(this)">
+    </div>
+    <div id="dates" hidden class="elements">
         <label for="begda">Date from</label>
         <input type="date" name="begda" id="begda">
         <label for="begda">to</label>
         <input type="date" name="endda" id="endda">
     </div>
-    <div>
-        <label for="dates">use dates</label>
-        <input type="checkbox" id="dates" name="dates">
-    </div>
-    <div>
+    <div class="elements">
         <label for="testmode">process only last 20 records</label>
         <input type="checkbox" id="testmode" name="testmode" checked>
     </div>
-    <div>
+    <div class="elements">
         <button type="button" onclick="photosBtnClick()">Photos</button>
         <button type="button" onclick="commentsBtnClick()">Comments</button>
     </div>
-    <div>
+    <div class="elements">
        <a href="https://github.com/myuniverse8/myuniverse8.github.io/blob/master/README.md">READme</a>
     </div>
 </body>
