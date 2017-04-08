@@ -134,7 +134,7 @@ loadData = function(mediaUrl) {
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
-    document.getElementById('loading-p').innerHTML = 'Data is loading ...';
+    $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
     xhr.onreadystatechange = function() {
 
         if (xhr.readyState != 4) return;
@@ -142,7 +142,7 @@ loadData = function(mediaUrl) {
         if (xhr.status != 200) {
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
         } else {
-            document.getElementById('loading-p').innerHTML = 'Data loaded';
+            $('p#loading-p').css('color', 'white').text('Data loaded');
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
