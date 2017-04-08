@@ -112,12 +112,10 @@ togglePostCaptionCheckbox = function(element) {
 
 toggleCommentsCheckbox = function(element) {
     if (element.checked === true) {
-        $('input#own-replies').prop("disabled", false);
         $("ul#myList").find("p.comment").show();
         var ownReply = document.getElementById('own-replies');
         toggleOwnRepliesCheckbox(ownReply);
     } else {
-        $('input#own-replies').prop("disabled", true);
         $("ul#myList").find("p.comment").hide();
     }
 }
@@ -325,9 +323,11 @@ processMediaObjComments = function(mediaObj) {
         var commentsLength = commentsObj.length;
         if (commentsLength > 0) {
             for (j = 0; j < commentsLength; j++) {
-                commentTxt = '<p class="comment comments ';
+                commentTxt = '<p class="comments ';
                 if (myCockpit.posts[i].comments[j].user === myNickname) {
                     commentTxt = commentTxt + 'own-reply';
+                } else {
+                    commentTxt = commentTxt + 'comment';
                 }
                 commentTxt = commentTxt + '">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
 
