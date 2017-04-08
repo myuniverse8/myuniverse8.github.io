@@ -259,9 +259,9 @@ collectData = function(mediaObj) {
 getDateStr = function(d) {
     var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
     var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
-    var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-    var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-    return date + "-" + month + "-" + d.getFullYear() + " " + hours + ":" + minutes;
+    //var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+    //var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+    return date + "-" + month + "-" + d.getFullYear();
 }
 
 processMediaObjPhotos = function(mediaObj) {
