@@ -4,6 +4,7 @@ var myUrl = '';
 var myTestMode = '';
 var myWinName = '';
 var myUseDates = '';
+var myInclPostCaption = '';
 
 window.onload = function() {
     var today = new Date();
@@ -33,7 +34,7 @@ function commentsBtnClick() {
 }
 
 function openWindow(){
-  myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
+  myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates + '&postcaption=' + myInclPostCaption;
   myWin = window.open(myUrl, myWinName);
 }
 
@@ -47,5 +48,9 @@ function getCurrentValues() {
   myUseDates = '';
   if ( document.getElementById('dates').checked ) {
     myUseDates = 'X';
+  };
+  myInclPostCaption = '';
+  if ( document.getElementById('postcaption').checked ) {
+    myInclPostCaption = 'X';
   };
 }

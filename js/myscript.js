@@ -9,6 +9,7 @@ var lastPostProcessed = 0;
 var myBegda;
 var myEndda;
 var myUseDates;
+var myInclPostCaption;
 
 function MyCockpit() {
     this.posts = [];
@@ -66,6 +67,7 @@ window.onload = function() {
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
     myUseDates = getURLParameter('dates');
+    myInclPostCaption = getURLParameter('postcaption');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -268,7 +270,10 @@ processMediaObjComments = function(mediaObj) {
 
         node = document.createElement("li");
         node.innerHTML = commentTxt;
-        document.getElementById("myList").appendChild(node);
+
+        if (myInclPostCaption === 'X'){
+          document.getElementById("myList").appendChild(node);
+        }
 
         var commentsObj = myCockpit.posts[i].comments;
         var commentsLength = commentsObj.length;
