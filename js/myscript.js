@@ -195,7 +195,14 @@ collectData = function(mediaObj) {
             }
         }
 
-        if (myComments !== 'X') {
+        if (myComments === 'X') {
+            if (addPost === 'X') {
+                if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
+                    myCockpit.addPost(post);
+                    addPost = '';
+                }
+            }
+        } else {
             if (myUseDates === 'X') {
                 if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
                     myCockpit.addPost(post);
@@ -205,11 +212,6 @@ collectData = function(mediaObj) {
                 }
             } else {
                 myCockpit.addPost(post);
-            }
-        } else {
-            if (addPost === 'X') {
-                myCockpit.addPost(post);
-                addPost = '';
             }
         }
 
@@ -271,8 +273,8 @@ processMediaObjComments = function(mediaObj) {
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
-        if (myInclPostCaption === 'X'){
-          document.getElementById("myList").appendChild(node);
+        if (myInclPostCaption === 'X') {
+            document.getElementById("myList").appendChild(node);
         }
 
         var commentsObj = myCockpit.posts[i].comments;
