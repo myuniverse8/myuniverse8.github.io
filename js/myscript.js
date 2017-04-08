@@ -259,9 +259,9 @@ processMediaObjComments = function(mediaObj) {
         var commentsLength = myCockpit.posts[i].commentscnt;
 
         if (myCockpit.posts[i].caption !== '') {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : ' + myCockpit.posts[i].caption;
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : ' + myCockpit.posts[i].caption;
         } else {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : nocaption';
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : nocaption';
         }
 
         commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ' comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
