@@ -26,12 +26,6 @@ p.comments {
   margin: 1px;
 }
 
-div#nav {
-  margin-bottom: 5px;
-  padding: 5px;
-  border: 1px solid black;
-}
-
 div.nav-comments {
   border: 1px solid grey;
   padding: 5px;

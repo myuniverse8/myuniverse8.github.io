@@ -85,6 +85,11 @@ window.onload = function() {
         node.classList.add("nav-comments");
         node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
+        node = document.createElement("div");
+        node.classList.add("nav-comments");
+        node.classList.add("own-replies");
+        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
+        document.getElementById("nav").appendChild(node);
 
         myTitle = myTitle + 'comments)';
         document.getElementById("myList").classList.add("comments");
@@ -111,6 +116,14 @@ toggleCommentsCheckbox = function(element) {
       $("ul#myList").find("p.comment").show();
   } else {
       $("ul#myList").find("p.comment").hide();
+  }
+}
+
+toggleOwnRepliesCheckbox = function(element) {
+  if (element.checked === true) {
+      $("ul#myList").find("p.own-reply").show();
+  } else {
+      $("ul#myList").find("p.own-reply").hide();
   }
 }
 
@@ -300,14 +313,18 @@ processMediaObjComments = function(mediaObj) {
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
-
         document.getElementById("myList").appendChild(node);
 
         var commentsObj = myCockpit.posts[i].comments;
         var commentsLength = commentsObj.length;
         if (commentsLength > 0) {
             for (j = 0; j < commentsLength; j++) {
-                commentTxt = '<p class="comment comments">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
+                commentTxt = '<p class="comment comments ';
+                if (myCockpit.posts[i].comments[j].user === myNickname){
+                    commentTxt = commentTxt  + 'own-reply';
+                }
+                commentTxt = commentTxt + '">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
+
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;
                 document.getElementById("myList").appendChild(node);
