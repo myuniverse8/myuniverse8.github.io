@@ -21,3 +21,7 @@ ul.comments {
 img.post:hover {
   opacity: 0.3;
 }
+
+p.comments {
+  margin: 3px;
+}

@@ -261,12 +261,12 @@ processMediaObjComments = function(mediaObj) {
         var commentsLength = myCockpit.posts[i].commentscnt;
 
         if (myCockpit.posts[i].caption !== '') {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : ' + myCockpit.posts[i].caption;
+            commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : ' + myCockpit.posts[i].caption;
         } else {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : nocaption';
+            commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : nocaption';
         }
 
-        commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ' comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+        commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ' comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)</p>';
 
         node = document.createElement("li");
         node.innerHTML = commentTxt;
@@ -279,7 +279,7 @@ processMediaObjComments = function(mediaObj) {
         var commentsLength = commentsObj.length;
         if (commentsLength > 0) {
             for (j = 0; j < commentsLength; j++) {
-                commentTxt = getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)';
+                commentTxt = '<p class="comment comments">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;
                 document.getElementById("myList").appendChild(node);
