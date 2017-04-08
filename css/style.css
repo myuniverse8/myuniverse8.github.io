@@ -26,6 +26,14 @@ p.comments {
   margin: 1px;
 }
 
+div#loading-info {
+  padding: 3px;
+}
+
+p#loading-p {
+  margin: 1px;
+}
+
 div.nav-comments {
   border: 1px solid grey;
   padding: 5px;

@@ -99,7 +99,6 @@ window.onload = function() {
     }
 
     document.title = myTitle;
-
     loadData(myUrl);
 };
 
@@ -135,13 +134,15 @@ loadData = function(mediaUrl) {
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
-
+document.getElementById('loading-p').innerHTML = 'Data is loading ...';
     xhr.onreadystatechange = function() {
+
         if (xhr.readyState != 4) return;
 
         if (xhr.status != 200) {
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
         } else {
+            document.getElementById('loading-p').innerHTML = 'Data loaded';
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
