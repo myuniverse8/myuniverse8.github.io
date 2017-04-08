@@ -238,7 +238,7 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
-        var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
+        var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
         document.getElementById("myList").appendChild(node);
