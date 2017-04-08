@@ -79,16 +79,16 @@ window.onload = function() {
     if (myComments === 'X') {
         var node = document.createElement("div");
         node.classList.add("nav-comments");
-        node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
+        node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
-        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
+        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.classList.add("own-replies");
-        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
+        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
 
         myTitle = myTitle + 'comments)';
@@ -135,6 +135,7 @@ loadData = function(mediaUrl) {
 
     xhr.send();
     $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
+    $('input.nav-input').prop("disabled", true);
     xhr.onreadystatechange = function() {
 
         if (xhr.readyState != 4) return;
@@ -143,6 +144,7 @@ loadData = function(mediaUrl) {
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
+            $('input.nav-input').prop("disabled", false);
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
@@ -165,21 +167,20 @@ collectData = function(mediaObj) {
     var dateForSearchComm;
     var stopSearch = '';
     var addPost = '';
-    var myInitialDate = new Date('1970-01-01:00:00:00');
 
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
+        //console.log(mediaObj.items[i]);
+
         addPost = '';
 
-        //console.log(mediaObj.items[i]);
         d = new Date(+mediaObj.items[i].created_time * 1000);
-        // console.log('date: ' + d);
+
         dateForSearch = d;
         dateForSearch.setHours(0);
         dateForSearch.setMinutes(0);
         dateForSearch.setSeconds(0);
-        // console.log('dateforsearch: ' + dateForSearch);
 
         fullSizeLnk = mediaObj.items[i].images.standard_resolution.url;
         fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
@@ -275,8 +276,6 @@ collectData = function(mediaObj) {
 getDateStr = function(d) {
     var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
     var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
-    //var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-    //var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
     return date + "-" + month + "-" + d.getFullYear();
 }
 
@@ -305,10 +304,12 @@ processMediaObjComments = function(mediaObj) {
     for (i = lastPostProcessed; i < postsLength; i++) {
         var commentsLength = myCockpit.posts[i].commentscnt;
 
+        commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date)
+
         if (myCockpit.posts[i].caption !== '') {
-            commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : ' + myCockpit.posts[i].caption;
+            commentTxt = commentTxt + ' - ' + myCockpit.posts[i].caption;
         } else {
-            commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : nocaption';
+            commentTxt = commentTxt + ' - nocaption';
         }
 
         commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ', comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)</p>';
@@ -326,7 +327,7 @@ processMediaObjComments = function(mediaObj) {
                 if (myCockpit.posts[i].comments[j].user === myNickname) {
                     commentTxt = commentTxt + 'own-reply';
                 }
-                commentTxt = commentTxt + '">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - comment : ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
+                commentTxt = commentTxt + '">' + getDateStr(myCockpit.posts[i].comments[j].date) + ' - ' + myCockpit.posts[i].comments[j].user + ': ' + myCockpit.posts[i].comments[j].text + ' (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>)</p>';
 
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;
