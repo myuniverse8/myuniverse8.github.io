@@ -20,17 +20,23 @@ window.onload = function() {
 
 function photosBtnClick() {
   getCurrentValues();
-  winName = 'myphotos_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
-  myWin = window.open(myUrl, winName);
+  myWinName = 'myphotos_' + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname;
+  openWindow();
 }
 
 function commentsBtnClick() {
   getCurrentValues();
   myWinName = 'mycomments_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&comments=X' + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&comments=X';
+  openWindow();
+}
+
+function openWindow(){
+  myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
   myWin = window.open(myUrl, myWinName);
 }
+
 
 function getCurrentValues() {
   myNickname = document.getElementById('nickname').value;

@@ -259,10 +259,13 @@ processMediaObjComments = function(mediaObj) {
         var commentsLength = myCockpit.posts[i].commentscnt;
 
         if (myCockpit.posts[i].caption !== '') {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : ' + myCockpit.posts[i].caption + '</b> (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : ' + myCockpit.posts[i].caption;
         } else {
-            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : nocaption </b> (<a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+            commentTxt = '<b>' + getDateStr(myCockpit.posts[i].date) + ' - post : nocaption';
         }
+
+        commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ' comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)';
+
         node = document.createElement("li");
         node.innerHTML = commentTxt;
         document.getElementById("myList").appendChild(node);
