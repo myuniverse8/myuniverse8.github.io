@@ -117,6 +117,8 @@ toggleCommentsCheckbox = function(element) {
   } else {
       $("ul#myList").find("p.comment").hide();
   }
+  var ownReply = document.getElementById('own-replies');
+  toggleOwnRepliesCheckbox(ownReply);
 }
 
 toggleOwnRepliesCheckbox = function(element) {
