@@ -197,7 +197,12 @@ collectData = function(mediaObj) {
 
         if (myComments === 'X') {
             if (addPost === 'X') {
-                if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
+                if (myUseDates === 'X') {
+                    if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
+                        myCockpit.addPost(post);
+                        addPost = '';
+                    }
+                } else {
                     myCockpit.addPost(post);
                     addPost = '';
                 }
@@ -268,7 +273,7 @@ processMediaObjComments = function(mediaObj) {
             commentTxt = '<p class="postcaption comments"><b>' + getDateStr(myCockpit.posts[i].date) + ' - post caption : nocaption';
         }
 
-        commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ' comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)</p>';
+        commentTxt = commentTxt + '</b> (likes: ' + myCockpit.posts[i].likescnt + ', comments: ' + myCockpit.posts[i].commentscnt + ', <a target="_blank" href="' + myCockpit.posts[i].link + '">post</a>, <a target="_blank" href="' + myCockpit.posts[i].bigsizelink + '">big photo</a>)</p>';
 
         node = document.createElement("li");
         node.innerHTML = commentTxt;
