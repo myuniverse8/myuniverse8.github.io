@@ -141,6 +141,7 @@ loadData = function(mediaUrl) {
         if (xhr.readyState != 4) return;
 
         if (xhr.status != 200) {
+            $('p#loading-p').css('color', 'red').text('Data loading error!');
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
