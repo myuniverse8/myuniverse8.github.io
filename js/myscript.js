@@ -113,11 +113,11 @@ togglePostCaptionCheckbox = function(element) {
 toggleCommentsCheckbox = function(element) {
     if (element.checked === true) {
         $("ul#myList").find("p.comment").show();
+        var ownReply = document.getElementById('own-replies');
+        toggleOwnRepliesCheckbox(ownReply);
     } else {
         $("ul#myList").find("p.comment").hide();
     }
-    var ownReply = document.getElementById('own-replies');
-    toggleOwnRepliesCheckbox(ownReply);
 }
 
 toggleOwnRepliesCheckbox = function(element) {
