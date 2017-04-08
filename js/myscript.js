@@ -179,6 +179,10 @@ collectData = function(mediaObj) {
                     }
                 }
             }
+        } else {
+          if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
+              addPost = 'X';
+          }
         }
 
         var likesObj = mediaObj.items[i].likes;
@@ -188,6 +192,8 @@ collectData = function(mediaObj) {
                 post.addLike(like);
             }
         }
+
+        // myCockpit.addPost(post);
 
         if (myComments !== 'X') {
             if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
