@@ -8,6 +8,7 @@ var myCockpit;
 var lastPostProcessed = 0;
 var myBegda;
 var myEndda;
+var myUseDates;
 
 function MyCockpit() {
     this.posts = [];
@@ -64,6 +65,7 @@ window.onload = function() {
     myTestMode = getURLParameter('testmode');
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
+    myUseDates = getURLParameter('dates');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -169,20 +171,18 @@ collectData = function(mediaObj) {
                     commentsObj.data[j].from.username,
                     commentsObj.data[j].text);
 
-                if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
-                    addPost = 'X';
-                    post.addComment(comment);
-                } else {
+                if (myUseDates === 'X') {
                     if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
                         addPost = 'X';
                         post.addComment(comment);
                     }
+                } else {
+                    addPost = 'X';
+                    post.addComment(comment);
                 }
             }
         } else {
-          if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
-              addPost = 'X';
-          }
+            addPost = 'X';
         }
 
         var likesObj = mediaObj.items[i].likes;
@@ -193,18 +193,16 @@ collectData = function(mediaObj) {
             }
         }
 
-        // myCockpit.addPost(post);
-
         if (myComments !== 'X') {
-            if ((myBegda.getTime() === myInitialDate.getTime()) || (myEndda.getTime() === myInitialDate.getTime())) {
-                myCockpit.addPost(post);
-            } else {
+            if (myUseDates === 'X') {
                 if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
                     myCockpit.addPost(post);
                 }
                 if (dateForSearch < myBegda) {
                     stopSearch = 'X';
                 }
+            } else {
+                myCockpit.addPost(post);
             }
         } else {
             if (addPost === 'X') {
