@@ -3,13 +3,11 @@ var myUrl = '';
 var myComments = '';
 var myTestMode = '';
 var myTitle = '';
-var posts = [];
 var myCockpit;
 var lastPostProcessed = 0;
 var myBegda;
 var myEndda;
 var myUseDates;
-var myInclPostCaption;
 
 function MyCockpit() {
     this.posts = [];
@@ -67,7 +65,6 @@ window.onload = function() {
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
     myUseDates = getURLParameter('dates');
-    myInclPostCaption = getURLParameter('postcaption');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -80,6 +77,15 @@ window.onload = function() {
     myTitle = myNickname + '(';
 
     if (myComments === 'X') {
+        var node = document.createElement("div");
+        node.classList.add("nav-comments");
+        node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
+        document.getElementById("nav").appendChild(node);
+        node = document.createElement("div");
+        node.classList.add("nav-comments");
+        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
+        document.getElementById("nav").appendChild(node);
+
         myTitle = myTitle + 'comments)';
         document.getElementById("myList").classList.add("comments");
     } else {
@@ -91,6 +97,22 @@ window.onload = function() {
 
     loadData(myUrl);
 };
+
+togglePostCaptionCheckbox = function(element) {
+    if (element.checked === true) {
+        $("ul#myList").find("p.postcaption").show();
+    } else {
+        $("ul#myList").find("p.postcaption").hide();
+    }
+}
+
+toggleCommentsCheckbox = function(element) {
+  if (element.checked === true) {
+      $("ul#myList").find("p.comment").show();
+  } else {
+      $("ul#myList").find("p.comment").hide();
+  }
+}
 
 loadData = function(mediaUrl) {
     var xhr = new XMLHttpRequest();
@@ -278,9 +300,8 @@ processMediaObjComments = function(mediaObj) {
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
-        if (myInclPostCaption === 'X') {
-            document.getElementById("myList").appendChild(node);
-        }
+
+        document.getElementById("myList").appendChild(node);
 
         var commentsObj = myCockpit.posts[i].comments;
         var commentsLength = commentsObj.length;
