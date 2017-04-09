@@ -1,5 +1,5 @@
 # myinstacockpit
-Small and useful cockpit for Instagram.
+Small and useful tool for Instagram.
 
 Get photos/comments of provided user.
 
