@@ -16,6 +16,10 @@ function MyCockpit() {
 }
 
 MyCockpit.prototype.addPost = function(post) {
+    if (post.id === '898434682775807790_927378976') {
+      debugger;
+    }
+
     this.posts.push(post);
 }
 
@@ -28,19 +32,29 @@ MyCockpit.prototype.updateTags = function(str, postId) {
   if (tagsArr != null) {
       for (i=0;i<tagsArr.length;i++){
         var tagName = tagsArr[i].toLowerCase();
-        var myFoundTag = this.tags.filter(function ( obj ) {
+
+        if (tagName === '#veluxloversoflight'){
+          debugger;
+        }
+
+        var myFoundTag = this.tags.filter(function (obj) {
           return obj.tagName === tagName;
         })[0];
 
         if (!myFoundTag) {
           // object is not found
-          var myTag = new MyTag(tagName, postId);
+          var myTag = new MyTag(tagName);
           myTag.postIds.push(postId);
           this.tags.push(myTag);
         } else {
           // object is found
-          myFoundTag.tagCnt++;
-          myFoundTag.postIds.push(postId);
+          //check if post id is different - it could be the same tags in one post
+          var ret = myFoundTag.postIds.indexOf(postId);
+
+          if (ret === -1) {
+            myFoundTag.tagCnt++;
+            myFoundTag.postIds.push(postId);
+          }
         }
       }
   }
@@ -361,6 +375,7 @@ processMediaObjTags = function(mediaObj) {
 
       btn.onclick = function(){
         var tagName = this.getAttribute('data-tag');
+
         var myFoundTag = myCockpit.tags.filter(function ( obj ) {
           return obj.tagName === tagName;
         })[0];
@@ -371,7 +386,6 @@ processMediaObjTags = function(mediaObj) {
           for (j=0;j<myFoundTag.postIds.length;j++){
             var photosDiv = document.getElementById("photos-by-tag");
 
-          //  debugger;
             var myFoundPost = myCockpit.posts.filter(function ( obj ) {
               return obj.id === myFoundTag.postIds[j];
             })[0];
