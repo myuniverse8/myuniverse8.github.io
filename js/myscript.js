@@ -156,7 +156,7 @@ window.onload = function() {
     if (myTags === 'X') {
       beforeTagsProcessing();
     }
-    
+
     loadData(myUrl);
 };
 
@@ -194,6 +194,8 @@ loadData = function(mediaUrl) {
     xhr.send();
     $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
     $('input.nav-input').prop("disabled", true);
+    $('select#sel-drop-tags').prop("disabled", true);
+
     xhr.onreadystatechange = function() {
 
         if (xhr.readyState != 4) return;
@@ -204,6 +206,7 @@ loadData = function(mediaUrl) {
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
+            $('select#sel-drop-tags').prop("disabled", false);
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
