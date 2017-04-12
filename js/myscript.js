@@ -213,6 +213,7 @@ loadData = function(mediaUrl) {
             if (myComments === 'X') {
                 processMediaObjComments();
             } else if (myTags === 'X') {
+                clearTagList();
                 processMediaObjTags();
             } else {
                 processMediaObjPhotos();
@@ -463,6 +464,7 @@ processMediaObjTags = function(tags) {
 
 sortTagsList = function(option) {
     var tags;
+    debugger;
     switch (option) {
         case 'name':
             clearTagList();
