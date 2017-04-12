@@ -39,6 +39,13 @@ function locationsBtnClick() {
   openWindow();
 }
 
+function commentorsBtnClick() {
+  getCurrentValues();
+  myWinName = 'mycommentors_' + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&commentors=X';
+  openWindow();
+}
+
 function commentsBtnClick() {
   getCurrentValues();
   myWinName = 'mycomments_' + myNickname;

@@ -10,11 +10,13 @@ var myEndda;
 var myUseDates;
 var myTags = '';
 var myLocations = '';
+var myCommentors = '';
 
 function MyCockpit() {
     this.posts = [];
     this.tags = [];
     this.locations = [];
+    this.commentors = [];
 }
 
 MyCockpit.prototype.addPost = function(post) {
@@ -22,27 +24,51 @@ MyCockpit.prototype.addPost = function(post) {
 }
 
 MyCockpit.prototype.updateLocations = function(str, postId) {
-  var locName = str.toLowerCase();
+    var locName = str.toLowerCase();
 
-  var myFoundLocation = this.locations.filter(function(obj) {
-      return obj.locName === locName;
-  })[0];
+    var myFoundLocation = this.locations.filter(function(obj) {
+        return obj.locName === locName;
+    })[0];
 
-  if (!myFoundLocation) {
-      // object is not found
-      var myLocation = new MyLocation(locName);
-      myLocation.postIds.push(postId);
-      this.locations.push(myLocation);
-  } else {
-      // object is found
-      // check if post id is different - it could be the same tags in one post
-      var ret = myFoundLocation.postIds.indexOf(postId);
+    if (!myFoundLocation) {
+        // object is not found
+        var myLocation = new MyLocation(locName);
+        myLocation.postIds.push(postId);
+        this.locations.push(myLocation);
+    } else {
+        // object is found
+        // check if post id is different - it could be the same tags in one post
+        var ret = myFoundLocation.postIds.indexOf(postId);
 
-      if (ret === -1) {
-          myFoundLocation.locCnt++;
-          myFoundLocation.postIds.push(postId);
-      }
-  }
+        if (ret === -1) {
+            myFoundLocation.locCnt++;
+            myFoundLocation.postIds.push(postId);
+        }
+    }
+}
+
+MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
+    var comName = str.toLowerCase();
+
+    var myFoundCommentors = this.commentors.filter(function(obj) {
+        return obj.comName === comName;
+    })[0];
+
+    if (!myFoundCommentors) {
+        // object is not found
+        var myCommentors = new MyCommentors(comName, realName, postId);
+        myCommentors.postIds.push(postId);
+        this.commentors.push(myCommentors);
+    } else {
+        // object is found
+        // check if post id is different - it could be the same tags in one post
+        var ret = myFoundCommentors.postIds.indexOf(postId);
+
+        if (ret === -1) {
+            myFoundCommentors.comCnt++;
+            myFoundCommentors.postIds.push(postId);
+        }
+    }
 }
 
 MyCockpit.prototype.updateTags = function(str, postId) {
@@ -115,6 +141,13 @@ function MyLocation(locName) {
     this.postIds = [];
 };
 
+function MyCommentors(comName, realName) {
+    this.comName = comName;
+    this.realName = realName
+    this.comCnt = 1;
+    this.postIds = [];
+};
+
 function MyComment(date, user, text) {
     this.date = date;
     this.user = user;
@@ -141,6 +174,7 @@ window.onload = function() {
     myUseDates = getURLParameter('dates');
     myTags = getURLParameter('tags');
     myLocations = getURLParameter('locations');
+    myCommentors = getURLParameter('commentors');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -175,6 +209,9 @@ window.onload = function() {
     } else if (myLocations === 'X') {
         document.getElementById("myList").classList.add("locations");
         myTitle = myTitle + 'locations)';
+    } else if (myCommentors === 'X') {
+        document.getElementById("myList").classList.add("commentors");
+        myTitle = myTitle + 'commentors)';
     } else {
         document.getElementById("myList").classList.add("photos");
         myTitle = myTitle + 'photos)';
@@ -182,12 +219,8 @@ window.onload = function() {
 
     document.title = myTitle;
 
-    if (myTags === 'X') {
-      beforeTagsProcessing();
-    }
-
-    if (myLocations === 'X') {
-      beforeLocationsProcessing();
+    if ((myTags === 'X') || (myLocations === 'X') || (myCommentors === 'X')) {
+        beforeItemsProcessing();
     }
 
     loadData(myUrl);
@@ -229,6 +262,7 @@ loadData = function(mediaUrl) {
     $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-tags').prop("disabled", true);
     $('select#sel-drop-locations').prop("disabled", true);
+    $('select#sel-drop-commentors').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
@@ -240,11 +274,13 @@ loadData = function(mediaUrl) {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-tags').prop("disabled", false);
             $('select#sel-drop-locations').prop("disabled", false);
+            $('select#sel-drop-commentors').prop("disabled", false);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-tags').prop("disabled", false);
             $('select#sel-drop-locations').prop("disabled", false);
+            $('select#sel-drop-commentors').prop("disabled", false);
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
@@ -256,6 +292,9 @@ loadData = function(mediaUrl) {
             } else if (myLocations === 'X') {
                 clearMyList();
                 processMediaObjLocations();
+            } else if (myCommentors === 'X') {
+                clearMyList();
+                processMediaObjCommentors();
             } else {
                 processMediaObjPhotos();
             }
@@ -298,8 +337,8 @@ collectData = function(mediaObj) {
 
         var location = mediaObj.items[i].location ? mediaObj.items[i].location.name : '';
 
-        if (location != ''){
-          myCockpit.updateLocations(location, mediaObj.items[i].id);
+        if (location != '') {
+            myCockpit.updateLocations(location, mediaObj.items[i].id);
         }
 
         var post = new MyPost(mediaObj.items[i].id,
@@ -332,11 +371,17 @@ collectData = function(mediaObj) {
                         addPost = 'X';
                         post.addComment(comment);
                         myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
+                        if (commentsObj.data[j].from.username !== myNickname) {
+                            myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
+                        }
                     }
                 } else {
                     addPost = 'X';
                     post.addComment(comment);
                     myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
+                    if (commentsObj.data[j].from.username !== myNickname) {
+                        myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
+                    }
                 }
             }
         } else {
@@ -411,120 +456,136 @@ processMediaObjPhotos = function(mediaObj) {
     lastPostProcessed = i;
 }
 
-beforeLocationsProcessing = function() {
-  var navDiv = document.getElementById("nav");
-  var contentDiv = document.getElementById("content");
+beforeItemsProcessing = function() {
+    var navDiv = document.getElementById("nav");
+    var contentDiv = document.getElementById("content");
 
-  var selDrop = document.createElement("select");
-  selDrop.setAttribute('id', 'sel-drop-locations');
-  selDrop.setAttribute('onchange', 'selDropLocsChanged(this)');
+    var selDrop = document.createElement("select");
 
-  var opt = document.createElement("option");
-  opt.setAttribute('value', 'space');
-  selDrop.appendChild(opt);
+    if (myLocations === 'X') {
+        selDrop.setAttribute('id', 'sel-drop-locations');
+        selDrop.setAttribute('onchange', 'selDropLocsChanged(this)');
+    } else if (myTags === 'X') {
+        selDrop.setAttribute('id', 'sel-drop-tags');
+        selDrop.setAttribute('onchange', 'selDropChanged(this)');
+    } else if (myCommentors === 'X') {
+        selDrop.setAttribute('id', 'sel-drop-commentors');
+        selDrop.setAttribute('onchange', 'selDropCommentorsChanged(this)');
+    }
 
-  opt = document.createElement("option");
-  opt.setAttribute('value', 'name');
-  opt.innerHTML = 'by name';
-  selDrop.appendChild(opt);
+    var opt = document.createElement("option");
+    opt.setAttribute('value', 'space');
+    selDrop.appendChild(opt);
 
-  opt = document.createElement("option");
-  opt.setAttribute('value', 'count');
-  opt.innerHTML = 'by count';
-  selDrop.appendChild(opt);
+    opt = document.createElement("option");
+    opt.setAttribute('value', 'name');
+    opt.innerHTML = 'by name';
+    selDrop.appendChild(opt);
 
-  var label = document.createElement('label');
-  label.setAttribute('for', 'sel-drop-locations');
-  label.innerHTML = 'Sort locations: ';
+    opt = document.createElement("option");
+    opt.setAttribute('value', 'count');
+    opt.innerHTML = 'by count';
+    selDrop.appendChild(opt);
 
-  navDiv.appendChild(label);
+    var label = document.createElement('label');
 
-  navDiv.classList.add("nav-tags");
-  navDiv.appendChild(selDrop);
+    if (myLocations === 'X') {
+        label.setAttribute('for', 'sel-drop-locations');
+        label.innerHTML = 'Sort locations: ';
+        navDiv.classList.add("nav-locations");
+    } else if (myTags === 'X') {
+        label.setAttribute('for', 'sel-drop-tags');
+        label.innerHTML = 'Sort tags: ';
+        navDiv.classList.add("nav-tags");
+    } else if (myCommentors === 'X') {
+        label.setAttribute('for', 'sel-drop-commentors');
+        label.innerHTML = 'Sort commentors: ';
+        navDiv.classList.add("nav-commentors");
+    }
 
-  var photosDiv = document.createElement("div");
-  photosDiv.setAttribute("id", "photos-by-location");
-  contentDiv.appendChild(photosDiv);
+    navDiv.appendChild(label);
+    navDiv.appendChild(selDrop);
 
-  var photosUl = document.createElement("ul");
-  photosUl.setAttribute("id", "myLocationsPhotosList");
-  photosUl.classList.add("photos");
-  photosDiv.appendChild(photosUl);
+    var photosDiv = document.createElement("div");
+    var photosUl = document.createElement("ul");
 
-  clearMyList();
-}
+    if (myLocations === 'X') {
+        photosDiv.setAttribute("id", "photos-by-location");
+        photosUl.setAttribute("id", "myLocationsPhotosList");
+    } else if (myTags === 'X') {
+        photosDiv.setAttribute("id", "photos-by-tag");
+        photosUl.setAttribute("id", "myTagsPhotosList");
+    } else if (myCommentors === 'X') {
+        photosDiv.setAttribute("id", "photos-by-commentors");
+        photosUl.setAttribute("id", "myCommentorsPhotosList");
+    }
 
-beforeTagsProcessing = function() {
-  var navDiv = document.getElementById("nav");
-  var contentDiv = document.getElementById("content");
+    contentDiv.appendChild(photosDiv);
 
-  var selDrop = document.createElement("select");
-  selDrop.setAttribute('id', 'sel-drop-tags');
-  selDrop.setAttribute('onchange', 'selDropChanged(this)');
+    photosUl.classList.add("photos");
+    photosDiv.appendChild(photosUl);
 
-  var opt = document.createElement("option");
-  opt.setAttribute('value', 'space');
-  selDrop.appendChild(opt);
-
-  opt = document.createElement("option");
-  opt.setAttribute('value', 'name');
-  opt.innerHTML = 'by name';
-  selDrop.appendChild(opt);
-
-  opt = document.createElement("option");
-  opt.setAttribute('value', 'count');
-  opt.innerHTML = 'by count';
-  selDrop.appendChild(opt);
-
-  var label = document.createElement('label');
-  label.setAttribute('for', 'sel-drop-tags');
-  label.innerHTML = 'Sort tags: ';
-
-  navDiv.appendChild(label);
-
-  navDiv.classList.add("nav-tags");
-  navDiv.appendChild(selDrop);
-
-  var photosDiv = document.createElement("div");
-  photosDiv.setAttribute("id", "photos-by-tag");
-  contentDiv.appendChild(photosDiv);
-
-  var photosUl = document.createElement("ul");
-  photosUl.setAttribute("id", "myTagsPhotosList");
-  photosUl.classList.add("photos");
-  photosDiv.appendChild(photosUl);
-
-  clearMyList();
+    clearMyList();
 }
 
 locBtnClick = function(elem) {
-  var locName = elem.getAttribute('data-loc');
+    var locName = elem.getAttribute('data-loc');
 
-  var myFoundLoc = myCockpit.locations.filter(function(obj) {
-      return obj.locName === locName;
-  })[0];
+    var myFoundLoc = myCockpit.locations.filter(function(obj) {
+        return obj.locName === locName;
+    })[0];
 
-  var myList = document.getElementById("myList");
-  var myLocsPhotosList = document.getElementById("myLocationsPhotosList");
+    var myList = document.getElementById("myList");
+    var myLocsPhotosList = document.getElementById("myLocationsPhotosList");
 
-  myLocsPhotosList.innerHTML = '';
+    myLocsPhotosList.innerHTML = '';
 
-  if (myFoundLoc) {
-      for (var j = 0; j < myFoundLoc.postIds.length; j++) {
-          var photosDiv = document.getElementById("photos-by-tag");
+    if (myFoundLoc) {
+        for (var j = 0; j < myFoundLoc.postIds.length; j++) {
+            var photosDiv = document.getElementById("photos-by-tag");
 
-          var myFoundPost = myCockpit.posts.filter(function(obj) {
-              return obj.id === myFoundLoc.postIds[j];
-          })[0];
+            var myFoundPost = myCockpit.posts.filter(function(obj) {
+                return obj.id === myFoundLoc.postIds[j];
+            })[0];
 
-          if (myFoundPost) {
-              var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
-              var node = document.createElement("li");
-              node.innerHTML = photoTxt;
-              myLocsPhotosList.appendChild(node);
-          }
-      }
-  }
+            if (myFoundPost) {
+                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+                var node = document.createElement("li");
+                node.innerHTML = photoTxt;
+                myLocsPhotosList.appendChild(node);
+            }
+        }
+    }
+}
+
+comBtnClick = function(elem) {
+    var comName = elem.getAttribute('data-com');
+
+    var myFoundCom = myCockpit.commentors.filter(function(obj) {
+        return obj.comName === comName;
+    })[0];
+
+    var myList = document.getElementById("myList");
+    var myCommPhotosList = document.getElementById("myCommentorsPhotosList");
+
+    myCommPhotosList.innerHTML = '';
+
+    if (myFoundCom) {
+        for (var j = 0; j < myFoundCom.postIds.length; j++) {
+            var photosDiv = document.getElementById("photos-by-commentors");
+
+            var myFoundPost = myCockpit.posts.filter(function(obj) {
+                return obj.id === myFoundCom.postIds[j];
+            })[0];
+
+            if (myFoundPost) {
+                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+                var node = document.createElement("li");
+                node.innerHTML = photoTxt;
+                myCommPhotosList.appendChild(node);
+            }
+        }
+    }
 }
 
 tagBtnClick = function(elem) {
@@ -563,7 +624,7 @@ processMediaObjLocations = function(locations) {
     var myLocations = locations;
 
     if (!myLocations) {
-      myLocations = myCockpit.locations;
+        myLocations = myCockpit.locations;
     }
 
     for (var i = 0; i < myLocations.length; i++) {
@@ -575,7 +636,32 @@ processMediaObjLocations = function(locations) {
         node.appendChild(btn);
 
         btn.onclick = function() {
-          locBtnClick(this);
+            locBtnClick(this);
+        };
+
+        myList.appendChild(node);
+    }
+}
+
+processMediaObjCommentors = function(commentors) {
+    var myList = document.getElementById("myList");
+
+    var myCommentorsList = commentors;
+
+    if (!myCommentorsList) {
+        myCommentorsList = myCockpit.commentors;
+    }
+
+    for (var i = 0; i < myCommentorsList.length; i++) {
+        var node = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.setAttribute('data-com', myCommentorsList[i].comName);
+        var t = document.createTextNode(myCommentorsList[i].comName + ' - ' + myCommentorsList[i].realName + ' (' + myCommentorsList[i].comCnt + ')');
+        btn.appendChild(t);
+        node.appendChild(btn);
+
+        btn.onclick = function() {
+            comBtnClick(this);
         };
 
         myList.appendChild(node);
@@ -588,7 +674,7 @@ processMediaObjTags = function(tags) {
     var myTags = tags;
 
     if (!myTags) {
-      myTags = myCockpit.tags;
+        myTags = myCockpit.tags;
     }
 
     for (var i = 0; i < myTags.length; i++) {
@@ -600,7 +686,7 @@ processMediaObjTags = function(tags) {
         node.appendChild(btn);
 
         btn.onclick = function() {
-          tagBtnClick(this);
+            tagBtnClick(this);
         };
 
         myList.appendChild(node);
@@ -663,9 +749,9 @@ sortLocationsList = function(option) {
     }
 }
 
-clearMyList = function(){
-  var myList = document.getElementById("myList");
-  myList.innerHTML = '';
+clearMyList = function() {
+    var myList = document.getElementById("myList");
+    myList.innerHTML = '';
 }
 
 selDropChanged = function(elem) {
