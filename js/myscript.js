@@ -464,7 +464,6 @@ processMediaObjTags = function(tags) {
 
 sortTagsList = function(option) {
     var tags;
-    debugger;
     switch (option) {
         case 'name':
             clearTagList();
@@ -474,13 +473,12 @@ sortTagsList = function(option) {
                 var y = b.tagName.toLowerCase();
                 return x < y ? -1 : x > y ? 1 : 0;
             });
-
             break;
         case 'count':
             clearTagList();
             var byCount = myCockpit.tags.slice(0);
             tags = byCount.sort(function(a, b) {
-                return a.tagCnt < b.tagCnt;
+                return b.tagCnt - a.tagCnt;
             });
             break;
         default:
