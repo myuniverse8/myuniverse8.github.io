@@ -152,6 +152,11 @@ window.onload = function() {
     }
 
     document.title = myTitle;
+
+    if (myTags === 'X') {
+      beforeTagsProcessing();
+    }
+    
     loadData(myUrl);
 };
 
@@ -205,7 +210,6 @@ loadData = function(mediaUrl) {
             if (myComments === 'X') {
                 processMediaObjComments();
             } else if (myTags === 'X') {
-                beforeTagsProcessing();
                 processMediaObjTags();
             } else {
                 processMediaObjPhotos();
@@ -355,7 +359,6 @@ processMediaObjPhotos = function(mediaObj) {
 
     lastPostProcessed = i;
 }
-
 
 beforeTagsProcessing = function() {
   var navDiv = document.getElementById("nav");
