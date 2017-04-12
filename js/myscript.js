@@ -749,6 +749,35 @@ sortLocationsList = function(option) {
     }
 }
 
+sortCommentorsList = function(option) {
+    var commentors;
+    switch (option) {
+        case 'space':
+            clearMyList();
+            processMediaObjCommentors();
+            break;
+        case 'name':
+            clearMyList();
+            var byName = myCockpit.commentors.slice(0);
+            commentors = byName.sort(function(a, b) {
+                var x = a.comName.toLowerCase();
+                var y = b.comName.toLowerCase();
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
+            processMediaObjCommentors(commentors);
+            break;
+        case 'count':
+            clearMyList();
+            var byCount = myCockpit.commentors.slice(0);
+            commentors = byCount.sort(function(a, b) {
+                return b.comCnt - a.comCnt;
+            });
+            processMediaObjCommentors(commentors);
+            break;
+    }
+}
+
+
 clearMyList = function() {
     var myList = document.getElementById("myList");
     myList.innerHTML = '';
@@ -760,6 +789,10 @@ selDropChanged = function(elem) {
 
 selDropLocsChanged = function(elem) {
     sortLocationsList(elem.options[elem.selectedIndex].value);
+}
+
+selDropCommentorsChanged = function(elem) {
+    sortCommentorsList(elem.options[elem.selectedIndex].value);
 }
 
 processMediaObjComments = function(mediaObj) {

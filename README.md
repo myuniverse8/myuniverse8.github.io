@@ -1,7 +1,7 @@
 # myinstacockpit
 Small and useful tool for Instagram.
 
-Get photos/comments/tags/locations of provided user.
+Get photos/comments/tags/locations/commentors of provided user.
 
 Since Instagram API are closed this approach is used: https://habrahabr.ru/post/302150/.
 Based on it there are some restrictions:
