@@ -345,12 +345,20 @@ processMediaObjTags = function(mediaObj) {
   var j;
   var tagsLength = myCockpit.tags.length;
   var contentDiv = document.getElementById("content");
+  var myTagsPhotosList = document.getElementById("myTagsPhotosList");
 
-  for (i = lastPostProcessed; i < tagsLength; i++) {
+  var myList = document.getElementById("myList");
+  myList.innerHTML = '';
+  //myTagsPhotosList.innerHTML = '';
+
+  // for (i = lastPostProcessed; i < tagsLength; i++) {
+  for (i = 0; i < tagsLength; i++) {
+      var node = document.createElement("li");
       var btn = document.createElement("button");
       btn.setAttribute('data-tag', myCockpit.tags[i].tagName);
       var t = document.createTextNode(myCockpit.tags[i].tagName + ' (' + myCockpit.tags[i].tagCnt + ')');
       btn.appendChild(t);
+      node.appendChild(btn);
 
       btn.onclick = function(){
         var tagName = this.getAttribute('data-tag')
@@ -358,13 +366,13 @@ processMediaObjTags = function(mediaObj) {
           return obj.tagName === tagName;
         })[0];
 
-        var myTagsPhotosList = document.getElementById("myTagsPhotosList");
         myTagsPhotosList.innerHTML = '';
 
         if (myFoundTag) {
           for (j=0;j<myFoundTag.postIds.length;j++){
             var photosDiv = document.getElementById("photos-by-tag");
 
+          //  debugger;
             var myFoundPost = myCockpit.posts.filter(function ( obj ) {
               return obj.id === myFoundTag.postIds[j];
             })[0];
@@ -379,7 +387,9 @@ processMediaObjTags = function(mediaObj) {
         }
       };
 
-      contentDiv.appendChild(btn);
+
+      myList.appendChild(node);
+      //contentDiv.appendChild(btn);
   }
 
   var photosDiv = document.createElement("div");
@@ -391,7 +401,7 @@ processMediaObjTags = function(mediaObj) {
   photosUl.classList.add("photos");
   photosDiv.appendChild(photosUl);
 
-  lastPostProcessed = i;
+  // lastPostProcessed = i;
 }
 
 processMediaObjComments = function(mediaObj) {

@@ -3,7 +3,8 @@ ul.photos, ul.comments, ul.tags {
     padding: 0;
     margin: 0;
 }
-  ul.photos li {
+  ul.photos li,
+  ul.tags li {
     margin-left: 5px;
     display: inline;
   }
