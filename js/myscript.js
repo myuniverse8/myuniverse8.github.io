@@ -9,18 +9,40 @@ var myBegda;
 var myEndda;
 var myUseDates;
 var myTags = '';
+var myLocations = '';
 
 function MyCockpit() {
     this.posts = [];
     this.tags = [];
+    this.locations = [];
 }
 
 MyCockpit.prototype.addPost = function(post) {
-    if (post.id === '898434682775807790_927378976') {
-        debugger;
-    }
-
     this.posts.push(post);
+}
+
+MyCockpit.prototype.updateLocations = function(str, postId) {
+  var locName = str.toLowerCase();
+
+  var myFoundLocation = this.locations.filter(function(obj) {
+      return obj.locName === locName;
+  })[0];
+
+  if (!myFoundLocation) {
+      // object is not found
+      var myLocation = new MyLocation(locName);
+      myLocation.postIds.push(postId);
+      this.locations.push(myLocation);
+  } else {
+      // object is found
+      // check if post id is different - it could be the same tags in one post
+      var ret = myFoundLocation.postIds.indexOf(postId);
+
+      if (ret === -1) {
+          myFoundLocation.locCnt++;
+          myFoundLocation.postIds.push(postId);
+      }
+  }
 }
 
 MyCockpit.prototype.updateTags = function(str, postId) {
@@ -45,7 +67,7 @@ MyCockpit.prototype.updateTags = function(str, postId) {
                 this.tags.push(myTag);
             } else {
                 // object is found
-                //check if post id is different - it could be the same tags in one post
+                // check if post id is different - it could be the same tags in one post
                 var ret = myFoundTag.postIds.indexOf(postId);
 
                 if (ret === -1) {
@@ -87,6 +109,12 @@ function MyTag(tagName) {
     this.postIds = [];
 };
 
+function MyLocation(locName) {
+    this.locName = locName;
+    this.locCnt = 1;
+    this.postIds = [];
+};
+
 function MyComment(date, user, text) {
     this.date = date;
     this.user = user;
@@ -112,6 +140,7 @@ window.onload = function() {
     myEndda = new Date(getURLParameter('endda'));
     myUseDates = getURLParameter('dates');
     myTags = getURLParameter('tags');
+    myLocations = getURLParameter('locations');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -143,6 +172,9 @@ window.onload = function() {
     } else if (myTags === 'X') {
         document.getElementById("myList").classList.add("tags");
         myTitle = myTitle + 'tags)';
+    } else if (myLocations === 'X') {
+        document.getElementById("myList").classList.add("locations");
+        myTitle = myTitle + 'locations)';
     } else {
         document.getElementById("myList").classList.add("photos");
         myTitle = myTitle + 'photos)';
@@ -152,6 +184,10 @@ window.onload = function() {
 
     if (myTags === 'X') {
       beforeTagsProcessing();
+    }
+
+    if (myLocations === 'X') {
+      beforeLocationsProcessing();
     }
 
     loadData(myUrl);
@@ -184,7 +220,6 @@ toggleOwnRepliesCheckbox = function(element) {
 }
 
 loadData = function(mediaUrl) {
-    debugger;
     var xhr = new XMLHttpRequest();
 
     xhr.open('GET', mediaUrl, true);
@@ -193,29 +228,34 @@ loadData = function(mediaUrl) {
     $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
     $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-tags').prop("disabled", true);
+    $('select#sel-drop-locations').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
         if (xhr.readyState != 4) return;
 
         if (xhr.status != 200) {
-          debugger;
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
             $('p#loading-p').css('color', 'red').text('Data loading error!');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-tags').prop("disabled", false);
+            $('select#sel-drop-locations').prop("disabled", false);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-tags').prop("disabled", false);
+            $('select#sel-drop-locations').prop("disabled", false);
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
             if (myComments === 'X') {
                 processMediaObjComments();
             } else if (myTags === 'X') {
-                clearTagList();
+                clearMyList();
                 processMediaObjTags();
+            } else if (myLocations === 'X') {
+                clearMyList();
+                processMediaObjLocations();
             } else {
                 processMediaObjPhotos();
             }
@@ -257,6 +297,11 @@ collectData = function(mediaObj) {
         }
 
         var location = mediaObj.items[i].location ? mediaObj.items[i].location.name : '';
+
+        if (location != ''){
+          myCockpit.updateLocations(location, mediaObj.items[i].id);
+        }
+
         var post = new MyPost(mediaObj.items[i].id,
             mediaObj.items[i].link,
             mediaObj.items[i].user.username,
@@ -356,6 +401,7 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
+        console.log(myCockpit.posts[i]);
         var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
@@ -363,6 +409,49 @@ processMediaObjPhotos = function(mediaObj) {
     }
 
     lastPostProcessed = i;
+}
+
+beforeLocationsProcessing = function() {
+  var navDiv = document.getElementById("nav");
+  var contentDiv = document.getElementById("content");
+
+  var selDrop = document.createElement("select");
+  selDrop.setAttribute('id', 'sel-drop-locations');
+  selDrop.setAttribute('onchange', 'selDropLocsChanged(this)');
+
+  var opt = document.createElement("option");
+  opt.setAttribute('value', 'space');
+  selDrop.appendChild(opt);
+
+  opt = document.createElement("option");
+  opt.setAttribute('value', 'name');
+  opt.innerHTML = 'by name';
+  selDrop.appendChild(opt);
+
+  opt = document.createElement("option");
+  opt.setAttribute('value', 'count');
+  opt.innerHTML = 'by count';
+  selDrop.appendChild(opt);
+
+  var label = document.createElement('label');
+  label.setAttribute('for', 'sel-drop-locations');
+  label.innerHTML = 'Sort locations: ';
+
+  navDiv.appendChild(label);
+
+  navDiv.classList.add("nav-tags");
+  navDiv.appendChild(selDrop);
+
+  var photosDiv = document.createElement("div");
+  photosDiv.setAttribute("id", "photos-by-location");
+  contentDiv.appendChild(photosDiv);
+
+  var photosUl = document.createElement("ul");
+  photosUl.setAttribute("id", "myLocationsPhotosList");
+  photosUl.classList.add("photos");
+  photosDiv.appendChild(photosUl);
+
+  clearMyList();
 }
 
 beforeTagsProcessing = function() {
@@ -405,7 +494,37 @@ beforeTagsProcessing = function() {
   photosUl.classList.add("photos");
   photosDiv.appendChild(photosUl);
 
-  clearTagList();
+  clearMyList();
+}
+
+locBtnClick = function(elem) {
+  var locName = elem.getAttribute('data-loc');
+
+  var myFoundLoc = myCockpit.locations.filter(function(obj) {
+      return obj.locName === locName;
+  })[0];
+
+  var myList = document.getElementById("myList");
+  var myLocsPhotosList = document.getElementById("myLocationsPhotosList");
+
+  myLocsPhotosList.innerHTML = '';
+
+  if (myFoundLoc) {
+      for (var j = 0; j < myFoundLoc.postIds.length; j++) {
+          var photosDiv = document.getElementById("photos-by-tag");
+
+          var myFoundPost = myCockpit.posts.filter(function(obj) {
+              return obj.id === myFoundLoc.postIds[j];
+          })[0];
+
+          if (myFoundPost) {
+              var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+              var node = document.createElement("li");
+              node.innerHTML = photoTxt;
+              myLocsPhotosList.appendChild(node);
+          }
+      }
+  }
 }
 
 tagBtnClick = function(elem) {
@@ -438,6 +557,31 @@ tagBtnClick = function(elem) {
     }
 };
 
+processMediaObjLocations = function(locations) {
+    var myList = document.getElementById("myList");
+
+    var myLocations = locations;
+
+    if (!myLocations) {
+      myLocations = myCockpit.locations;
+    }
+
+    for (var i = 0; i < myLocations.length; i++) {
+        var node = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.setAttribute('data-loc', myLocations[i].locName);
+        var t = document.createTextNode(myLocations[i].locName + ' (' + myLocations[i].locCnt + ')');
+        btn.appendChild(t);
+        node.appendChild(btn);
+
+        btn.onclick = function() {
+          locBtnClick(this);
+        };
+
+        myList.appendChild(node);
+    }
+}
+
 processMediaObjTags = function(tags) {
     var myList = document.getElementById("myList");
 
@@ -467,12 +611,11 @@ sortTagsList = function(option) {
     var tags;
     switch (option) {
         case 'space':
-            debugger;
-            clearTagList();
+            clearMyList();
             processMediaObjTags();
             break;
         case 'name':
-            clearTagList();
+            clearMyList();
             var byName = myCockpit.tags.slice(0);
             tags = byName.sort(function(a, b) {
                 var x = a.tagName.toLowerCase();
@@ -482,7 +625,7 @@ sortTagsList = function(option) {
             processMediaObjTags(tags);
             break;
         case 'count':
-            clearTagList();
+            clearMyList();
             var byCount = myCockpit.tags.slice(0);
             tags = byCount.sort(function(a, b) {
                 return b.tagCnt - a.tagCnt;
@@ -490,16 +633,47 @@ sortTagsList = function(option) {
             processMediaObjTags(tags);
             break;
     }
-
 }
 
-clearTagList = function(){
+sortLocationsList = function(option) {
+    var locs;
+    switch (option) {
+        case 'space':
+            clearMyList();
+            processMediaObjLocations();
+            break;
+        case 'name':
+            clearMyList();
+            var byName = myCockpit.locations.slice(0);
+            locs = byName.sort(function(a, b) {
+                var x = a.locName.toLowerCase();
+                var y = b.locName.toLowerCase();
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
+            processMediaObjLocations(locs);
+            break;
+        case 'count':
+            clearMyList();
+            var byCount = myCockpit.locations.slice(0);
+            locs = byCount.sort(function(a, b) {
+                return b.locCnt - a.locCnt;
+            });
+            processMediaObjLocations(locs);
+            break;
+    }
+}
+
+clearMyList = function(){
   var myList = document.getElementById("myList");
   myList.innerHTML = '';
 }
 
 selDropChanged = function(elem) {
     sortTagsList(elem.options[elem.selectedIndex].value);
+}
+
+selDropLocsChanged = function(elem) {
+    sortLocationsList(elem.options[elem.selectedIndex].value);
 }
 
 processMediaObjComments = function(mediaObj) {

@@ -32,6 +32,13 @@ function tagsBtnClick() {
   openWindow();
 }
 
+function locationsBtnClick() {
+  getCurrentValues();
+  myWinName = 'mylocations_' + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&locations=X';
+  openWindow();
+}
+
 function commentsBtnClick() {
   getCurrentValues();
   myWinName = 'mycomments_' + myNickname;
