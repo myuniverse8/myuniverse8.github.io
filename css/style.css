@@ -34,11 +34,15 @@ p#loading-p {
   margin: 1px;
 }
 
-div.nav-comments {
-  border: 1px solid grey;
+div.nav-comments,
+div.nav-tags {
   padding: 5px;
   margin: 5px;
   display: inline-block;
+}
+
+div.nav-comments {
+  border: 1px solid grey;
 }
 
 div.elements {

@@ -17,47 +17,47 @@ function MyCockpit() {
 
 MyCockpit.prototype.addPost = function(post) {
     if (post.id === '898434682775807790_927378976') {
-      debugger;
+        debugger;
     }
 
     this.posts.push(post);
 }
 
 MyCockpit.prototype.updateTags = function(str, postId) {
-  // var str = 'Test #tag1 #tag2_ty. today is the #tag3/,good day #tag4';
-  var tagsArr = str.match(/#\w+/g);
-  var i;
-  var ind;
+    // var str = 'Test #tag1 #tag2_ty. today is the #tag3/,good day #tag4';
+    var tagsArr = str.match(/#\w+/g);
+    var i;
+    var ind;
 
-  if (tagsArr != null) {
-      for (i=0;i<tagsArr.length;i++){
-        var tagName = tagsArr[i].toLowerCase();
+    if (tagsArr != null) {
+        for (i = 0; i < tagsArr.length; i++) {
+            var tagName = tagsArr[i].toLowerCase();
 
-        if (tagName === '#veluxloversoflight'){
-          debugger;
+            if (tagName === '#veluxloversoflight') {
+                debugger;
+            }
+
+            var myFoundTag = this.tags.filter(function(obj) {
+                return obj.tagName === tagName;
+            })[0];
+
+            if (!myFoundTag) {
+                // object is not found
+                var myTag = new MyTag(tagName);
+                myTag.postIds.push(postId);
+                this.tags.push(myTag);
+            } else {
+                // object is found
+                //check if post id is different - it could be the same tags in one post
+                var ret = myFoundTag.postIds.indexOf(postId);
+
+                if (ret === -1) {
+                    myFoundTag.tagCnt++;
+                    myFoundTag.postIds.push(postId);
+                }
+            }
         }
-
-        var myFoundTag = this.tags.filter(function (obj) {
-          return obj.tagName === tagName;
-        })[0];
-
-        if (!myFoundTag) {
-          // object is not found
-          var myTag = new MyTag(tagName);
-          myTag.postIds.push(postId);
-          this.tags.push(myTag);
-        } else {
-          // object is found
-          //check if post id is different - it could be the same tags in one post
-          var ret = myFoundTag.postIds.indexOf(postId);
-
-          if (ret === -1) {
-            myFoundTag.tagCnt++;
-            myFoundTag.postIds.push(postId);
-          }
-        }
-      }
-  }
+    }
 }
 
 MyPost.prototype.addComment = function(comment) {
@@ -356,61 +356,118 @@ processMediaObjPhotos = function(mediaObj) {
 }
 
 processMediaObjTags = function(mediaObj) {
-  var i;
-  var j;
-  var tagsLength = myCockpit.tags.length;
-  var contentDiv = document.getElementById("content");
-  var myTagsPhotosList = document.getElementById("myTagsPhotosList");
+    var i;
+    var j;
+    var tagsLength = myCockpit.tags.length;
+    var navDiv = document.getElementById("nav");
+    var contentDiv = document.getElementById("content");
+    var myTagsPhotosList = document.getElementById("myTagsPhotosList");
 
-  var myList = document.getElementById("myList");
-  myList.innerHTML = '';
+    var myList = document.getElementById("myList");
+    myList.innerHTML = '';
 
-  for (i = 0; i < tagsLength; i++) {
-      var node = document.createElement("li");
-      var btn = document.createElement("button");
-      btn.setAttribute('data-tag', myCockpit.tags[i].tagName);
-      var t = document.createTextNode(myCockpit.tags[i].tagName + ' (' + myCockpit.tags[i].tagCnt + ')');
-      btn.appendChild(t);
-      node.appendChild(btn);
+    var selDrop = document.createElement("select");
+    selDrop.setAttribute('id', 'sel-drop-tags');
+    selDrop.setAttribute('onchange', 'selDropChanged(this)');
 
-      btn.onclick = function(){
-        var tagName = this.getAttribute('data-tag');
+    var opt = document.createElement("option");
+    opt.setAttribute('value', 'space');
+    selDrop.appendChild(opt);
 
-        var myFoundTag = myCockpit.tags.filter(function ( obj ) {
-          return obj.tagName === tagName;
-        })[0];
+    opt = document.createElement("option");
+    opt.setAttribute('value', 'name');
+    opt.innerHTML = 'by name';
+    selDrop.appendChild(opt);
 
-        myTagsPhotosList.innerHTML = '';
+    opt = document.createElement("option");
+    opt.setAttribute('value', 'count');
+    opt.innerHTML = 'by count';
+    selDrop.appendChild(opt);
 
-        if (myFoundTag) {
-          for (j=0;j<myFoundTag.postIds.length;j++){
-            var photosDiv = document.getElementById("photos-by-tag");
+    var label = document.createElement('label');
+    label.setAttribute('for', 'sel-drop-tags');
+    label.innerHTML = 'Sort tags: ';
 
-            var myFoundPost = myCockpit.posts.filter(function ( obj ) {
-              return obj.id === myFoundTag.postIds[j];
+    // navDiv.appendChild(label);
+
+    navDiv.classList.add("nav-tags");
+    // navDiv.appendChild(selDrop);
+
+    for (i = 0; i < tagsLength; i++) {
+        var node = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.setAttribute('data-tag', myCockpit.tags[i].tagName);
+        var t = document.createTextNode(myCockpit.tags[i].tagName + ' (' + myCockpit.tags[i].tagCnt + ')');
+        btn.appendChild(t);
+        node.appendChild(btn);
+
+        btn.onclick = function() {
+            var tagName = this.getAttribute('data-tag');
+
+            var myFoundTag = myCockpit.tags.filter(function(obj) {
+                return obj.tagName === tagName;
             })[0];
 
-            if (myFoundPost) {
-              var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
-              var node = document.createElement("li");
-              node.innerHTML = photoTxt;
-              myTagsPhotosList.appendChild(node);
+            var myList = document.getElementById("myList");
+            var myTagsPhotosList = document.getElementById("myTagsPhotosList");
+
+            myTagsPhotosList.innerHTML = '';
+
+            if (myFoundTag) {
+                for (j = 0; j < myFoundTag.postIds.length; j++) {
+                    var photosDiv = document.getElementById("photos-by-tag");
+
+                    var myFoundPost = myCockpit.posts.filter(function(obj) {
+                        return obj.id === myFoundTag.postIds[j];
+                    })[0];
+
+                    if (myFoundPost) {
+                        var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+                        var node = document.createElement("li");
+                        node.innerHTML = photoTxt;
+                        myTagsPhotosList.appendChild(node);
+                    }
+                }
             }
-          }
-        }
-      };
+        };
 
-      myList.appendChild(node);
-  }
+        myList.appendChild(node);
+    }
 
-  var photosDiv = document.createElement("div");
-  photosDiv.setAttribute("id", "photos-by-tag");
-  contentDiv.appendChild(photosDiv);
+    var photosDiv = document.createElement("div");
+    photosDiv.setAttribute("id", "photos-by-tag");
+    contentDiv.appendChild(photosDiv);
 
-  var photosUl = document.createElement("ul");
-  photosUl.setAttribute("id", "myTagsPhotosList");
-  photosUl.classList.add("photos");
-  photosDiv.appendChild(photosUl);
+    var photosUl = document.createElement("ul");
+    photosUl.setAttribute("id", "myTagsPhotosList");
+    photosUl.classList.add("photos");
+    photosDiv.appendChild(photosUl);
+}
+
+sortTagsList = function(option) {
+    switch (option) {
+        case 'name':
+            // debugger;
+            // var byName = myCockpit.tags.slice(0);
+            // byName.sort(function(a, b) {
+            //     var x = a.tagName.toLowerCase();
+            //     var y = b.tagName.toLowerCase();
+            //     return x < y ? -1 : x > y ? 1 : 0;
+            // });
+
+
+            break;
+
+        case 'count':
+
+            break;
+        default:
+
+    }
+}
+
+selDropChanged = function(elem) {
+    sortTagsList(elem.options[elem.selectedIndex].value);
 }
 
 processMediaObjComments = function(mediaObj) {
