@@ -27,13 +27,14 @@ MyCockpit.prototype.updateTags = function(str, postId) {
 
   if (tagsArr != null) {
       for (i=0;i<tagsArr.length;i++){
+        var tagName = tagsArr[i].toLowerCase();
         var myFoundTag = this.tags.filter(function ( obj ) {
-          return obj.tagName === tagsArr[i];
+          return obj.tagName === tagName;
         })[0];
 
         if (!myFoundTag) {
           // object is not found
-          var myTag = new MyTag(tagsArr[i], postId);
+          var myTag = new MyTag(tagName, postId);
           myTag.postIds.push(postId);
           this.tags.push(myTag);
         } else {
@@ -349,9 +350,7 @@ processMediaObjTags = function(mediaObj) {
 
   var myList = document.getElementById("myList");
   myList.innerHTML = '';
-  //myTagsPhotosList.innerHTML = '';
 
-  // for (i = lastPostProcessed; i < tagsLength; i++) {
   for (i = 0; i < tagsLength; i++) {
       var node = document.createElement("li");
       var btn = document.createElement("button");
@@ -361,7 +360,7 @@ processMediaObjTags = function(mediaObj) {
       node.appendChild(btn);
 
       btn.onclick = function(){
-        var tagName = this.getAttribute('data-tag')
+        var tagName = this.getAttribute('data-tag');
         var myFoundTag = myCockpit.tags.filter(function ( obj ) {
           return obj.tagName === tagName;
         })[0];
@@ -387,9 +386,7 @@ processMediaObjTags = function(mediaObj) {
         }
       };
 
-
       myList.appendChild(node);
-      //contentDiv.appendChild(btn);
   }
 
   var photosDiv = document.createElement("div");
@@ -400,8 +397,6 @@ processMediaObjTags = function(mediaObj) {
   photosUl.setAttribute("id", "myTagsPhotosList");
   photosUl.classList.add("photos");
   photosDiv.appendChild(photosUl);
-
-  // lastPostProcessed = i;
 }
 
 processMediaObjComments = function(mediaObj) {
