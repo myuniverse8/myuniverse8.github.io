@@ -8,13 +8,49 @@ var lastPostProcessed = 0;
 var myBegda;
 var myEndda;
 var myUseDates;
+var myTags = '';
 
 function MyCockpit() {
     this.posts = [];
+    this.tags = [];
 }
 
 MyCockpit.prototype.addPost = function(post) {
     this.posts.push(post);
+}
+
+MyCockpit.prototype.updateTags = function(str, postId) {
+  // var str = 'Test #tag1 #tag2_ty. today is the #tag3/,good day #tag4';
+  var tagsArr = str.match(/#\w+/g);
+  var i;
+  var ind;
+
+  if (tagsArr != null) {
+      for (i=0;i<tagsArr.length;i++){
+        var myFoundTag = this.tags.filter(function ( obj ) {
+          return obj.tagName === tagsArr[i];
+        })[0];
+
+        if (!myFoundTag) {
+          // object is not found
+          var myTag = new MyTag(tagsArr[i], postId);
+          myTag.postIds.push(postId);
+          this.tags.push(myTag);
+        } else {
+          // object is found
+          myFoundTag.tagCnt++;
+          myFoundTag.postIds.push(postId);
+        }
+      }
+  }
+}
+
+MyPost.prototype.addComment = function(comment) {
+    this.comments.push(comment);
+}
+
+MyPost.prototype.addLike = function(like) {
+    this.likes.push(like);
 }
 
 function MyPost(id, link, user, date, location, caption, thumbnail, bigphoto, likescnt, commentscnt) {
@@ -33,13 +69,11 @@ function MyPost(id, link, user, date, location, caption, thumbnail, bigphoto, li
     this.likes = [];
 }
 
-MyPost.prototype.addComment = function(comment) {
-    this.comments.push(comment);
-}
-
-MyPost.prototype.addLike = function(like) {
-    this.likes.push(like);
-}
+function MyTag(tagName) {
+    this.tagName = tagName;
+    this.tagCnt = 1;
+    this.postIds = [];
+};
 
 function MyComment(date, user, text) {
     this.date = date;
@@ -65,6 +99,7 @@ window.onload = function() {
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
     myUseDates = getURLParameter('dates');
+    myTags = getURLParameter('tags');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -93,6 +128,9 @@ window.onload = function() {
 
         myTitle = myTitle + 'comments)';
         document.getElementById("myList").classList.add("comments");
+    } else if (myTags === 'X') {
+        document.getElementById("myList").classList.add("tags");
+        myTitle = myTitle + 'tags)';
     } else {
         document.getElementById("myList").classList.add("photos");
         myTitle = myTitle + 'photos)';
@@ -151,6 +189,8 @@ loadData = function(mediaUrl) {
 
             if (myComments === 'X') {
                 processMediaObjComments();
+            } else if (myTags === 'X') {
+                processMediaObjTags();
             } else {
                 processMediaObjPhotos();
             }
@@ -173,7 +213,6 @@ collectData = function(mediaObj) {
 
     for (i = 0; i < itemsLength; i++) {
         //console.log(mediaObj.items[i]);
-
         addPost = '';
 
         d = new Date(+mediaObj.items[i].created_time * 1000);
@@ -187,6 +226,11 @@ collectData = function(mediaObj) {
         fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
 
         var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
+
+        if (caption !== '') {
+            myCockpit.updateTags(caption, mediaObj.items[i].id);
+        }
+
         var location = mediaObj.items[i].location ? mediaObj.items[i].location.name : '';
         var post = new MyPost(mediaObj.items[i].id,
             mediaObj.items[i].link,
@@ -217,10 +261,12 @@ collectData = function(mediaObj) {
                     if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
                         addPost = 'X';
                         post.addComment(comment);
+                        myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                     }
                 } else {
                     addPost = 'X';
                     post.addComment(comment);
+                    myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                 }
             }
         } else {
@@ -292,6 +338,60 @@ processMediaObjPhotos = function(mediaObj) {
     }
 
     lastPostProcessed = i;
+}
+
+processMediaObjTags = function(mediaObj) {
+  var i;
+  var j;
+  var tagsLength = myCockpit.tags.length;
+  var contentDiv = document.getElementById("content");
+
+  for (i = lastPostProcessed; i < tagsLength; i++) {
+      var btn = document.createElement("button");
+      btn.setAttribute('data-tag', myCockpit.tags[i].tagName);
+      var t = document.createTextNode(myCockpit.tags[i].tagName + ' (' + myCockpit.tags[i].tagCnt + ')');
+      btn.appendChild(t);
+
+      btn.onclick = function(){
+        var tagName = this.getAttribute('data-tag')
+        var myFoundTag = myCockpit.tags.filter(function ( obj ) {
+          return obj.tagName === tagName;
+        })[0];
+
+        var myTagsPhotosList = document.getElementById("myTagsPhotosList");
+        myTagsPhotosList.innerHTML = '';
+
+        if (myFoundTag) {
+          for (j=0;j<myFoundTag.postIds.length;j++){
+            var photosDiv = document.getElementById("photos-by-tag");
+
+            var myFoundPost = myCockpit.posts.filter(function ( obj ) {
+              return obj.id === myFoundTag.postIds[j];
+            })[0];
+
+            if (myFoundPost) {
+              var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+              var node = document.createElement("li");
+              node.innerHTML = photoTxt;
+              myTagsPhotosList.appendChild(node);
+            }
+          }
+        }
+      };
+
+      contentDiv.appendChild(btn);
+  }
+
+  var photosDiv = document.createElement("div");
+  photosDiv.setAttribute("id", "photos-by-tag");
+  contentDiv.appendChild(photosDiv);
+
+  var photosUl = document.createElement("ul");
+  photosUl.setAttribute("id", "myTagsPhotosList");
+  photosUl.classList.add("photos");
+  photosDiv.appendChild(photosUl);
+
+  lastPostProcessed = i;
 }
 
 processMediaObjComments = function(mediaObj) {

@@ -25,6 +25,13 @@ function photosBtnClick() {
   openWindow();
 }
 
+function tagsBtnClick() {
+  getCurrentValues();
+  myWinName = 'mytags_' + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&tags=X';
+  openWindow();
+}
+
 function commentsBtnClick() {
   getCurrentValues();
   myWinName = 'mycomments_' + myNickname;
