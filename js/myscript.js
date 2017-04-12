@@ -25,17 +25,14 @@ MyCockpit.prototype.addPost = function(post) {
 
 MyCockpit.prototype.updateTags = function(str, postId) {
     // var str = 'Test #tag1 #tag2_ty. today is the #tag3/,good day #tag4';
-    var tagsArr = str.match(/#\w+/g);
+    // var tagsArr = str.match(/#\w+/g);
+    var tagsArr = str.match(/#[А-Яа-яё\w]+/g);
     var i;
     var ind;
 
     if (tagsArr != null) {
         for (i = 0; i < tagsArr.length; i++) {
             var tagName = tagsArr[i].toLowerCase();
-
-            if (tagName === '#veluxloversoflight') {
-                debugger;
-            }
 
             var myFoundTag = this.tags.filter(function(obj) {
                 return obj.tagName === tagName;
@@ -465,6 +462,11 @@ processMediaObjTags = function(tags) {
 sortTagsList = function(option) {
     var tags;
     switch (option) {
+        case 'space':
+            debugger;
+            clearTagList();
+            processMediaObjTags();
+            break;
         case 'name':
             clearTagList();
             var byName = myCockpit.tags.slice(0);
@@ -473,6 +475,7 @@ sortTagsList = function(option) {
                 var y = b.tagName.toLowerCase();
                 return x < y ? -1 : x > y ? 1 : 0;
             });
+            processMediaObjTags(tags);
             break;
         case 'count':
             clearTagList();
@@ -480,10 +483,10 @@ sortTagsList = function(option) {
             tags = byCount.sort(function(a, b) {
                 return b.tagCnt - a.tagCnt;
             });
+            processMediaObjTags(tags);
             break;
-        default:
     }
-    processMediaObjTags(tags);
+
 }
 
 clearTagList = function(){
