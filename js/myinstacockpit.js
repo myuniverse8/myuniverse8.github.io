@@ -60,6 +60,7 @@ function getCurrentValues() {
 toggleDatesCheckbox = function(element) {
     if (element.checked === true) {
         $("div#dates").show();
+        document.getElementById("testmode").checked = false;
     } else {
         $("div#dates").hide();
     }

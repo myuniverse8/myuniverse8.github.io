@@ -184,6 +184,7 @@ toggleOwnRepliesCheckbox = function(element) {
 }
 
 loadData = function(mediaUrl) {
+    debugger;
     var xhr = new XMLHttpRequest();
 
     xhr.open('GET', mediaUrl, true);
@@ -198,8 +199,11 @@ loadData = function(mediaUrl) {
         if (xhr.readyState != 4) return;
 
         if (xhr.status != 200) {
-            $('p#loading-p').css('color', 'red').text('Data loading error!');
+          debugger;
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
+            $('p#loading-p').css('color', 'red').text('Data loading error!');
+            $('input.nav-input').prop("disabled", false);
+            $('select#sel-drop-tags').prop("disabled", false);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
