@@ -9,7 +9,6 @@ var myEndda;
 var myUseDates;
 var myMode = 0; //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
 
-
 ////0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
 // switch (myMode) {
 //     case '0':
@@ -382,7 +381,7 @@ collectData = function(mediaObj) {
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-        //console.log(mediaObj.items[i]);
+        console.log(mediaObj.items[i]);
         addPost = '';
 
         d = new Date(+mediaObj.items[i].created_time * 1000);
