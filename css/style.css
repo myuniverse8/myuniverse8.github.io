@@ -2,7 +2,8 @@ ul.photos,
 ul.comments,
 ul.tags,
 ul.locations,
-ul.commentors {
+ul.commentors,
+ul.likers {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -10,7 +11,8 @@ ul.commentors {
   ul.photos li,
   ul.tags li,
   ul.locations li,
-  ul.commentors li {
+  ul.commentors li,
+  ul.likers li {
     margin-left: 5px;
     display: inline;
   }
@@ -43,7 +45,8 @@ p#loading-p {
 div.nav-comments,
 div.nav-tags,
 div.nav-locations,
-div.nav-commentors {
+div.nav-commentors,
+div.nav-likers {
   padding: 5px;
   margin: 5px;
   display: inline-block;
@@ -59,7 +62,8 @@ div.elements {
 
 div#photos-by-tag,
 div#photos-by-location,
-div#photos-by-commentors
+div#photos-by-commentors,
+div#photos-by-likers
  {
   margin-top: 10px;
 }

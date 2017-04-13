@@ -53,6 +53,13 @@ function commentsBtnClick() {
   openWindow();
 }
 
+function likersBtnClick() {
+  getCurrentValues();
+  myWinName = 'mylikers_' + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&likers=X';
+  openWindow();
+}
+
 function openWindow(){
   myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
   myWin = window.open(myUrl, myWinName);

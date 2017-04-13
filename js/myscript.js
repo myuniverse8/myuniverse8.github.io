@@ -11,12 +11,14 @@ var myUseDates;
 var myTags = '';
 var myLocations = '';
 var myCommentors = '';
+var myLikers = '';
 
 function MyCockpit() {
     this.posts = [];
     this.tags = [];
     this.locations = [];
     this.commentors = [];
+    this.likers = [];
 }
 
 MyCockpit.prototype.addPost = function(post) {
@@ -67,6 +69,31 @@ MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
         if (ret === -1) {
             myFoundCommentors.comCnt++;
             myFoundCommentors.postIds.push(postId);
+        }
+    }
+}
+
+MyCockpit.prototype.updateLikers = function(str, realName, postId) {
+    //debugger;
+    var likerName = str.toLowerCase();
+
+    var myFoundLikers = this.likers.filter(function(obj) {
+        return obj.likerName === likerName;
+    })[0];
+
+    if (!myFoundLikers) {
+        // object is not found
+        var myLiker = new MyLiker(likerName, realName, postId);
+        myLiker.postIds.push(postId);
+        this.likers.push(myLiker);
+    } else {
+        // object is found
+        // check if post id is different - it could be the same tags in one post
+        var ret = myFoundLikers.postIds.indexOf(postId);
+
+        if (ret === -1) {
+            myFoundLikers.likerCnt++;
+            myFoundLikers.postIds.push(postId);
         }
     }
 }
@@ -148,6 +175,13 @@ function MyCommentors(comName, realName) {
     this.postIds = [];
 };
 
+function MyLiker(likerName, realName) {
+    this.likerName = likerName;
+    this.realName = realName
+    this.likerCnt = 1;
+    this.postIds = [];
+};
+
 function MyComment(date, user, text) {
     this.date = date;
     this.user = user;
@@ -175,6 +209,7 @@ window.onload = function() {
     myTags = getURLParameter('tags');
     myLocations = getURLParameter('locations');
     myCommentors = getURLParameter('commentors');
+    myLikers = getURLParameter('likers');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -212,6 +247,9 @@ window.onload = function() {
     } else if (myCommentors === 'X') {
         document.getElementById("myList").classList.add("commentors");
         myTitle = myTitle + 'commentors)';
+    } else if (myLikers === 'X') {
+        document.getElementById("myList").classList.add("likers");
+        myTitle = myTitle + 'likers)';
     } else {
         document.getElementById("myList").classList.add("photos");
         myTitle = myTitle + 'photos)';
@@ -219,7 +257,7 @@ window.onload = function() {
 
     document.title = myTitle;
 
-    if ((myTags === 'X') || (myLocations === 'X') || (myCommentors === 'X')) {
+    if ((myTags === 'X') || (myLocations === 'X') || (myCommentors === 'X') || (myLikers === 'X')) {
         beforeItemsProcessing();
     }
 
@@ -263,6 +301,7 @@ loadData = function(mediaUrl) {
     $('select#sel-drop-tags').prop("disabled", true);
     $('select#sel-drop-locations').prop("disabled", true);
     $('select#sel-drop-commentors').prop("disabled", true);
+    $('select#sel-drop-likers').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
@@ -275,12 +314,15 @@ loadData = function(mediaUrl) {
             $('select#sel-drop-tags').prop("disabled", false);
             $('select#sel-drop-locations').prop("disabled", false);
             $('select#sel-drop-commentors').prop("disabled", false);
+            $('select#sel-drop-likers').prop("disabled", false);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-tags').prop("disabled", false);
             $('select#sel-drop-locations').prop("disabled", false);
             $('select#sel-drop-commentors').prop("disabled", false);
+            $('select#sel-drop-likers').prop("disabled", false);
+
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
@@ -295,6 +337,9 @@ loadData = function(mediaUrl) {
             } else if (myCommentors === 'X') {
                 clearMyList();
                 processMediaObjCommentors();
+            } else if (myLikers === 'X') {
+                clearMyList();
+                processMediaObjLikers();
             } else {
                 processMediaObjPhotos();
             }
@@ -305,6 +350,7 @@ loadData = function(mediaUrl) {
 collectData = function(mediaObj) {
     var i = 0;
     var j = 0;
+    var x = 0;
     var nextUrl = '';
     var fullSizeLnk = '';
     var d;
@@ -330,6 +376,10 @@ collectData = function(mediaObj) {
         fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
 
         var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
+
+        for (x = 0; x<mediaObj.items[i].likes.data.length; x++){
+          myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id);
+        }
 
         if (caption !== '') {
             myCockpit.updateTags(caption, mediaObj.items[i].id);
@@ -446,7 +496,7 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
-        console.log(myCockpit.posts[i]);
+        //console.log(myCockpit.posts[i]);
         var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
@@ -471,6 +521,9 @@ beforeItemsProcessing = function() {
     } else if (myCommentors === 'X') {
         selDrop.setAttribute('id', 'sel-drop-commentors');
         selDrop.setAttribute('onchange', 'selDropCommentorsChanged(this)');
+    } else if (myLikers === 'X') {
+        selDrop.setAttribute('id', 'sel-drop-likers');
+        selDrop.setAttribute('onchange', 'selDropLikersChanged(this)');
     }
 
     var opt = document.createElement("option");
@@ -501,6 +554,10 @@ beforeItemsProcessing = function() {
         label.setAttribute('for', 'sel-drop-commentors');
         label.innerHTML = 'Sort commentors: ';
         navDiv.classList.add("nav-commentors");
+    } else if (myLikers === 'X') {
+        label.setAttribute('for', 'sel-drop-likers');
+        label.innerHTML = 'Sort likers: ';
+        navDiv.classList.add("nav-likers");
     }
 
     navDiv.appendChild(label);
@@ -518,6 +575,9 @@ beforeItemsProcessing = function() {
     } else if (myCommentors === 'X') {
         photosDiv.setAttribute("id", "photos-by-commentors");
         photosUl.setAttribute("id", "myCommentorsPhotosList");
+    } else if (myLikers === 'X') {
+        photosDiv.setAttribute("id", "photos-by-likers");
+        photosUl.setAttribute("id", "myLikersPhotosList");
     }
 
     contentDiv.appendChild(photosDiv);
@@ -583,6 +643,36 @@ comBtnClick = function(elem) {
                 var node = document.createElement("li");
                 node.innerHTML = photoTxt;
                 myCommPhotosList.appendChild(node);
+            }
+        }
+    }
+}
+
+likerBtnClick = function(elem) {
+    var likerName = elem.getAttribute('data-liker');
+
+    var myFoundLiker = myCockpit.likers.filter(function(obj) {
+        return obj.likerName === likerName;
+    })[0];
+
+    var myList = document.getElementById("myList");
+    var myLikersPhotosList = document.getElementById("myLikersPhotosList");
+
+    myLikersPhotosList.innerHTML = '';
+
+    if (myFoundLiker) {
+        for (var j = 0; j < myFoundLiker.postIds.length; j++) {
+            var photosDiv = document.getElementById("photos-by-likers");
+
+            var myFoundPost = myCockpit.posts.filter(function(obj) {
+                return obj.id === myFoundLiker.postIds[j];
+            })[0];
+
+            if (myFoundPost) {
+                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+                var node = document.createElement("li");
+                node.innerHTML = photoTxt;
+                myLikersPhotosList.appendChild(node);
             }
         }
     }
@@ -777,6 +867,33 @@ sortCommentorsList = function(option) {
     }
 }
 
+sortLikersList = function(option) {
+    var likers;
+    switch (option) {
+        case 'space':
+            clearMyList();
+            processMediaObjLikers();
+            break;
+        case 'name':
+            clearMyList();
+            var byName = myCockpit.likers.slice(0);
+            likers = byName.sort(function(a, b) {
+                var x = a.likerName.toLowerCase();
+                var y = b.likerName.toLowerCase();
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
+            processMediaObjLikers(likers);
+            break;
+        case 'count':
+            clearMyList();
+            var byCount = myCockpit.likers.slice(0);
+            likers = byCount.sort(function(a, b) {
+                return b.likerCnt - a.likerCnt;
+            });
+            processMediaObjLikers(likers);
+            break;
+    }
+}
 
 clearMyList = function() {
     var myList = document.getElementById("myList");
@@ -793,6 +910,10 @@ selDropLocsChanged = function(elem) {
 
 selDropCommentorsChanged = function(elem) {
     sortCommentorsList(elem.options[elem.selectedIndex].value);
+}
+
+selDropLikersChanged = function(elem) {
+    sortLikersList(elem.options[elem.selectedIndex].value);
 }
 
 processMediaObjComments = function(mediaObj) {
@@ -841,4 +962,32 @@ processMediaObjComments = function(mediaObj) {
     }
 
     lastPostProcessed = i;
+}
+
+
+processMediaObjLikers = function(likers) {
+    var myList = document.getElementById("myList");
+
+    var myLikersList = likers;
+
+    if (!myLikersList) {
+        myLikersList = myCockpit.likers;
+    }
+
+    //debugger;
+
+    for (var i = 0; i < myLikersList.length; i++) {
+        var node = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.setAttribute('data-liker', myLikersList[i].likerName);
+        var t = document.createTextNode(myLikersList[i].likerName + ' - ' + myLikersList[i].realName + ' (' + myLikersList[i].likerCnt + ')');
+        btn.appendChild(t);
+        node.appendChild(btn);
+
+        btn.onclick = function() {
+            likerBtnClick(this);
+        };
+
+        myList.appendChild(node);
+    }
 }
