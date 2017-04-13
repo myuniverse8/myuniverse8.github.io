@@ -2,80 +2,75 @@ var myNickname = '';
 var myWin = '';
 var myUrl = '';
 var myTestMode = '';
-var myWinName = '';
 var myUseDates = '';
+var myWinName = '';
 
 window.onload = function() {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
-    if(dd<10){dd='0'+dd}
-    if(mm<10){mm='0'+mm}
-    var todayStr = yyyy+'-'+mm+'-'+dd;
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    var todayStr = yyyy + '-' + mm + '-' + dd;
     document.getElementById('endda').value = todayStr;
-    todayStr = yyyy+'-'+mm+'-01';
+    todayStr = yyyy + '-' + mm + '-01';
     document.getElementById('begda').value = todayStr;
 }
 
-function photosBtnClick() {
-  getCurrentValues();
-  myWinName = 'myphotos_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname;
-  openWindow();
+function optBtnClick(elem) {
+    getCurrentValues();
+    var option = elem.getAttribute('data-opt');
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (option) {
+        case '0':
+            myWinName = 'myphotos_';
+            break;
+        case '1':
+            myWinName = 'mycomments_';
+            break;
+        case '2':
+            myWinName = 'mytags_';
+            break;
+        case '3':
+            myWinName = 'mylocations_';
+            break;
+        case '4':
+            myWinName = 'mycommentors_';
+            break;
+        case '5':
+            myWinName = 'mylikers_';
+            break;
+    }
+
+    myWinName = myWinName + myNickname;
+    myUrl = 'newpage.html?nickname=' + myNickname + '&mode=' + option;
+    openWindow();
 }
 
-function tagsBtnClick() {
-  getCurrentValues();
-  myWinName = 'mytags_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&tags=X';
-  openWindow();
-}
-
-function locationsBtnClick() {
-  getCurrentValues();
-  myWinName = 'mylocations_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&locations=X';
-  openWindow();
-}
-
-function commentorsBtnClick() {
-  getCurrentValues();
-  myWinName = 'mycommentors_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&commentors=X';
-  openWindow();
-}
-
-function commentsBtnClick() {
-  getCurrentValues();
-  myWinName = 'mycomments_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&comments=X';
-  openWindow();
-}
-
-function likersBtnClick() {
-  getCurrentValues();
-  myWinName = 'mylikers_' + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&likers=X';
-  openWindow();
-}
-
-function openWindow(){
-  myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + document.getElementById('begda').value + '&endda=' + document.getElementById('endda').value + '&dates=' + myUseDates;
-  myWin = window.open(myUrl, myWinName);
+function openWindow() {
+    var begda = document.getElementById('begda').value;
+    var endda = document.getElementById('endda').value;
+    myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + begda + '&endda=' + endda + '&dates=' + myUseDates;
+    myWin = window.open(myUrl, myWinName);
 }
 
 
 function getCurrentValues() {
-  myNickname = document.getElementById('nickname').value;
-  myTestMode = '';
-  if ( document.getElementById('testmode').checked ) {
-    myTestMode = 'X';
-  };
-  myUseDates = '';
-  if ( document.getElementById('dates').checked ) {
-    myUseDates = 'X';
-  };
+    myNickname = document.getElementById('nickname').value;
+    myTestMode = '';
+    if (document.getElementById('testmode').checked) {
+        myTestMode = 'X';
+    };
+    myUseDates = '';
+    if (document.getElementById('dates').checked) {
+        myUseDates = 'X';
+    };
 }
 
 toggleDatesCheckbox = function(element) {

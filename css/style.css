@@ -1,74 +1,65 @@
-ul.photos,
-ul.comments,
-ul.tags,
-ul.locations,
-ul.commentors,
-ul.likers {
+ul.photos, ul.comments, ul.tags, ul.locations, ul.commentors, ul.likers {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-  ul.photos li,
-  ul.tags li,
-  ul.locations li,
-  ul.commentors li,
-  ul.likers li {
+
+ul.photos li, ul.tags li, ul.locations li, ul.commentors li, ul.likers li {
     margin-left: 5px;
     display: inline;
-  }
+}
+
+div.nav-comments {
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+}
 
 ul#myList button.selected {
-  background-color: black;
-  color: white;
+    background-color: #3b99fc;
+    color: white;
 }
 
 img.post {
-  border: 1px solid black;
+    border: 1px solid black;
 }
-  img.post:hover {
+
+img.post:hover {
     opacity: 0.3;
-  }
+}
 
 p.comments {
-  margin: 1px;
+    margin: 1px;
 }
 
 div#loading-info {
-  position: fixed;
-  right: 0px;
-  top: 0px;
-  padding: 15px;
-  background-color: grey;
-  color: white;
-  opacity: 0.8;
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    padding: 15px;
+    background-color: grey;
+    color: white;
+    opacity: 0.8;
 }
 
 p#loading-p {
-  margin: 1px;
+    margin: 1px;
 }
 
-div.nav-comments,
-div.nav-tags,
-div.nav-locations,
-div.nav-commentors,
-div.nav-likers {
+div.nav {
   padding: 5px;
   margin: 5px;
   display: inline-block;
 }
 
-div.nav-comments {
-  border: 1px solid grey;
-}
-
 div.elements {
-  margin: 5px;
+    margin: 5px;
 }
 
-div#photos-by-tag,
-div#photos-by-location,
-div#photos-by-commentors,
-div#photos-by-likers
- {
-  margin-top: 10px;
+div#photos-by-data {
+    margin-top: 10px;
+}
+
+div#btn-info {
+    margin: 10px 10px;
 }

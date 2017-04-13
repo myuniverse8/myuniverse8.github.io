@@ -1,6 +1,5 @@
 var myNickname = '';
 var myUrl = '';
-var myComments = '';
 var myTestMode = '';
 var myTitle = '';
 var myCockpit;
@@ -8,10 +7,30 @@ var lastPostProcessed = 0;
 var myBegda;
 var myEndda;
 var myUseDates;
-var myTags = '';
-var myLocations = '';
-var myCommentors = '';
-var myLikers = '';
+var myMode = 0; //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+
+
+////0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+// switch (myMode) {
+//     case '0':
+//     //0 - photos
+//         break;
+//     case '1':
+//    //1 - post/comments
+//         break;
+//     case '2':
+//    //2 - tags
+//         break;
+//     case '3':
+//    //3 - locations
+//         break;
+//     case '4':
+//    //4 - commentors
+//         break;
+//     case '5':
+//    //5 - likers
+//         break;
+// }
 
 function MyCockpit() {
     this.posts = [];
@@ -58,9 +77,9 @@ MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
 
     if (!myFoundCommentors) {
         // object is not found
-        var myCommentors = new MyCommentors(comName, realName, postId);
-        myCommentors.postIds.push(postId);
-        this.commentors.push(myCommentors);
+        var myCommentor = new MyCommentor(comName, realName, postId);
+        myCommentor.postIds.push(postId);
+        this.commentors.push(myCommentor);
     } else {
         // object is found
         // check if post id is different - it could be the same tags in one post
@@ -168,7 +187,7 @@ function MyLocation(locName) {
     this.postIds = [];
 };
 
-function MyCommentors(comName, realName) {
+function MyCommentor(comName, realName) {
     this.comName = comName;
     this.realName = realName
     this.comCnt = 1;
@@ -201,15 +220,11 @@ window.onload = function() {
 
     myNickname = getURLParameter('nickname');
     myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
-    myComments = getURLParameter('comments');
     myTestMode = getURLParameter('testmode');
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
     myUseDates = getURLParameter('dates');
-    myTags = getURLParameter('tags');
-    myLocations = getURLParameter('locations');
-    myCommentors = getURLParameter('commentors');
-    myLikers = getURLParameter('likers');
+    myMode = getURLParameter('mode');
 
     myBegda.setHours(0);
     myBegda.setMinutes(0);
@@ -221,46 +236,59 @@ window.onload = function() {
 
     myTitle = myNickname + '(';
 
-    if (myComments === 'X') {
-        var node = document.createElement("div");
-        node.classList.add("nav-comments");
-        node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
-        node = document.createElement("div");
-        node.classList.add("nav-comments");
-        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
-        node = document.createElement("div");
-        node.classList.add("nav-comments");
-        node.classList.add("own-replies");
-        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '0':
+            //0 - photos
+            document.getElementById("myList").classList.add("photos");
+            myTitle = myTitle + 'photos)';
+            break;
+        case '1':
+            //1 - post/comments
+            var node = document.createElement("div");
+            node.classList.add("nav-comments");
+            node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
+            document.getElementById("nav").appendChild(node);
+            node = document.createElement("div");
+            node.classList.add("nav-comments");
+            node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
+            document.getElementById("nav").appendChild(node);
+            node = document.createElement("div");
+            node.classList.add("nav-comments");
+            node.classList.add("own-replies");
+            node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
+            document.getElementById("nav").appendChild(node);
 
-        myTitle = myTitle + 'comments)';
-        document.getElementById("myList").classList.add("comments");
-    } else if (myTags === 'X') {
-        document.getElementById("myList").classList.add("tags");
-        myTitle = myTitle + 'tags)';
-    } else if (myLocations === 'X') {
-        document.getElementById("myList").classList.add("locations");
-        myTitle = myTitle + 'locations)';
-    } else if (myCommentors === 'X') {
-        document.getElementById("myList").classList.add("commentors");
-        myTitle = myTitle + 'commentors)';
-    } else if (myLikers === 'X') {
-        document.getElementById("myList").classList.add("likers");
-        myTitle = myTitle + 'likers)';
-    } else {
-        document.getElementById("myList").classList.add("photos");
-        myTitle = myTitle + 'photos)';
+            myTitle = myTitle + 'comments)';
+            document.getElementById("myList").classList.add("comments");
+            break;
+        case '2':
+            //2 - tags
+            document.getElementById("myList").classList.add("tags");
+            myTitle = myTitle + 'tags)';
+            beforeItemsProcessing();
+            break;
+        case '3':
+            //3 - locations
+            document.getElementById("myList").classList.add("locations");
+            myTitle = myTitle + 'locations)';
+            beforeItemsProcessing();
+            break;
+        case '4':
+            //4 - commentors
+            document.getElementById("myList").classList.add("commentors");
+            myTitle = myTitle + 'commentors)';
+            beforeItemsProcessing();
+            break;
+        case '5':
+            //5 - likers
+            document.getElementById("myList").classList.add("likers");
+            myTitle = myTitle + 'likers)';
+            beforeItemsProcessing();
+            break;
     }
 
     document.title = myTitle;
-
-    if ((myTags === 'X') || (myLocations === 'X') || (myCommentors === 'X') || (myLikers === 'X')) {
-        beforeItemsProcessing();
-    }
-
     loadData(myUrl);
 };
 
@@ -298,10 +326,7 @@ loadData = function(mediaUrl) {
     xhr.send();
     $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
     $('input.nav-input').prop("disabled", true);
-    $('select#sel-drop-tags').prop("disabled", true);
-    $('select#sel-drop-locations').prop("disabled", true);
-    $('select#sel-drop-commentors').prop("disabled", true);
-    $('select#sel-drop-likers').prop("disabled", true);
+    $('select#sel-drop-search').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
@@ -311,40 +336,35 @@ loadData = function(mediaUrl) {
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
             $('p#loading-p').css('color', 'red').text('Data loading error!');
             $('input.nav-input').prop("disabled", false);
-            $('select#sel-drop-tags').prop("disabled", false);
-            $('select#sel-drop-locations').prop("disabled", false);
-            $('select#sel-drop-commentors').prop("disabled", false);
-            $('select#sel-drop-likers').prop("disabled", false);
+            $('select#sel-drop-search').prop("disabled", false);
         } else {
             $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
-            $('select#sel-drop-tags').prop("disabled", false);
-            $('select#sel-drop-locations').prop("disabled", false);
-            $('select#sel-drop-commentors').prop("disabled", false);
-            $('select#sel-drop-likers').prop("disabled", false);
+            $('select#sel-drop-search').prop("disabled", false);
 
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
-            if (myComments === 'X') {
-                processMediaObjComments();
-            } else if (myTags === 'X') {
-                clearMyList();
-                processMediaObjTags();
-            } else if (myLocations === 'X') {
-                clearMyList();
-                processMediaObjLocations();
-            } else if (myCommentors === 'X') {
-                clearMyList();
-                processMediaObjCommentors();
-            } else if (myLikers === 'X') {
-                clearMyList();
-                processMediaObjLikers();
-            } else {
-                processMediaObjPhotos();
-            }
+            //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+            switch (myMode) {
+                case '0':
+                    //0 - photos
+                    processMediaObjPhotos();
+                    break;
+                case '1':
+                    //1 - post/comments
+                    processMediaObjComments();
+                    break;
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                    clearMyList();
+                    processMediaObj();
+                    break;
         }
     }
+}
 }
 
 collectData = function(mediaObj) {
@@ -377,8 +397,8 @@ collectData = function(mediaObj) {
 
         var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
 
-        for (x = 0; x<mediaObj.items[i].likes.data.length; x++){
-          myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id);
+        for (x = 0; x < mediaObj.items[i].likes.data.length; x++) {
+            myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id);
         }
 
         if (caption !== '') {
@@ -446,7 +466,7 @@ collectData = function(mediaObj) {
             }
         }
 
-        if (myComments === 'X') {
+        if (myMode === '1') { //1 - post/comments
             if (addPost === 'X') {
                 if (myUseDates === 'X') {
                     if ((dateForSearch >= myBegda) & (dateForSearch <= myEndda)) {
@@ -496,7 +516,6 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
-        //console.log(myCockpit.posts[i]);
         var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
@@ -511,20 +530,8 @@ beforeItemsProcessing = function() {
     var contentDiv = document.getElementById("content");
 
     var selDrop = document.createElement("select");
-
-    if (myLocations === 'X') {
-        selDrop.setAttribute('id', 'sel-drop-locations');
-        selDrop.setAttribute('onchange', 'selDropLocsChanged(this)');
-    } else if (myTags === 'X') {
-        selDrop.setAttribute('id', 'sel-drop-tags');
-        selDrop.setAttribute('onchange', 'selDropChanged(this)');
-    } else if (myCommentors === 'X') {
-        selDrop.setAttribute('id', 'sel-drop-commentors');
-        selDrop.setAttribute('onchange', 'selDropCommentorsChanged(this)');
-    } else if (myLikers === 'X') {
-        selDrop.setAttribute('id', 'sel-drop-likers');
-        selDrop.setAttribute('onchange', 'selDropLikersChanged(this)');
-    }
+    selDrop.setAttribute('id', 'sel-drop-search');
+    selDrop.setAttribute('onchange', 'selDropChanged(this)');
 
     var opt = document.createElement("option");
     opt.setAttribute('value', 'space');
@@ -541,23 +548,28 @@ beforeItemsProcessing = function() {
     selDrop.appendChild(opt);
 
     var label = document.createElement('label');
+    navDiv.classList.add("nav");
 
-    if (myLocations === 'X') {
-        label.setAttribute('for', 'sel-drop-locations');
-        label.innerHTML = 'Sort locations: ';
-        navDiv.classList.add("nav-locations");
-    } else if (myTags === 'X') {
-        label.setAttribute('for', 'sel-drop-tags');
-        label.innerHTML = 'Sort tags: ';
-        navDiv.classList.add("nav-tags");
-    } else if (myCommentors === 'X') {
-        label.setAttribute('for', 'sel-drop-commentors');
-        label.innerHTML = 'Sort commentors: ';
-        navDiv.classList.add("nav-commentors");
-    } else if (myLikers === 'X') {
-        label.setAttribute('for', 'sel-drop-likers');
-        label.innerHTML = 'Sort likers: ';
-        navDiv.classList.add("nav-likers");
+    label.setAttribute('for', 'sel-drop-search');
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '2':
+            //2 - tags
+            label.innerHTML = 'Sort tags: ';
+            break;
+        case '3':
+            //3 - locations
+            label.innerHTML = 'Sort locations: ';
+            break;
+        case '4':
+            //4 - commentors
+            label.innerHTML = 'Sort commentors: ';
+            break;
+        case '5':
+            //5 - likers
+            label.innerHTML = 'Sort likers: ';
+            break;
     }
 
     navDiv.appendChild(label);
@@ -566,20 +578,14 @@ beforeItemsProcessing = function() {
     var photosDiv = document.createElement("div");
     var photosUl = document.createElement("ul");
 
-    if (myLocations === 'X') {
-        photosDiv.setAttribute("id", "photos-by-location");
-        photosUl.setAttribute("id", "myLocationsPhotosList");
-    } else if (myTags === 'X') {
-        photosDiv.setAttribute("id", "photos-by-tag");
-        photosUl.setAttribute("id", "myTagsPhotosList");
-    } else if (myCommentors === 'X') {
-        photosDiv.setAttribute("id", "photos-by-commentors");
-        photosUl.setAttribute("id", "myCommentorsPhotosList");
-    } else if (myLikers === 'X') {
-        photosDiv.setAttribute("id", "photos-by-likers");
-        photosUl.setAttribute("id", "myLikersPhotosList");
-    }
+    photosDiv.setAttribute("id", "photos-by-data");
+    photosUl.setAttribute("id", "photos-data-list");
 
+    var infoBtnDiv = document.createElement("div");
+    infoBtnDiv.setAttribute("id", "btn-info");
+
+    contentDiv.appendChild(infoBtnDiv);
+    contentDiv.appendChild(photosDiv);
     contentDiv.appendChild(photosDiv);
 
     photosUl.classList.add("photos");
@@ -588,351 +594,152 @@ beforeItemsProcessing = function() {
     clearMyList();
 }
 
-clearBtnsSelection = function(){
-  $('ul#myList button').removeClass('selected');
+clearBtnsSelection = function() {
+    $('ul#myList button').removeClass('selected');
 }
 
-setSelectedButton = function(elem){
-  elem.classList.add('selected');
+setSelectedButton = function(elem) {
+    elem.classList.add('selected');
 };
 
-locBtnClick = function(elem) {
+beforeBtnClicked = function() {
     clearBtnsSelection();
+    clearInfoDiv();
+}
+
+clearInfoDiv = function() {
+    document.getElementById("btn-info").innerHTML = '';
+}
+
+objBtnClick = function(elem) {
+    beforeBtnClicked();
     setSelectedButton(elem);
 
-    var locName = elem.getAttribute('data-loc');
-
-    var myFoundLoc = myCockpit.locations.filter(function(obj) {
-        return obj.locName === locName;
-    })[0];
-
+    var myFoundElem;
     var myList = document.getElementById("myList");
-    var myLocsPhotosList = document.getElementById("myLocationsPhotosList");
+    var myDataList;
+    var photosDiv;
+    var dataValue = elem.getAttribute('data-str-value');
+    var htmlTxt = '';
 
-    myLocsPhotosList.innerHTML = '';
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '2':
+            //2 - tags
+            var myFoundElem = myCockpit.tags.filter(function(obj) {
+                return obj.tagName === dataValue;
+            })[0];
+            var tag = dataValue.substring(1)
+            htmlTxt = '<a target="_blank" href="https://www.instagram.com/explore/tags/' + tag + '">' + dataValue + '</a>';
+            break;
+        case '3':
+            //3 - locations
+            myFoundElem = myCockpit.locations.filter(function(obj) {
+                return obj.locName === dataValue;
+            })[0];
+            break;
+        case '4':
+            //4 - commentors
+            var myFoundElem = myCockpit.commentors.filter(function(obj) {
+                return obj.comName === dataValue;
+            })[0];
+            htmlTxt = '<a target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '</a>';
+            break;
+        case '5':
+            //5 - likers
+            var myFoundElem = myCockpit.likers.filter(function(obj) {
+                return obj.likerName === dataValue;
+            })[0];
+            htmlTxt = '<a target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '</a>';
+            break;
+    }
 
-    if (myFoundLoc) {
-        for (var j = 0; j < myFoundLoc.postIds.length; j++) {
-            var photosDiv = document.getElementById("photos-by-tag");
+    document.getElementById("btn-info").innerHTML = htmlTxt;
 
+    myDataList = document.getElementById("photos-data-list");
+
+    myDataList.innerHTML = '';
+
+    if (myFoundElem) {
+        for (var j = 0; j < myFoundElem.postIds.length; j++) {
             var myFoundPost = myCockpit.posts.filter(function(obj) {
-                return obj.id === myFoundLoc.postIds[j];
+                return obj.id === myFoundElem.postIds[j];
             })[0];
 
             if (myFoundPost) {
                 var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
                 var node = document.createElement("li");
                 node.innerHTML = photoTxt;
-                myLocsPhotosList.appendChild(node);
+                myDataList.appendChild(node);
             }
         }
     }
 }
 
-comBtnClick = function(elem) {
-    clearBtnsSelection();
-    setSelectedButton(elem);
-    var comName = elem.getAttribute('data-com');
-
-    var myFoundCom = myCockpit.commentors.filter(function(obj) {
-        return obj.comName === comName;
-    })[0];
-
+processMediaObj = function(objs) {
     var myList = document.getElementById("myList");
-    var myCommPhotosList = document.getElementById("myCommentorsPhotosList");
+    var myObjs = objs;
+    var t;
 
-    myCommPhotosList.innerHTML = '';
-
-    if (myFoundCom) {
-        for (var j = 0; j < myFoundCom.postIds.length; j++) {
-            var photosDiv = document.getElementById("photos-by-commentors");
-
-            var myFoundPost = myCockpit.posts.filter(function(obj) {
-                return obj.id === myFoundCom.postIds[j];
-            })[0];
-
-            if (myFoundPost) {
-                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
-                var node = document.createElement("li");
-                node.innerHTML = photoTxt;
-                myCommPhotosList.appendChild(node);
-            }
+    if (!myObjs) {
+        //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+        switch (myMode) {
+            case '2':
+                //2 - tags
+                myObjs = myCockpit.tags;
+                break;
+            case '3':
+                //3 - locations
+                myObjs = myCockpit.locations;
+                break;
+            case '4':
+                //4 - commentors
+                myObjs = myCockpit.commentors;
+                break;
+            case '5':
+                //5 - likers
+                myObjs = myCockpit.likers;
+                break;
         }
     }
-}
 
-likerBtnClick = function(elem) {
-    clearBtnsSelection();
-    setSelectedButton(elem);
-
-    var likerName = elem.getAttribute('data-liker');
-
-    var myFoundLiker = myCockpit.likers.filter(function(obj) {
-        return obj.likerName === likerName;
-    })[0];
-
-    var myList = document.getElementById("myList");
-    var myLikersPhotosList = document.getElementById("myLikersPhotosList");
-
-    myLikersPhotosList.innerHTML = '';
-
-    if (myFoundLiker) {
-        for (var j = 0; j < myFoundLiker.postIds.length; j++) {
-            var photosDiv = document.getElementById("photos-by-likers");
-
-            var myFoundPost = myCockpit.posts.filter(function(obj) {
-                return obj.id === myFoundLiker.postIds[j];
-            })[0];
-
-            if (myFoundPost) {
-                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
-                var node = document.createElement("li");
-                node.innerHTML = photoTxt;
-                myLikersPhotosList.appendChild(node);
-            }
-        }
-    }
-}
-
-tagBtnClick = function(elem) {
-    clearBtnsSelection();
-    setSelectedButton(elem);
-
-    var tagName = elem.getAttribute('data-tag');
-
-    var myFoundTag = myCockpit.tags.filter(function(obj) {
-        return obj.tagName === tagName;
-    })[0];
-
-    var myList = document.getElementById("myList");
-    var myTagsPhotosList = document.getElementById("myTagsPhotosList");
-
-    myTagsPhotosList.innerHTML = '';
-
-    if (myFoundTag) {
-        for (var j = 0; j < myFoundTag.postIds.length; j++) {
-            var photosDiv = document.getElementById("photos-by-tag");
-
-            var myFoundPost = myCockpit.posts.filter(function(obj) {
-                return obj.id === myFoundTag.postIds[j];
-            })[0];
-
-            if (myFoundPost) {
-                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
-                var node = document.createElement("li");
-                node.innerHTML = photoTxt;
-                myTagsPhotosList.appendChild(node);
-            }
-        }
-    }
-};
-
-processMediaObjLocations = function(locations) {
-    var myList = document.getElementById("myList");
-
-    var myLocations = locations;
-
-    if (!myLocations) {
-        myLocations = myCockpit.locations;
-    }
-
-    for (var i = 0; i < myLocations.length; i++) {
+    for (var i = 0; i < myObjs.length; i++) {
         var node = document.createElement("li");
         var btn = document.createElement("button");
-        btn.setAttribute('data-loc', myLocations[i].locName);
-        var t = document.createTextNode(myLocations[i].locName + ' (' + myLocations[i].locCnt + ')');
+
+        //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+        switch (myMode) {
+            case '2':
+                //2 - tags
+                btn.setAttribute('data-str-value', myObjs[i].tagName);
+                t = document.createTextNode(myObjs[i].tagName + ' (' + myObjs[i].tagCnt + ')');
+                break;
+            case '3':
+                //3 - locations
+                btn.setAttribute('data-str-value', myObjs[i].locName);
+                t = document.createTextNode(myObjs[i].locName + ' (' + myObjs[i].locCnt + ')');
+                break;
+            case '4':
+                //4 - commentors
+                btn.setAttribute('data-str-value', myObjs[i].comName);
+                t = document.createTextNode(myObjs[i].comName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].comCnt + ')');
+                break;
+            case '5':
+                //5 - likers
+                btn.setAttribute('data-str-value', myObjs[i].likerName);
+                t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
+                break;
+        }
+
         btn.appendChild(t);
         node.appendChild(btn);
 
         btn.onclick = function() {
-            locBtnClick(this);
+            objBtnClick(this);
         };
 
         myList.appendChild(node);
     }
-}
-
-processMediaObjCommentors = function(commentors) {
-    var myList = document.getElementById("myList");
-
-    var myCommentorsList = commentors;
-
-    if (!myCommentorsList) {
-        myCommentorsList = myCockpit.commentors;
-    }
-
-    for (var i = 0; i < myCommentorsList.length; i++) {
-        var node = document.createElement("li");
-        var btn = document.createElement("button");
-        btn.setAttribute('data-com', myCommentorsList[i].comName);
-        var t = document.createTextNode(myCommentorsList[i].comName + ' - ' + myCommentorsList[i].realName + ' (' + myCommentorsList[i].comCnt + ')');
-        btn.appendChild(t);
-        node.appendChild(btn);
-
-        btn.onclick = function() {
-            comBtnClick(this);
-        };
-
-        myList.appendChild(node);
-    }
-}
-
-processMediaObjTags = function(tags) {
-    var myList = document.getElementById("myList");
-
-    var myTags = tags;
-
-    if (!myTags) {
-        myTags = myCockpit.tags;
-    }
-
-    for (var i = 0; i < myTags.length; i++) {
-        var node = document.createElement("li");
-        var btn = document.createElement("button");
-        btn.setAttribute('data-tag', myTags[i].tagName);
-        var t = document.createTextNode(myTags[i].tagName + ' (' + myTags[i].tagCnt + ')');
-        btn.appendChild(t);
-        node.appendChild(btn);
-
-        btn.onclick = function() {
-            tagBtnClick(this);
-        };
-
-        myList.appendChild(node);
-    }
-}
-
-sortTagsList = function(option) {
-    var tags;
-    switch (option) {
-        case 'space':
-            clearMyList();
-            processMediaObjTags();
-            break;
-        case 'name':
-            clearMyList();
-            var byName = myCockpit.tags.slice(0);
-            tags = byName.sort(function(a, b) {
-                var x = a.tagName.toLowerCase();
-                var y = b.tagName.toLowerCase();
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            processMediaObjTags(tags);
-            break;
-        case 'count':
-            clearMyList();
-            var byCount = myCockpit.tags.slice(0);
-            tags = byCount.sort(function(a, b) {
-                return b.tagCnt - a.tagCnt;
-            });
-            processMediaObjTags(tags);
-            break;
-    }
-}
-
-sortLocationsList = function(option) {
-    var locs;
-    switch (option) {
-        case 'space':
-            clearMyList();
-            processMediaObjLocations();
-            break;
-        case 'name':
-            clearMyList();
-            var byName = myCockpit.locations.slice(0);
-            locs = byName.sort(function(a, b) {
-                var x = a.locName.toLowerCase();
-                var y = b.locName.toLowerCase();
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            processMediaObjLocations(locs);
-            break;
-        case 'count':
-            clearMyList();
-            var byCount = myCockpit.locations.slice(0);
-            locs = byCount.sort(function(a, b) {
-                return b.locCnt - a.locCnt;
-            });
-            processMediaObjLocations(locs);
-            break;
-    }
-}
-
-sortCommentorsList = function(option) {
-    var commentors;
-    switch (option) {
-        case 'space':
-            clearMyList();
-            processMediaObjCommentors();
-            break;
-        case 'name':
-            clearMyList();
-            var byName = myCockpit.commentors.slice(0);
-            commentors = byName.sort(function(a, b) {
-                var x = a.comName.toLowerCase();
-                var y = b.comName.toLowerCase();
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            processMediaObjCommentors(commentors);
-            break;
-        case 'count':
-            clearMyList();
-            var byCount = myCockpit.commentors.slice(0);
-            commentors = byCount.sort(function(a, b) {
-                return b.comCnt - a.comCnt;
-            });
-            processMediaObjCommentors(commentors);
-            break;
-    }
-}
-
-sortLikersList = function(option) {
-    var likers;
-    switch (option) {
-        case 'space':
-            clearMyList();
-            processMediaObjLikers();
-            break;
-        case 'name':
-            clearMyList();
-            var byName = myCockpit.likers.slice(0);
-            likers = byName.sort(function(a, b) {
-                var x = a.likerName.toLowerCase();
-                var y = b.likerName.toLowerCase();
-                return x < y ? -1 : x > y ? 1 : 0;
-            });
-            processMediaObjLikers(likers);
-            break;
-        case 'count':
-            clearMyList();
-            var byCount = myCockpit.likers.slice(0);
-            likers = byCount.sort(function(a, b) {
-                return b.likerCnt - a.likerCnt;
-            });
-            processMediaObjLikers(likers);
-            break;
-    }
-}
-
-clearMyList = function() {
-    var myList = document.getElementById("myList");
-    myList.innerHTML = '';
-}
-
-selDropChanged = function(elem) {
-    sortTagsList(elem.options[elem.selectedIndex].value);
-}
-
-selDropLocsChanged = function(elem) {
-    sortLocationsList(elem.options[elem.selectedIndex].value);
-}
-
-selDropCommentorsChanged = function(elem) {
-    sortCommentorsList(elem.options[elem.selectedIndex].value);
-}
-
-selDropLikersChanged = function(elem) {
-    sortLikersList(elem.options[elem.selectedIndex].value);
 }
 
 processMediaObjComments = function(mediaObj) {
@@ -983,30 +790,116 @@ processMediaObjComments = function(mediaObj) {
     lastPostProcessed = i;
 }
 
-
-processMediaObjLikers = function(likers) {
+clearMyList = function() {
     var myList = document.getElementById("myList");
+    myList.innerHTML = '';
+}
 
-    var myLikersList = likers;
+selDropChanged = function(elem) {
+    sortObjList(elem.options[elem.selectedIndex].value);
+}
 
-    if (!myLikersList) {
-        myLikersList = myCockpit.likers;
+sortObjList = function(option) {
+    var objs;
+    var slicedObjs;
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '2':
+            //2 - tags
+            slicedObjs = myCockpit.tags.slice(0);;
+            break;
+        case '3':
+            //3 - locations
+            slicedObjs = myCockpit.locations.slice(0);
+            break;
+        case '4':
+            //4 - commentors
+            slicedObjs = myCockpit.commentors.slice(0);
+            break;
+        case '5':
+            //5 - likers
+            slicedObjs = myCockpit.likers.slice(0);
+            break;
     }
 
-    //debugger;
+    switch (option) {
+        case 'space':
+            clearMyList();
+            processMediaObj();
+            break;
+        case 'name':
+            clearMyList();
 
-    for (var i = 0; i < myLikersList.length; i++) {
-        var node = document.createElement("li");
-        var btn = document.createElement("button");
-        btn.setAttribute('data-liker', myLikersList[i].likerName);
-        var t = document.createTextNode(myLikersList[i].likerName + ' - ' + myLikersList[i].realName + ' (' + myLikersList[i].likerCnt + ')');
-        btn.appendChild(t);
-        node.appendChild(btn);
+            //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+            switch (myMode) {
+                case '2':
+                    //2 - tags
+                    objs = slicedObjs.sort(function(a, b) {
+                        var x = a.tagName.toLowerCase();
+                        var y = b.tagName.toLowerCase();
+                        return x < y ? -1 : x > y ? 1 : 0;
+                    });
+                    break;
+                case '3':
+                    //3 - locations
+                    objs = slicedObjs.sort(function(a, b) {
+                        var x = a.locName.toLowerCase();
+                        var y = b.locName.toLowerCase();
+                        return x < y ? -1 : x > y ? 1 : 0;
+                    });
+                    break;
+                case '4':
+                    //4 - commentors
+                    objs = slicedObjs.sort(function(a, b) {
+                        var x = a.comName.toLowerCase();
+                        var y = b.comName.toLowerCase();
+                        return x < y ? -1 : x > y ? 1 : 0;
+                    });
+                    break;
+                case '5':
+                    //5 - likers
+                    objs = slicedObjs.sort(function(a, b) {
+                        var x = a.likerName.toLowerCase();
+                        var y = b.likerName.toLowerCase();
+                        return x < y ? -1 : x > y ? 1 : 0;
+                    });
+                    break;
+            }
 
-        btn.onclick = function() {
-            likerBtnClick(this);
-        };
+            processMediaObj(objs);
+            break;
+        case 'count':
+            clearMyList();
 
-        myList.appendChild(node);
+            //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+            switch (myMode) {
+                case '2':
+                    //2 - tags
+                    objs = slicedObjs.sort(function(a, b) {
+                        return b.tagCnt - a.tagCnt;
+                    });
+                    break;
+                case '3':
+                    //3 - locations
+                    objs = slicedObjs.sort(function(a, b) {
+                        return b.locCnt - a.locCnt;
+                    });
+                    break;
+                case '4':
+                    //4 - commentors
+                    objs = slicedObjs.sort(function(a, b) {
+                        return b.comCnt - a.comCnt;
+                    });
+                    break;
+                case '5':
+                    //5 - likers
+                      objs = slicedObjs.sort(function(a, b) {
+                        return b.likerCnt - a.likerCnt;
+                    });
+                    break;
+            }
+            processMediaObj(objs);
+            break;
     }
 }
