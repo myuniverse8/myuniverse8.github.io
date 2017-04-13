@@ -588,7 +588,18 @@ beforeItemsProcessing = function() {
     clearMyList();
 }
 
+clearBtnsSelection = function(){
+  $('ul#myList button').removeClass('selected');
+}
+
+setSelectedButton = function(elem){
+  elem.classList.add('selected');
+};
+
 locBtnClick = function(elem) {
+    clearBtnsSelection();
+    setSelectedButton(elem);
+
     var locName = elem.getAttribute('data-loc');
 
     var myFoundLoc = myCockpit.locations.filter(function(obj) {
@@ -619,6 +630,8 @@ locBtnClick = function(elem) {
 }
 
 comBtnClick = function(elem) {
+    clearBtnsSelection();
+    setSelectedButton(elem);
     var comName = elem.getAttribute('data-com');
 
     var myFoundCom = myCockpit.commentors.filter(function(obj) {
@@ -649,6 +662,9 @@ comBtnClick = function(elem) {
 }
 
 likerBtnClick = function(elem) {
+    clearBtnsSelection();
+    setSelectedButton(elem);
+
     var likerName = elem.getAttribute('data-liker');
 
     var myFoundLiker = myCockpit.likers.filter(function(obj) {
@@ -679,6 +695,9 @@ likerBtnClick = function(elem) {
 }
 
 tagBtnClick = function(elem) {
+    clearBtnsSelection();
+    setSelectedButton(elem);
+
     var tagName = elem.getAttribute('data-tag');
 
     var myFoundTag = myCockpit.tags.filter(function(obj) {

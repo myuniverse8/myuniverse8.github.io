@@ -17,6 +17,11 @@ ul.likers {
     display: inline;
   }
 
+ul#myList button.selected {
+  background-color: black;
+  color: white;
+}
+
 img.post {
   border: 1px solid black;
 }
