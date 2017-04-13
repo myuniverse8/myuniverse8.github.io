@@ -381,7 +381,7 @@ collectData = function(mediaObj) {
     var itemsLength = mediaObj.items.length;
 
     for (i = 0; i < itemsLength; i++) {
-        //console.log(mediaObj.items[i]);
+        console.log(mediaObj.items[i]);
         addPost = '';
 
         d = new Date(+mediaObj.items[i].created_time * 1000);
