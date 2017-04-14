@@ -32,6 +32,12 @@ p.comments {
     margin: 1px;
 }
 
+p.comment,
+p.own-reply
+ {
+  margin-left: 10px;
+}
+
 div#loading-info {
     position: fixed;
     right: 0px;
