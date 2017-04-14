@@ -804,6 +804,13 @@ processMediaObj = function(objs) {
     }
 }
 
+// overComment = function(elem) {
+//   $("img#post-pic-img").attr('src', elem.getAttribute('data-img-thumb'));
+// }
+// outComment = function() {
+//   $("img#post-pic-img").attr('src','');
+// }
+
 processMediaObjComments = function(objects) {
     var i = 0;
     var j = 0;
@@ -821,6 +828,7 @@ processMediaObjComments = function(objects) {
     for (i = lastPostProcessed; i < postsLength; i++) {
         var commentsLength = posts[i].commentscnt;
 
+      //  commentTxt = '<p onmouseover="overComment(this)" onmouseout="outComment()" data-img-thumb="' + posts[i].thumbnail + '" class="postcaption comments"><b>' + getDateStr(posts[i].date)
         commentTxt = '<p class="postcaption comments"><b>' + getDateStr(posts[i].date)
 
         if (posts[i].caption !== '') {
@@ -830,7 +838,7 @@ processMediaObjComments = function(objects) {
         }
 
         commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
-        //commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></p>';
+    //    commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)</p>';
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
@@ -840,7 +848,7 @@ processMediaObjComments = function(objects) {
         var commentsLength = commentsObj.length;
         if (commentsLength > 0) {
             for (j = 0; j < commentsLength; j++) {
-                commentTxt = '<p class="comments ';
+                commentTxt = '<p data-img-thumb="' + posts[i].thumbnail + '" class="comments ';
                 if (posts[i].comments[j].user === myNickname) {
                     commentTxt = commentTxt + 'own-reply';
                 } else {
@@ -848,6 +856,7 @@ processMediaObjComments = function(objects) {
                 }
 
                 commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
+              //  commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
 
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;

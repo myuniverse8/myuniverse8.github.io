@@ -74,6 +74,18 @@ img.post-hover {
   border: 1px solid black;
 }
 
+/*img#post-pic-img {
+  border: 1px solid black;
+}
+
+div#post-pic-div {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  border: 1px solid black;
+  margin: 40px;
+}*/
+
 p.comments a { position:relative; }
-p.comments a span { position:absolute; top: 20px; right: 0px; display:none; z-index:99; }
+p.comments a span { position:absolute; top: 20px; left: 5px; display:none; z-index:99; }
 p.comments a:hover span { display:block; }
