@@ -322,7 +322,7 @@ loadData = function(mediaUrl) {
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
-    $('p#loading-p').css('color', 'yellow').text('Data is loading ... (' + postsCnt + ') posts');
+    $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
     $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-search').prop("disabled", true);
 
@@ -338,9 +338,13 @@ loadData = function(mediaUrl) {
         } else {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
+            //postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+            $('p#loading-p').css('color', 'white').text('Data loaded. ');
 
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
+
+            //$('p#loading-p').css('color', 'white').text('Data loaded.');
 
             //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
             switch (myMode) {
@@ -360,8 +364,8 @@ loadData = function(mediaUrl) {
                     processMediaObj();
                     break;
             }
-            postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
-            $('p#loading-p').css('color', 'white').text('Data loaded. ' + postsCnt + ' posts.');
+      //      postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+        //
         }
     }
 }
@@ -498,6 +502,7 @@ collectData = function(mediaObj) {
         }
     }
 
+    $('p#loading-p').text($('p#loading-p').text() + myCockpit.posts.length + ' posts');
     if (nextUrl !== '') {
         if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
             loadData(nextUrl);
