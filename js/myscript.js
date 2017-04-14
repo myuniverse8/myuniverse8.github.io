@@ -625,12 +625,12 @@ beforeItemsProcessing = function() {
         document.getElementById("nav").appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
-        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" checked onchange="toggleCommentsCheckbox(this)">';
+        node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.classList.add("own-replies");
-        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" checked onchange="toggleOwnRepliesCheckbox(this)">';
+        node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">';
         document.getElementById("nav").appendChild(node);
     }
 
@@ -870,6 +870,7 @@ processMediaObjComments = function(objects) {
         }
     }
 
+    toggleCheckboxes();
     lastPostProcessed = i;
 }
 
