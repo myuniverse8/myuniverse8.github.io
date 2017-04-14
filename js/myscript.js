@@ -317,11 +317,12 @@ toggleOwnRepliesCheckbox = function(element) {
 
 loadData = function(mediaUrl) {
     var xhr = new XMLHttpRequest();
+    var postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
 
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
-    $('p#loading-p').css('color', 'yellow').text('Data is loading ...');
+    $('p#loading-p').css('color', 'yellow').text('Data is loading ... (' + postsCnt + ') posts');
     $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-search').prop("disabled", true);
 
@@ -335,7 +336,6 @@ loadData = function(mediaUrl) {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
         } else {
-            $('p#loading-p').css('color', 'white').text('Data loaded');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
 
@@ -360,6 +360,8 @@ loadData = function(mediaUrl) {
                     processMediaObj();
                     break;
             }
+            postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+            $('p#loading-p').css('color', 'white').text('Data loaded. ' + postsCnt + ' posts.');
         }
     }
 }
