@@ -830,6 +830,7 @@ processMediaObjComments = function(objects) {
         }
 
         commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
+        //commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></p>';
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
@@ -846,7 +847,7 @@ processMediaObjComments = function(objects) {
                     commentTxt = commentTxt + 'comment';
                 }
 
-                commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
+                commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
 
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;

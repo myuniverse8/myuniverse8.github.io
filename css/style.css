@@ -75,5 +75,5 @@ img.post-hover {
 }
 
 p.comments a { position:relative; }
-p.comments a span { position:absolute; top: 20px; left: 0px; display:none; z-index:99; }
+p.comments a span { position:absolute; top: 20px; right: 0px; display:none; z-index:99; }
 p.comments a:hover span { display:block; }
