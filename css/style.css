@@ -69,3 +69,11 @@ div#photos-by-data {
 div#btn-info {
     margin: 10px 10px;
 }
+
+img.post-hover {
+  border: 1px solid black;
+}
+
+p.comments a { position:relative; }
+p.comments a span { position:absolute; top: 20px; left: 0px; display:none; z-index:99; }
+p.comments a:hover span { display:block; }
