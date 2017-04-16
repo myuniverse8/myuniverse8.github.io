@@ -342,7 +342,7 @@ loadData = function(mediaUrl) {
             $('select#sel-drop-search').prop("disabled", false);
             $('#save-big-photos-btn').prop("disabled", false);
             //postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
-            $('p#loading-p').css('color', 'white').text('Data loaded. ');
+            $('p#loading-p').css('color', 'white').text('Done. ');
 
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
@@ -640,7 +640,7 @@ beforeItemsProcessing = function() {
         var saveBtn = document.createElement("button");
         saveBtn.setAttribute('onclick', 'saveBtnClick()');
         saveBtn.setAttribute('id', 'save-big-photos-btn');
-        var saveBtnTxt = document.createTextNode('Save big photos of downloaded post to zip');
+        var saveBtnTxt = document.createTextNode('Save big photos of downloaded posts to zip');
         saveBtn.appendChild(saveBtnTxt);
         newDiv.appendChild(saveBtn);
         navDiv.appendChild(newDiv);
