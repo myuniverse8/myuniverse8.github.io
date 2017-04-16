@@ -690,9 +690,11 @@ saveBtnClick = function() {
                 console.erro("Problem when downloading img: " + imgLink[i]);
             } else {
                 j++;
+                $('p#loading-p').css('color', 'yellow').text('Downloading photo ' + j + ' of ' + count + ' ... ');
                 zip.file("picture"+j+".jpg", data, { binary: true });
 
                 if (j === count) {
+                    $('p#loading-p').css('color', 'white').text('Done');
                     zip.generateAsync({
                             type: "blob"
                         })
