@@ -683,11 +683,11 @@ saveBtnClick = function() {
 
     var count = imgLinks.length;
     var j = 0;
-
+    
     for (var i = 0; i < count; i++) {
         JSZipUtils.getBinaryContent(imgLinks[i], function(err, data) {
             if (err) {
-                console.erro("Problem when downloading img: " + imgLink[i]);
+                console.error("Problem when downloading img: " + imgLinks[i]);
             } else {
                 j++;
                 $('p#loading-p').css('color', 'yellow').text('Downloading photo ' + j + ' of ' + count + ' ... ');
@@ -699,7 +699,7 @@ saveBtnClick = function() {
                             type: "blob"
                         })
                         .then(function(content) {
-                            saveAs(content, "example.zip");
+                            saveAs(content, myNickname + "_insta_big_photos.zip");
                         });
                 }
             }
