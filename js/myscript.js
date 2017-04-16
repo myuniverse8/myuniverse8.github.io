@@ -299,12 +299,12 @@ toggleCommentsCheckbox = function(element) {
 }
 
 toggleCheckboxes = function() {
-  var elem = document.getElementById('own-replies');
-  toggleOwnRepliesCheckbox(elem);
-  elem = document.getElementById('incl-comments');
-  toggleCommentsCheckbox(elem);
-  elem = document.getElementById('incl-post-caption');
-  togglePostCaptionCheckbox(elem);
+    var elem = document.getElementById('own-replies');
+    toggleOwnRepliesCheckbox(elem);
+    elem = document.getElementById('incl-comments');
+    toggleCommentsCheckbox(elem);
+    elem = document.getElementById('incl-post-caption');
+    togglePostCaptionCheckbox(elem);
 }
 
 toggleOwnRepliesCheckbox = function(element) {
@@ -325,6 +325,7 @@ loadData = function(mediaUrl) {
     $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
     $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-search').prop("disabled", true);
+    $('#save-big-photos-btn').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
@@ -335,9 +336,11 @@ loadData = function(mediaUrl) {
             $('p#loading-p').css('color', 'red').text('Data loading error!');
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
+            $('#save-big-photos-btn').prop("disabled", false);
         } else {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
+            $('#save-big-photos-btn').prop("disabled", false);
             //postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
             $('p#loading-p').css('color', 'white').text('Data loaded. ');
 
@@ -364,8 +367,8 @@ loadData = function(mediaUrl) {
                     processMediaObj();
                     break;
             }
-      //      postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
-        //
+            //      postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+            //
         }
     }
 }
@@ -622,16 +625,25 @@ beforeItemsProcessing = function() {
         var node = document.createElement("div");
         node.classList.add("nav-comments");
         node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
+        navDiv.appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
+        navDiv.appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.classList.add("own-replies");
         node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">';
-        document.getElementById("nav").appendChild(node);
+        navDiv.appendChild(node);
+
+        var newDiv = document.createElement('div');
+        var saveBtn = document.createElement("button");
+        saveBtn.setAttribute('onclick', 'saveBtnClick()');
+        saveBtn.setAttribute('id', 'save-big-photos-btn');
+        var saveBtnTxt = document.createTextNode('Save big photos of downloaded post to zip');
+        saveBtn.appendChild(saveBtnTxt);
+        newDiv.appendChild(saveBtn);
+        navDiv.appendChild(newDiv);
     }
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
@@ -658,6 +670,38 @@ beforeItemsProcessing = function() {
 
             clearMyList();
             break;
+    }
+}
+
+saveBtnClick = function() {
+    var zip = new JSZip();
+    var imgLinks = [];
+
+    for (var x = 0; x<myCockpit.posts.length; x++) {
+      imgLinks.push(myCockpit.posts[x].bigsizelink);
+    }
+
+    var count = imgLinks.length;
+    var j = 0;
+
+    for (var i = 0; i < count; i++) {
+        JSZipUtils.getBinaryContent(imgLinks[i], function(err, data) {
+            if (err) {
+                console.erro("Problem when downloading img: " + imgLink[i]);
+            } else {
+                j++;
+                zip.file("picture"+j+".jpg", data, { binary: true });
+
+                if (j === count) {
+                    zip.generateAsync({
+                            type: "blob"
+                        })
+                        .then(function(content) {
+                            saveAs(content, "example.zip");
+                        });
+                }
+            }
+        });
     }
 }
 
@@ -833,7 +877,7 @@ processMediaObjComments = function(objects) {
     for (i = lastPostProcessed; i < postsLength; i++) {
         var commentsLength = posts[i].commentscnt;
 
-      //  commentTxt = '<p onmouseover="overComment(this)" onmouseout="outComment()" data-img-thumb="' + posts[i].thumbnail + '" class="postcaption comments"><b>' + getDateStr(posts[i].date)
+        //  commentTxt = '<p onmouseover="overComment(this)" onmouseout="outComment()" data-img-thumb="' + posts[i].thumbnail + '" class="postcaption comments"><b>' + getDateStr(posts[i].date)
         commentTxt = '<p class="postcaption comments">' + getDateStr(posts[i].date)
         commentTxt = commentTxt + ' - (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)';
 
@@ -844,9 +888,9 @@ processMediaObjComments = function(objects) {
         }
 
         commentTxt = commentTxt + '</p>';
-  //      commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
+        //      commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
 
-    //    commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)</p>';
+        //    commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)</p>';
         node = document.createElement("li");
         node.innerHTML = commentTxt;
 
@@ -864,7 +908,7 @@ processMediaObjComments = function(objects) {
                 }
 
                 commentTxt = commentTxt + '"><i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i></p>';
-              //  commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
+                //  commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
 
                 node = document.createElement("li");
                 node.innerHTML = commentTxt;
