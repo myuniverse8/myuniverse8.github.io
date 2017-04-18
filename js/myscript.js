@@ -504,7 +504,7 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
-        var photoTxt = '<a target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a>';
+        var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' +  myCockpit.posts[i].likescnt + '</p><p>comments: ' + myCockpit.posts[i].commentscnt + '</p></div></div>';
         var node = document.createElement("li");
         node.innerHTML = photoTxt;
         document.getElementById("myList").appendChild(node);
@@ -1026,7 +1026,8 @@ objBtnClick = function(elem) {
             })[0];
 
             if (myFoundPost) {
-                var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
+                var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' + myFoundPost.likescnt + ' </p><p>comments: ' + myFoundPost.commentscnt + '</p></div></div>';
+                //var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
                 var node = document.createElement("li");
                 node.innerHTML = photoTxt;
                 myDataList.appendChild(node);
