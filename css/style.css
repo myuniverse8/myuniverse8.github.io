@@ -86,6 +86,10 @@ ul#myList button {
   margin: 1px;
 }
 
+div#nav button {
+  margin-left: 5px;
+}
+
 ul#myList button:active {
   background-color: #3b99fc;
   color: white;

@@ -233,7 +233,15 @@ window.onload = function() {
     myEndda.setMinutes(0);
     myEndda.setSeconds(0);
 
+    updateTitle();
+
+    loadData(myUrl);
+};
+
+updateTitle = function() {
     myTitle = myNickname + '(';
+
+    beforeItemsProcessing();
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
     switch (myMode) {
@@ -246,37 +254,31 @@ window.onload = function() {
             //1 - post/comments
             myTitle = myTitle + 'comments)';
             document.getElementById("myList").classList.add("comments");
-            beforeItemsProcessing();
             break;
         case '2':
             //2 - tags
             document.getElementById("myList").classList.add("tags");
             myTitle = myTitle + 'tags)';
-            beforeItemsProcessing();
             break;
         case '3':
             //3 - locations
             document.getElementById("myList").classList.add("locations");
             myTitle = myTitle + 'locations)';
-            beforeItemsProcessing();
             break;
         case '4':
             //4 - commentors
             document.getElementById("myList").classList.add("commentors");
-            myTitle = myTitle + 'commentors)';
-            beforeItemsProcessing();
+            myTitle = myTitle + 'commentators)';
             break;
         case '5':
             //5 - likers
             document.getElementById("myList").classList.add("likers");
             myTitle = myTitle + 'likers)';
-            beforeItemsProcessing();
             break;
     }
 
     document.title = myTitle;
-    loadData(myUrl);
-};
+}
 
 togglePostCaptionCheckbox = function(element) {
     if (element.checked === true) {
@@ -346,24 +348,7 @@ loadData = function(mediaUrl) {
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
-            //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-            switch (myMode) {
-                case '0':
-                    //0 - photos
-                    processMediaObjPhotos();
-                    break;
-                case '1':
-                    //1 - post/comments
-                    processMediaObjComments();
-                    break;
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                    clearMyList();
-                    processMediaObj();
-                    break;
-            }
+            processObjectsByMode();
         }
     }
 }
@@ -528,13 +513,25 @@ processMediaObjPhotos = function(mediaObj) {
     lastPostProcessed = i;
 }
 
+goToNextTab = function(elem) {
+    lastPostProcessed = 0;
+    myMode = elem.attributes['data-next-tab'].nodeValue;
+    document.getElementById('myList').setAttribute('class','');
+    clearMyList();
+    updateTitle();
+    beforeItemsProcessing();
+    processObjectsByMode();
+}
+
 beforeItemsProcessing = function() {
     var opt;
 
     var navDiv = document.getElementById("nav");
+    navDiv.innerHTML = '';
     navDiv.classList.add("nav");
 
-    var contentDiv = document.getElementById("content");
+    var contentDiv = document.getElementById("tmp-content");
+    contentDiv.innerHTML = '';
     var selDrop = document.createElement("select");
 
     selDrop.setAttribute('id', 'sel-drop-search');
@@ -612,24 +609,257 @@ beforeItemsProcessing = function() {
             break;
     }
 
-    navDiv.appendChild(label);
-    navDiv.appendChild(selDrop);
+    if (myMode !== '0') {
+        navDiv.appendChild(label);
+        navDiv.appendChild(selDrop);
+    }
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '0':
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '1');
+            var tn = document.createTextNode('Go to posts/comments');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '2');
+            var tn = document.createTextNode('Go to tags');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '3');
+            var tn = document.createTextNode('Go to locations');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '4');
+            var tn = document.createTextNode('Go to commentators');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '5');
+            var tn = document.createTextNode('Go to likers');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            break;
+        case '1':
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '0');
+            var tn = document.createTextNode('Go to photos');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '2');
+            var tn = document.createTextNode('Go to tags');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '3');
+            var tn = document.createTextNode('Go to locations');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '4');
+            var tn = document.createTextNode('Go to commentators');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '5');
+            var tn = document.createTextNode('Go to likers');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            break;
+        case '2':
+            //2 - tags
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '0');
+            var tn = document.createTextNode('Go to photos');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '1');
+            var tn = document.createTextNode('Go to posts/comments');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '3');
+            var tn = document.createTextNode('Go to locations');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '4');
+            var tn = document.createTextNode('Go to commentators');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '5');
+            var tn = document.createTextNode('Go to likers');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            break;
+        case '3':
+            //3 - locations
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '0');
+            var tn = document.createTextNode('Go to photos');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '1');
+            var tn = document.createTextNode('Go to posts/comments');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '2');
+            var tn = document.createTextNode('Go to tags');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '4');
+            var tn = document.createTextNode('Go to commentators');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '5');
+            var tn = document.createTextNode('Go to likers');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+            break;
+        case '4':
+            //4 - commentors
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '0');
+            var tn = document.createTextNode('Go to photos');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '1');
+            var tn = document.createTextNode('Go to posts/comments');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '2');
+            var tn = document.createTextNode('Go to tags');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '3');
+            var tn = document.createTextNode('Go to locations');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '5');
+            var tn = document.createTextNode('Go to likers');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            break;
+        case '5':
+            //5 - likers
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '0');
+            var tn = document.createTextNode('Go to photos');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '1');
+            var tn = document.createTextNode('Go to posts/comments');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '2');
+            var tn = document.createTextNode('Go to tags');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '3');
+            var tn = document.createTextNode('Go to locations');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+
+            var btn1 = document.createElement('button');
+            btn1.setAttribute('onclick', 'goToNextTab(this)');
+            btn1.setAttribute('data-next-tab', '4');
+            var tn = document.createTextNode('Go to commentators');
+            btn1.appendChild(tn);
+            navDiv.appendChild(btn1);
+            break;
+    }
 
     if (myMode === '1') {
         //1 - post/comments
+        var divNavTmp = document.createElement("div");
+
         var node = document.createElement("div");
         node.classList.add("nav-comments");
         node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
-        navDiv.appendChild(node);
+        divNavTmp.appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">';
-        navDiv.appendChild(node);
+        divNavTmp.appendChild(node);
         node = document.createElement("div");
         node.classList.add("nav-comments");
         node.classList.add("own-replies");
         node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">';
-        navDiv.appendChild(node);
+        divNavTmp.appendChild(node);
+        navDiv.appendChild(divNavTmp);
 
         var newDiv = document.createElement('div');
         var saveBtn = document.createElement("button");
@@ -647,6 +877,22 @@ beforeItemsProcessing = function() {
         case '3':
         case '4':
         case '5':
+            // var infoBtnDiv = document.getElementById("btn-info");
+            // if (infoBtnDiv) {
+            //   infoBtnDiv.innerHTML = '';
+            // } else {
+            //
+            // }
+
+
+            // var photosDiv = document.getElementById("photos-by-data");
+            //
+            // if (photosDiv) {
+            //   photosDiv.innerHTML = '';
+            // } else {
+            //
+            // }
+
             var photosDiv = document.createElement("div");
             var photosUl = document.createElement("ul");
 
@@ -655,8 +901,8 @@ beforeItemsProcessing = function() {
 
             var infoBtnDiv = document.createElement("div");
             infoBtnDiv.setAttribute("id", "btn-info");
-
             contentDiv.appendChild(infoBtnDiv);
+
             contentDiv.appendChild(photosDiv);
             contentDiv.appendChild(photosDiv);
 
@@ -668,12 +914,33 @@ beforeItemsProcessing = function() {
     }
 }
 
+processObjectsByMode = function() {
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+        case '0':
+            //0 - photos
+            processMediaObjPhotos();
+            break;
+        case '1':
+            //1 - post/comments
+            processMediaObjComments();
+            break;
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+            clearMyList();
+            processMediaObj();
+            break;
+    }
+}
+
 saveBtnClick = function() {
     var zip = new JSZip();
     var imgLinks = [];
 
-    for (var x = 0; x<myCockpit.posts.length; x++) {
-      imgLinks.push(myCockpit.posts[x].bigsizelink);
+    for (var x = 0; x < myCockpit.posts.length; x++) {
+        imgLinks.push(myCockpit.posts[x].bigsizelink);
     }
 
     var count = imgLinks.length;
@@ -686,7 +953,9 @@ saveBtnClick = function() {
             } else {
                 j++;
                 $('p#loading-p').css('color', 'yellow').text('Downloading photo ' + j + ' of ' + count + ' ... ');
-                zip.file("picture"+j+".jpg", data, { binary: true });
+                zip.file("picture" + j + ".jpg", data, {
+                    binary: true
+                });
 
                 if (j === count) {
                     $('p#loading-p').css('color', 'white').text('Done');
@@ -849,13 +1118,6 @@ processMediaObj = function(objs) {
         myList.appendChild(node);
     }
 }
-
-// overComment = function(elem) {
-//   $("img#post-pic-img").attr('src', elem.getAttribute('data-img-thumb'));
-// }
-// outComment = function() {
-//   $("img#post-pic-img").attr('src','');
-// }
 
 processMediaObjComments = function(objects) {
     var i = 0;
