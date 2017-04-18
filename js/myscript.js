@@ -341,13 +341,10 @@ loadData = function(mediaUrl) {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
             $('#save-big-photos-btn').prop("disabled", false);
-            //postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
             $('p#loading-p').css('color', 'white').text('Done. ');
 
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
-
-            //$('p#loading-p').css('color', 'white').text('Data loaded.');
 
             //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
             switch (myMode) {
@@ -367,8 +364,6 @@ loadData = function(mediaUrl) {
                     processMediaObj();
                     break;
             }
-            //      postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
-            //
         }
     }
 }

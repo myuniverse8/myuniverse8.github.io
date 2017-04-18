@@ -79,15 +79,14 @@ p.own-reply {
   color:gray;
 }
 
-ul#myList button,
-button.group1 {
+ul#myList button {
   border: 1px solid black;
   border-radius: 5px;
   background-color: white;
+  margin: 1px;
 }
 
-ul#myList button:active,
-button.group1:active {
+ul#myList button:active {
   background-color: #3b99fc;
   color: white;
 }
