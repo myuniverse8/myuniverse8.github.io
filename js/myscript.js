@@ -517,13 +517,14 @@ goToNextTab = function(elem) {
     lastPostProcessed = 0;
     myMode = elem.attributes['data-next-tab'].nodeValue;
     document.getElementById('myList').setAttribute('class','');
-    clearMyList();
     updateTitle();
     beforeItemsProcessing();
     processObjectsByMode();
 }
 
 beforeItemsProcessing = function() {
+    clearMyList();
+
     var opt;
 
     var navDiv = document.getElementById("nav");
@@ -688,6 +689,14 @@ beforeItemsProcessing = function() {
             var tn = document.createTextNode('Go to likers');
             btn1.appendChild(tn);
             navDiv.appendChild(btn1);
+
+            var saveBtn = document.createElement("button");
+            saveBtn.setAttribute('onclick', 'saveBtnClick()');
+            saveBtn.setAttribute('id', 'save-big-photos-btn');
+            var saveBtnTxt = document.createTextNode('Save photos');
+            saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file' );
+            saveBtn.appendChild(saveBtnTxt);
+            navDiv.appendChild(saveBtn);
 
             break;
         case '2':
@@ -860,15 +869,6 @@ beforeItemsProcessing = function() {
         node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">';
         divNavTmp.appendChild(node);
         navDiv.appendChild(divNavTmp);
-
-        var newDiv = document.createElement('div');
-        var saveBtn = document.createElement("button");
-        saveBtn.setAttribute('onclick', 'saveBtnClick()');
-        saveBtn.setAttribute('id', 'save-big-photos-btn');
-        var saveBtnTxt = document.createTextNode('Save big photos of downloaded posts to zip');
-        saveBtn.appendChild(saveBtnTxt);
-        newDiv.appendChild(saveBtn);
-        navDiv.appendChild(newDiv);
     }
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
@@ -877,22 +877,6 @@ beforeItemsProcessing = function() {
         case '3':
         case '4':
         case '5':
-            // var infoBtnDiv = document.getElementById("btn-info");
-            // if (infoBtnDiv) {
-            //   infoBtnDiv.innerHTML = '';
-            // } else {
-            //
-            // }
-
-
-            // var photosDiv = document.getElementById("photos-by-data");
-            //
-            // if (photosDiv) {
-            //   photosDiv.innerHTML = '';
-            // } else {
-            //
-            // }
-
             var photosDiv = document.createElement("div");
             var photosUl = document.createElement("ul");
 
@@ -908,8 +892,6 @@ beforeItemsProcessing = function() {
 
             photosUl.classList.add("photos");
             photosDiv.appendChild(photosUl);
-
-            clearMyList();
             break;
     }
 }
