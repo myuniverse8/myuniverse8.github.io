@@ -683,7 +683,7 @@ saveBtnClick = function() {
 
     var count = imgLinks.length;
     var j = 0;
-    
+
     for (var i = 0; i < count; i++) {
         JSZipUtils.getBinaryContent(imgLinks[i], function(err, data) {
             if (err) {
