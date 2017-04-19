@@ -47,6 +47,7 @@ div#loading-info {
     background-color: grey;
     color: white;
     opacity: 0.8;
+    z-index: 1;
 }
 
 p#loading-p {
@@ -95,7 +96,6 @@ ul#myList button:active {
   color: white;
 }
 
-
 div.before-post-link {
   position: relative;
   display: inline-block;
@@ -118,5 +118,5 @@ a.post-photo-link:hover+div {
 }
 
 p.comments a { position:relative; }
-p.comments a span { position:absolute; top: 20px; left: 20px; display:none; z-index:99; }
+p.comments a span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
 p.comments a:hover span { display:block; }
