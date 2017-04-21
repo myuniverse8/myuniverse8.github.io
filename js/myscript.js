@@ -532,13 +532,21 @@ processMediaObjPhotos = function(mediaObj) {
     var postsLength = myCockpit.posts.length;
 
     for (i = lastPostProcessed; i < postsLength; i++) {
-        var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myCockpit.posts[i].link + '"><img class="post" src="' + myCockpit.posts[i].thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' +  myCockpit.posts[i].likescnt + '</p><p>comments: ' + myCockpit.posts[i].commentscnt + '</p></div></div>';
         var node = document.createElement("li");
-        node.innerHTML = photoTxt;
+        node.innerHTML = getPhotoTxt(myCockpit.posts[i]);
         document.getElementById("myList").appendChild(node);
     }
 
     lastPostProcessed = i;
+}
+
+getPhotoTxt = function(mediaObj) {
+  var place = '';
+  if (mediaObj.location) {
+    place = '<p> place: ' + mediaObj.location + '</p>';
+  }
+  var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + mediaObj.link + '"><img class="post" src="' + mediaObj.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' +  mediaObj.likescnt + '</p><p>comments: ' + mediaObj.commentscnt + '</p>' + place + '</div></div>';
+  return photoTxt;
 }
 
 goToNextTab = function(elem) {
@@ -1055,10 +1063,10 @@ objBtnClick = function(elem) {
             })[0];
 
             if (myFoundPost) {
-                var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' + myFoundPost.likescnt + ' </p><p>comments: ' + myFoundPost.commentscnt + '</p></div></div>';
+                //var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' + myFoundPost.likescnt + ' </p><p>comments: ' + myFoundPost.commentscnt + '</p></div></div>';
                 //var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
                 var node = document.createElement("li");
-                node.innerHTML = photoTxt;
+                node.innerHTML = getPhotoTxt(myFoundPost);
                 myDataList.appendChild(node);
             }
         }
