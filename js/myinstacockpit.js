@@ -63,7 +63,6 @@ function openWindow() {
     myWin = window.open(myUrl, myWinName);
 }
 
-
 function getCurrentValues() {
     myNickname = document.getElementById('nickname').value;
     myTestMode = '';
@@ -84,3 +83,10 @@ toggleDatesCheckbox = function(element) {
         $("div#dates").hide();
     }
 }
+
+$(document).keypress(function (e) {
+    if (e.which == 13) {
+        var elem = document.getElementById("photos-btn");
+        optBtnClick(elem);
+    }
+});
