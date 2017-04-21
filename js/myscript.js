@@ -215,6 +215,34 @@ function getURLParameter(name) {
 }
 
 window.onload = function() {
+    var clipboard = new Clipboard('.clipboard-btn');
+
+    clipboard.on('success', function(e) {
+      var txt = '" copied to clipboard.';
+      //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+      switch (myMode) {
+          case '2':
+         //2 - tags
+              txt = 'Tag "' + e.text + txt;
+              break;
+          case '3':
+         //3 - locations
+              txt = 'Location "' + e.text + txt;
+              break;
+          case '4':
+         //4 - commentors
+          case '5':
+         //5 - likers
+              txt = 'Username "' + e.text + txt;
+              break;
+      }
+
+        $('p#loading-p').css('color', 'white').text(txt);
+        // console.info('Action:', e.action);
+        // console.info('Text:', e.text);
+        // console.info('Trigger:', e.trigger);
+    });
+
     myCockpit = new MyCockpit();
 
     myNickname = getURLParameter('nickname');
@@ -996,6 +1024,7 @@ objBtnClick = function(elem) {
             myFoundElem = myCockpit.locations.filter(function(obj) {
                 return obj.locName === dataValue;
             })[0];
+            htmlTxt = '<a target="_blank" title="Open google map with this location" href="https://www.google.de/maps/place/' + dataValue + '">' + dataValue + '</a>';
             break;
         case '4':
             //4 - commentors
@@ -1066,27 +1095,32 @@ processMediaObj = function(objs) {
     for (var i = 0; i < myObjs.length; i++) {
         var node = document.createElement("li");
         var btn = document.createElement("button");
+        btn.classList.add('clipboard-btn');
 
         //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
         switch (myMode) {
             case '2':
                 //2 - tags
                 btn.setAttribute('data-str-value', myObjs[i].tagName);
+                btn.setAttribute('data-clipboard-text', myObjs[i].tagName);
                 t = document.createTextNode(myObjs[i].tagName + ' (' + myObjs[i].tagCnt + ')');
                 break;
             case '3':
                 //3 - locations
                 btn.setAttribute('data-str-value', myObjs[i].locName);
+                btn.setAttribute('data-clipboard-text', myObjs[i].locName);
                 t = document.createTextNode(myObjs[i].locName + ' (' + myObjs[i].locCnt + ')');
                 break;
             case '4':
                 //4 - commentors
                 btn.setAttribute('data-str-value', myObjs[i].comName);
+                btn.setAttribute('data-clipboard-text', myObjs[i].comName);
                 t = document.createTextNode(myObjs[i].comName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].comCnt + ')');
                 break;
             case '5':
                 //5 - likers
                 btn.setAttribute('data-str-value', myObjs[i].likerName);
+                btn.setAttribute('data-clipboard-text', myObjs[i].likerName);
                 t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
                 break;
         }
