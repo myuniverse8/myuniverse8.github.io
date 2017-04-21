@@ -218,25 +218,7 @@ window.onload = function() {
     var clipboard = new Clipboard('.clipboard-btn');
 
     clipboard.on('success', function(e) {
-      var txt = '" copied to clipboard.';
-      //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-      switch (myMode) {
-          case '2':
-         //2 - tags
-              txt = 'Tag "' + e.text + txt;
-              break;
-          case '3':
-         //3 - locations
-              txt = 'Location "' + e.text + txt;
-              break;
-          case '4':
-         //4 - commentors
-          case '5':
-         //5 - likers
-              txt = 'Username "' + e.text + txt;
-              break;
-      }
-
+      var txt = 'Text "' + e.text + '" copied to clipboard.';
         $('p#loading-p').css('color', 'white').text(txt);
         // console.info('Action:', e.action);
         // console.info('Text:', e.text);
