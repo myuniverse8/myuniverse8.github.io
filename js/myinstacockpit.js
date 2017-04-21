@@ -20,6 +20,9 @@ window.onload = function() {
     document.getElementById('endda').value = todayStr;
     todayStr = yyyy + '-' + mm + '-01';
     document.getElementById('begda').value = todayStr;
+
+    var nickname = document.getElementById("nickname");
+    nickname.focus();
 }
 
 function optBtnClick(elem) {
