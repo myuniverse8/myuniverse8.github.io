@@ -218,8 +218,10 @@ window.onload = function() {
     var clipboard = new Clipboard('.clipboard-btn');
 
     clipboard.on('success', function(e) {
-      var txt = 'Text "' + e.text + '" copied to clipboard.';
+        var txt = 'Text "' + e.text + '" copied to clipboard.';
         $('p#loading-p').css('color', 'white').text(txt);
+
+        setTimeout(updateInfoText, 2500);
         // console.info('Action:', e.action);
         // console.info('Text:', e.text);
         // console.info('Trigger:', e.trigger);
@@ -243,6 +245,7 @@ window.onload = function() {
     myEndda.setMinutes(0);
     myEndda.setSeconds(0);
 
+    beforeItemsProcessing();
     updateTitle();
 
     loadData(myUrl);
@@ -250,8 +253,6 @@ window.onload = function() {
 
 updateTitle = function() {
     myTitle = myNickname + '(';
-
-    beforeItemsProcessing();
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
     switch (myMode) {
@@ -293,10 +294,8 @@ updateTitle = function() {
 togglePostCaptionCheckbox = function(element) {
     if (element.checked === true) {
         $("ul#myList").find("p.postcaption").show();
-        $('select#sel-drop-search').prop("disabled", false);
     } else {
         $("ul#myList").find("p.postcaption").hide();
-        $('select#sel-drop-search').prop("disabled", true);
     }
 }
 
@@ -353,14 +352,52 @@ loadData = function(mediaUrl) {
             $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
             $('#save-big-photos-btn').prop("disabled", false);
-            $('p#loading-p').css('color', 'white').text('Done. ');
+            updateInfoText();
 
             var mediaObj = JSON.parse(xhr.responseText);
             collectData(mediaObj);
 
             processObjectsByMode();
+            updateSearchDropdown();
         }
     }
+}
+
+updateInfoText = function() {
+    var txt = myNickname;
+    switch (myMode) {
+        case '0':
+            //0 - photos
+            txt = txt + '. photos. ';
+            break;
+        case '1':
+            //1 - post/comments
+            txt = txt + '. posts/comments. ';
+            break;
+        case '2':
+            //2 - tags
+            txt = txt + '. tags. ';
+            break;
+        case '3':
+            //3 - locations
+            txt = txt + '. locations. ';
+            break;
+        case '4':
+            //4 - commentors
+            txt = txt + '. commentators. ';
+            break;
+        case '5':
+            //5 - likers
+            txt = txt + '. likers. ';
+            break;
+    }
+
+    var length = myCockpit.posts.length;
+    if (length > 0) {
+        txt = txt + myCockpit.posts.length + ' posts.';
+    }
+
+    $('p#loading-p').css('color', 'white').text(txt);
 }
 
 collectData = function(mediaObj) {
@@ -490,13 +527,12 @@ collectData = function(mediaObj) {
 
         if (i === (itemsLength - 1)) {
             nextUrl = myUrl + '?max_id=' + mediaObj.items[i].id;
-        } else {
-            nextUrl = '';
         }
     }
 
-    $('p#loading-p').text($('p#loading-p').text() + myCockpit.posts.length + ' posts');
-    if (nextUrl !== '') {
+    updateInfoText();
+
+    if (mediaObj.more_available === true){
         if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
             loadData(nextUrl);
         }
@@ -523,21 +559,39 @@ processMediaObjPhotos = function(mediaObj) {
 }
 
 getPhotoTxt = function(mediaObj) {
-  var place = '';
-  if (mediaObj.location) {
-    place = '<p> place: ' + mediaObj.location + '</p>';
-  }
-  var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + mediaObj.link + '"><img class="post" src="' + mediaObj.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' +  mediaObj.likescnt + '</p><p>comments: ' + mediaObj.commentscnt + '</p>' + place + '</div></div>';
-  return photoTxt;
+    var place = '';
+    if (mediaObj.location) {
+        place = '<p> place: ' + mediaObj.location + '</p>';
+    }
+    var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + mediaObj.link + '"><img class="post" src="' + mediaObj.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' + mediaObj.likescnt + '</p><p>comments: ' + mediaObj.commentscnt + '</p>' + place + '</div></div>';
+    return photoTxt;
 }
 
 goToNextTab = function(elem) {
     lastPostProcessed = 0;
     myMode = elem.attributes['data-next-tab'].nodeValue;
-    document.getElementById('myList').setAttribute('class','');
+    document.getElementById('myList').setAttribute('class', '');
     updateTitle();
     beforeItemsProcessing();
     processObjectsByMode();
+    updateSearchDropdown();
+}
+
+updateSearchDropdown = function() {
+    var sel = document.getElementById('sel-drop-search');
+    var value;
+
+    switch (myMode) {
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+            value = 'count';
+            sortObjList(value);
+            sel.value = value;
+            break;
+    }
+
 }
 
 beforeItemsProcessing = function() {
@@ -620,7 +674,7 @@ beforeItemsProcessing = function() {
             break;
         case '4':
             //4 - commentors
-            label.innerHTML = 'Sort commentors: ';
+            label.innerHTML = 'Sort commentators: ';
             break;
         case '5':
             //5 - likers
@@ -712,7 +766,7 @@ beforeItemsProcessing = function() {
             saveBtn.setAttribute('onclick', 'saveBtnClick()');
             saveBtn.setAttribute('id', 'save-big-photos-btn');
             var saveBtnTxt = document.createTextNode('Save photos');
-            saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file' );
+            saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
             saveBtn.appendChild(saveBtnTxt);
             navDiv.appendChild(saveBtn);
 
@@ -869,6 +923,8 @@ beforeItemsProcessing = function() {
             break;
     }
 
+
+
     if (myMode === '1') {
         //1 - post/comments
         var divNavTmp = document.createElement("div");
@@ -912,6 +968,8 @@ beforeItemsProcessing = function() {
             photosDiv.appendChild(photosUl);
             break;
     }
+
+    updateInfoText();
 }
 
 processObjectsByMode = function() {
@@ -959,6 +1017,9 @@ saveBtnClick = function() {
 
                 if (j === count) {
                     $('p#loading-p').css('color', 'white').text('Done');
+
+                    setTimeout(updateInfoText, 2500);
+
                     zip.generateAsync({
                             type: "blob"
                         })
