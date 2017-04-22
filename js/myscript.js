@@ -37,6 +37,7 @@ function MyCockpit() {
     this.locations = [];
     this.commentors = [];
     this.likers = [];
+    this.comments = [];
 }
 
 MyCockpit.prototype.addPost = function(post) {
@@ -150,6 +151,10 @@ MyCockpit.prototype.updateTags = function(str, postId) {
     }
 }
 
+MyCockpit.prototype.addComment = function(comment) {
+    this.comments.push(comment);
+}
+
 MyPost.prototype.addComment = function(comment) {
     this.comments.push(comment);
 }
@@ -204,6 +209,15 @@ function MyComment(date, user, text) {
     this.date = date;
     this.user = user;
     this.text = text;
+};
+
+function MyAloneComment(date, user, text, post_id, post_link, post_thumbnail) {
+    this.date = date;
+    this.user = user;
+    this.text = text;
+    this.post_id = post_id;
+    this.post_link = post_link;
+    this.post_thumbnail = post_thumbnail;
 };
 
 function MyLike(user) {
@@ -334,7 +348,6 @@ loadData = function(mediaUrl) {
 
     xhr.send();
     $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
-    $('input.nav-input').prop("disabled", true);
     $('select#sel-drop-search').prop("disabled", true);
     $('#save-big-photos-btn').prop("disabled", true);
 
@@ -345,11 +358,9 @@ loadData = function(mediaUrl) {
         if (xhr.status != 200) {
             console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
             $('p#loading-p').css('color', 'red').text('Data loading error!');
-            $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
             $('#save-big-photos-btn').prop("disabled", false);
         } else {
-            $('input.nav-input').prop("disabled", false);
             $('select#sel-drop-search').prop("disabled", false);
             $('#save-big-photos-btn').prop("disabled", false);
             updateInfoText();
@@ -470,10 +481,19 @@ collectData = function(mediaObj) {
                     commentsObj.data[j].from.username,
                     commentsObj.data[j].text);
 
+                var aloneComment = new MyAloneComment(d,
+                    commentsObj.data[j].from.username,
+                    commentsObj.data[j].text,
+                    mediaObj.items[i].id,
+                    mediaObj.items[i].link,
+                    mediaObj.items[i].images.thumbnail.url
+                );
+
                 if (myUseDates === 'X') {
                     if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
                         addPost = 'X';
                         post.addComment(comment);
+                        myCockpit.addComment(aloneComment);
                         myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                         if (commentsObj.data[j].from.username !== myNickname) {
                             myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
@@ -482,6 +502,7 @@ collectData = function(mediaObj) {
                 } else {
                     addPost = 'X';
                     post.addComment(comment);
+                    myCockpit.addComment(aloneComment);
                     myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                     if (commentsObj.data[j].from.username !== myNickname) {
                         myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
@@ -532,7 +553,7 @@ collectData = function(mediaObj) {
 
     updateInfoText();
 
-    if (mediaObj.more_available === true){
+    if (mediaObj.more_available === true) {
         if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
             loadData(nextUrl);
         }
@@ -618,16 +639,22 @@ beforeItemsProcessing = function() {
             //1 - post/comments
             opt = document.createElement("option");
             opt.setAttribute('value', 'space');
+            opt.innerHTML = 'by post date';
             selDrop.appendChild(opt);
 
             opt = document.createElement("option");
-            opt.setAttribute('value', 'comments');
-            opt.innerHTML = 'by comments';
+            opt.setAttribute('value', 'comm_date');
+            opt.innerHTML = 'by comment date (without posts)';
+            selDrop.appendChild(opt);
+
+            opt = document.createElement("option");
+            opt.setAttribute('value', 'posts');
+            opt.innerHTML = 'by comments count';
             selDrop.appendChild(opt);
 
             opt = document.createElement("option");
             opt.setAttribute('value', 'likes');
-            opt.innerHTML = 'by likes';
+            opt.innerHTML = 'by likes count';
             selDrop.appendChild(opt);
 
             selDrop.setAttribute('onchange', 'selDropCommentsChanged(this)');
@@ -923,8 +950,6 @@ beforeItemsProcessing = function() {
             break;
     }
 
-
-
     if (myMode === '1') {
         //1 - post/comments
         var divNavTmp = document.createElement("div");
@@ -981,7 +1006,7 @@ processObjectsByMode = function() {
             break;
         case '1':
             //1 - post/comments
-            processMediaObjComments();
+            processMediaObjPosts();
             break;
         case '2':
         case '3':
@@ -1114,6 +1139,8 @@ objBtnClick = function(elem) {
             }
         }
     }
+
+    document.getElementById("photos-by-data").scrollIntoView();
 }
 
 processMediaObj = function(objs) {
@@ -1188,6 +1215,23 @@ processMediaObj = function(objs) {
 }
 
 processMediaObjComments = function(objects) {
+  for (var i=0; i<objects.length; i++) {
+    var commentTxt = '<p data-img-thumb="' + objects[i].thumbnail + '" class="comments ';
+    if (objects[i].user === myNickname) {
+        commentTxt = commentTxt + 'own-reply';
+    } else {
+        commentTxt = commentTxt + 'comment';
+    }
+
+    commentTxt = commentTxt + '"><i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '</a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i></p>';
+
+    var node = document.createElement("li");
+    node.innerHTML = commentTxt;
+    document.getElementById("myList").appendChild(node);
+  }
+}
+
+processMediaObjPosts = function(objects) {
     var i = 0;
     var j = 0;
     var commentTxt;
@@ -1264,21 +1308,36 @@ selDropCommentsChanged = function(elem) {
     lastPostProcessed = 0;
     var option = elem.options[elem.selectedIndex].value;
 
+    $('#incl-post-caption').prop("disabled", false);
+    document.getElementById('incl-post-caption').checked = true;
+
     switch (option) {
         case 'space':
-            processMediaObjComments();
+            processMediaObjPosts();
+            break;
+        case 'comm_date':
+            $('#incl-post-caption').prop("disabled", true);
+            document.getElementById('own-replies').checked = true;
+            document.getElementById('incl-comments').checked = true;
+            document.getElementById('incl-post-caption').checked = false;
+
+            slicedObjs = myCockpit.comments.slice(0);
+            objs = slicedObjs.sort(function(a, b) {
+                return b.date.getTime() - a.date.getTime();
+            });
+            processMediaObjComments(objs);
             break;
         case 'likes':
             objs = slicedObjs.sort(function(a, b) {
                 return b.likescnt - a.likescnt;
             });
-            processMediaObjComments(objs);
+            processMediaObjPosts(objs);
             break;
-        case 'comments':
+        case 'posts':
             objs = slicedObjs.sort(function(a, b) {
                 return b.commentscnt - a.commentscnt;
             });
-            processMediaObjComments(objs);
+            processMediaObjPosts(objs);
             break;
     }
 
