@@ -118,10 +118,19 @@ a.post-photo-link:hover+div {
 }
 
 p.comments a,
-a.with-hover-img { position:relative; }
+a.with-hover-img,
+button.user-btn { position:relative; }
 
 p.comments a span,
-a.with-hover-img span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
+a.with-hover-img span,
+button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
 
 p.comments a:hover span,
-a.with-hover-img:hover span { display:block; }
+a.with-hover-img:hover span,
+button.user-btn:hover span { display:block; }
+
+img.profile_picture {
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
