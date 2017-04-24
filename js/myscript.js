@@ -68,7 +68,7 @@ MyCockpit.prototype.updateLocations = function(str, postId) {
     }
 }
 
-MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
+MyCockpit.prototype.updateCommentors = function(str, realName, postId, profile_picture) {
     var comName = str.toLowerCase();
 
     var myFoundCommentors = this.commentors.filter(function(obj) {
@@ -77,7 +77,7 @@ MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
 
     if (!myFoundCommentors) {
         // object is not found
-        var myCommentor = new MyCommentor(comName, realName, postId);
+        var myCommentor = new MyCommentor(comName, realName, profile_picture);
         myCommentor.postIds.push(postId);
         this.commentors.push(myCommentor);
     } else {
@@ -92,7 +92,7 @@ MyCockpit.prototype.updateCommentors = function(str, realName, postId) {
     }
 }
 
-MyCockpit.prototype.updateLikers = function(str, realName, postId) {
+MyCockpit.prototype.updateLikers = function(str, realName, postId, profile_picture) {
     //debugger;
     var likerName = str.toLowerCase();
 
@@ -102,7 +102,7 @@ MyCockpit.prototype.updateLikers = function(str, realName, postId) {
 
     if (!myFoundLikers) {
         // object is not found
-        var myLiker = new MyLiker(likerName, realName, postId);
+        var myLiker = new MyLiker(likerName, realName, profile_picture);
         myLiker.postIds.push(postId);
         this.likers.push(myLiker);
     } else {
@@ -191,33 +191,37 @@ function MyLocation(locName) {
     this.postIds = [];
 };
 
-function MyCommentor(comName, realName) {
+function MyCommentor(comName, realName, profile_picture) {
     this.comName = comName;
     this.realName = realName
     this.comCnt = 1;
+    this.profile_picture = profile_picture;
     this.postIds = [];
 };
 
-function MyLiker(likerName, realName) {
+function MyLiker(likerName, realName, profile_picture) {
     this.likerName = likerName;
     this.realName = realName
     this.likerCnt = 1;
+    this.profile_picture = profile_picture;
     this.postIds = [];
 };
 
-function MyComment(date, user, text) {
+function MyComment(date, user, text, profile_picture) {
     this.date = date;
     this.user = user;
     this.text = text;
+    this.profile_picture = profile_picture;
 };
 
-function MyAloneComment(date, user, text, post_id, post_link, post_thumbnail) {
+function MyAloneComment(date, user, text, post_id, post_link, post_thumbnail, profile_picture) {
     this.date = date;
     this.user = user;
     this.text = text;
     this.post_id = post_id;
     this.post_link = post_link;
     this.post_thumbnail = post_thumbnail;
+    this.profile_picture = profile_picture;
 };
 
 function MyLike(user) {
@@ -443,7 +447,7 @@ collectData = function(mediaObj) {
         var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
 
         for (x = 0; x < mediaObj.items[i].likes.data.length; x++) {
-            myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id);
+            myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id, mediaObj.items[i].likes.data[x].profile_picture);
         }
 
         if (caption !== '') {
@@ -479,14 +483,17 @@ collectData = function(mediaObj) {
 
                 var comment = new MyComment(d,
                     commentsObj.data[j].from.username,
-                    commentsObj.data[j].text);
+                    commentsObj.data[j].text,
+                    commentsObj.data[j].from.profile_picture
+                  );
 
                 var aloneComment = new MyAloneComment(d,
                     commentsObj.data[j].from.username,
                     commentsObj.data[j].text,
                     mediaObj.items[i].id,
                     mediaObj.items[i].link,
-                    mediaObj.items[i].images.thumbnail.url
+                    mediaObj.items[i].images.thumbnail.url,
+                    commentsObj.data[j].from.profile_picture
                 );
 
                 if (myUseDates === 'X') {
@@ -496,7 +503,7 @@ collectData = function(mediaObj) {
                         myCockpit.addComment(aloneComment);
                         myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                         if (commentsObj.data[j].from.username !== myNickname) {
-                            myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
+                            myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
                         }
                     }
                 } else {
@@ -505,7 +512,7 @@ collectData = function(mediaObj) {
                     myCockpit.addComment(aloneComment);
                     myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
                     if (commentsObj.data[j].from.username !== myNickname) {
-                        myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id);
+                        myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
                     }
                 }
             }
@@ -1083,6 +1090,7 @@ objBtnClick = function(elem) {
     var myDataList;
     var photosDiv;
     var dataValue = elem.getAttribute('data-str-value');
+    var profilePicture;
     var htmlTxt = '';
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
@@ -1107,14 +1115,16 @@ objBtnClick = function(elem) {
             var myFoundElem = myCockpit.commentors.filter(function(obj) {
                 return obj.comName === dataValue;
             })[0];
-            htmlTxt = '<a target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '</a>';
+            profilePicture = elem.getAttribute('data-profile-picture');
+            htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="post-hover" src="' + profilePicture + '"/></span></a>';
             break;
         case '5':
             //5 - likers
             var myFoundElem = myCockpit.likers.filter(function(obj) {
                 return obj.likerName === dataValue;
             })[0];
-            htmlTxt = '<a target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '</a>';
+            profilePicture = elem.getAttribute('data-profile-picture');
+            htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="post-hover" src="' + profilePicture + '"/></span></a>';
             break;
     }
 
@@ -1193,12 +1203,14 @@ processMediaObj = function(objs) {
                 //4 - commentors
                 btn.setAttribute('data-str-value', myObjs[i].comName);
                 btn.setAttribute('data-clipboard-text', myObjs[i].comName);
+                btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
                 t = document.createTextNode(myObjs[i].comName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].comCnt + ')');
                 break;
             case '5':
                 //5 - likers
                 btn.setAttribute('data-str-value', myObjs[i].likerName);
                 btn.setAttribute('data-clipboard-text', myObjs[i].likerName);
+                btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
                 t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
                 break;
         }
@@ -1216,14 +1228,14 @@ processMediaObj = function(objs) {
 
 processMediaObjComments = function(objects) {
   for (var i=0; i<objects.length; i++) {
-    var commentTxt = '<p data-img-thumb="' + objects[i].thumbnail + '" class="comments ';
+    var commentTxt = '<p class="comments ';
     if (objects[i].user === myNickname) {
         commentTxt = commentTxt + 'own-reply';
     } else {
         commentTxt = commentTxt + 'comment';
     }
 
-    commentTxt = commentTxt + '"><i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '</a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i></p>';
+    commentTxt = commentTxt + '"><i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i></p>';
 
     var node = document.createElement("li");
     node.innerHTML = commentTxt;
@@ -1248,7 +1260,6 @@ processMediaObjPosts = function(objects) {
     for (i = lastPostProcessed; i < postsLength; i++) {
         var commentsLength = posts[i].commentscnt;
 
-        //  commentTxt = '<p onmouseover="overComment(this)" onmouseout="outComment()" data-img-thumb="' + posts[i].thumbnail + '" class="postcaption comments"><b>' + getDateStr(posts[i].date)
         commentTxt = '<p class="postcaption comments">' + getDateStr(posts[i].date)
         commentTxt = commentTxt + ' - (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)';
 
@@ -1271,14 +1282,14 @@ processMediaObjPosts = function(objects) {
         var commentsLength = commentsObj.length;
         if (commentsLength > 0) {
             for (j = 0; j < commentsLength; j++) {
-                commentTxt = '<p data-img-thumb="' + posts[i].thumbnail + '" class="comments ';
+                commentTxt = '<p class="comments ';
                 if (posts[i].comments[j].user === myNickname) {
                     commentTxt = commentTxt + 'own-reply';
                 } else {
                     commentTxt = commentTxt + 'comment';
                 }
 
-                commentTxt = commentTxt + '"><i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i></p>';
+                commentTxt = commentTxt + '"><i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '<span><img class="post-hover" src="' + posts[i].comments[j].profile_picture + '"/></span></a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i></p>';
                 //  commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
 
                 node = document.createElement("li");
