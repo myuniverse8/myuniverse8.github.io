@@ -125,11 +125,13 @@ p.comments a span,
 a.with-hover-img span,
 button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
 
+
 p.comments a:hover span,
 a.with-hover-img:hover span,
-button.user-btn:hover span { display:block; }
+button.user-btn:hover span
+ { display:block; }
 
-img.profile_picture {
+img.profile-picture {
   width: 50px;
   height: 50px;
   border: 1px solid black;

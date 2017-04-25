@@ -1116,7 +1116,7 @@ objBtnClick = function(elem) {
         return obj.comName === dataValue;
       })[0];
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="post-hover" src="' + profilePicture + '"/></span></a>';
+      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a>';
       break;
     case '5':
       //5 - likers
@@ -1124,7 +1124,7 @@ objBtnClick = function(elem) {
         return obj.likerName === dataValue;
       })[0];
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="post-hover" src="' + profilePicture + '"/></span></a>';
+      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a>';
       break;
   }
 
@@ -1211,7 +1211,7 @@ processMediaObj = function(objs) {
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
         imgEl.setAttribute('src', myObjs[i].profile_picture);
-        imgEl.setAttribute('class', "profile_picture");
+        imgEl.setAttribute('class', "post-hover");
         spanEl.appendChild(imgEl);
         btn.appendChild(spanEl);
         break;
@@ -1224,7 +1224,7 @@ processMediaObj = function(objs) {
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
         imgEl.setAttribute('src', myObjs[i].profile_picture);
-        imgEl.setAttribute('class', "profile_picture");
+        imgEl.setAttribute('class', "profile-picture");
         spanEl.appendChild(imgEl);
         btn.appendChild(spanEl);
         t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
@@ -1344,7 +1344,7 @@ selDropCommentsChanged = function(elem) {
       break;
     case 'comm_date':
       $('#incl-post-caption').prop("disabled", true);
-      document.getElementById('own-replies').checked = true;
+      // document.getElementById('own-replies').checked = true;
       document.getElementById('incl-comments').checked = true;
       document.getElementById('incl-post-caption').checked = false;
 
