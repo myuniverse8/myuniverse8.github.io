@@ -649,11 +649,13 @@ beforeItemsProcessing = function() {
   var selDrop = document.createElement("select");
 
   selDrop.setAttribute('id', 'sel-drop-search');
+  $('#nav').show();
 
   //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
   switch (myMode) {
     case '0':
       //0 - photos
+      $('#nav').hide();
       break;
     case '1':
       //1 - post/comments
