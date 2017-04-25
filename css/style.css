@@ -9,6 +9,10 @@ ul.photos li, ul.tags li, ul.locations li, ul.commentors li, ul.likers li {
     display: inline;
 }
 
+img.post {
+  margin-bottom: 5px;
+}
+
 div.nav-comments {
     padding: 5px;
     margin: 5px;
@@ -131,11 +135,9 @@ p.comments a span,
 a.with-hover-img span,
 button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
 
-
 p.comments a:hover span,
 a.with-hover-img:hover span,
-button.user-btn:hover span
- { display:block; }
+button.user-btn:hover span { display:block; }
 
 img.profile-picture {
   width: 50px;
