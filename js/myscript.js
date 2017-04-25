@@ -265,6 +265,7 @@ window.onload = function() {
 
   beforeItemsProcessing();
   updateTitle();
+  updateNavTabButtonSelection();
 
   loadData(myUrl);
 };
@@ -378,38 +379,46 @@ loadData = function(mediaUrl) {
   }
 }
 
-updateInfoText = function() {
-  var txt = myNickname;
+updateNavTabButtonSelection = function() {
+  var tabBtn;
+
+  $('button.tab-btn').removeClass('selected');
+
   switch (myMode) {
     case '0':
       //0 - photos
-      txt = txt + '. photos. ';
+      tabBtn = document.getElementById('photos-tab-btn');
       break;
     case '1':
       //1 - post/comments
-      txt = txt + '. posts/comments. ';
+      tabBtn = document.getElementById('posts-tab-btn');
       break;
     case '2':
       //2 - tags
-      txt = txt + '. tags. ';
+      tabBtn = document.getElementById('tags-tab-btn');
       break;
     case '3':
       //3 - locations
-      txt = txt + '. locations. ';
+      tabBtn = document.getElementById('locations-tab-btn');
       break;
     case '4':
       //4 - commentors
-      txt = txt + '. commentators. ';
+      tabBtn = document.getElementById('commentators-tab-btn');
       break;
     case '5':
       //5 - likers
-      txt = txt + '. likers. ';
+      tabBtn = document.getElementById('likers-tab-btn');
       break;
   }
+  tabBtn.classList.add('selected');
+}
+
+updateInfoText = function() {
+  var txt = myNickname;
 
   var length = myCockpit.posts.length;
   if (length > 0) {
-    txt = txt + myCockpit.posts.length + ' posts.';
+    txt = txt + '. ' + myCockpit.posts.length + ' posts';
   }
 
   $('p#loading-p').css('color', 'white').text(txt);
@@ -603,6 +612,7 @@ goToNextTab = function(elem) {
   beforeItemsProcessing();
   processObjectsByMode();
   updateSearchDropdown();
+  updateNavTabButtonSelection();
 }
 
 updateSearchDropdown = function() {
@@ -626,6 +636,9 @@ beforeItemsProcessing = function() {
   clearMyList();
 
   var opt;
+  var navTabDiv = document.getElementById("nav-tab");
+  navTabDiv.innerHTML = '';
+  navTabDiv.classList.add("nav");
 
   var navDiv = document.getElementById("nav");
   navDiv.innerHTML = '';
@@ -721,241 +734,69 @@ beforeItemsProcessing = function() {
     navDiv.appendChild(selDrop);
   }
 
-  //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-  switch (myMode) {
-    case '0':
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '1');
-      var tn = document.createTextNode('Go to posts/comments');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '2');
-      var tn = document.createTextNode('Go to tags');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '3');
-      var tn = document.createTextNode('Go to locations');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '4');
-      var tn = document.createTextNode('Go to commentators');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '5');
-      var tn = document.createTextNode('Go to likers');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      break;
-    case '1':
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '0');
-      var tn = document.createTextNode('Go to photos');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '2');
-      var tn = document.createTextNode('Go to tags');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '3');
-      var tn = document.createTextNode('Go to locations');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '4');
-      var tn = document.createTextNode('Go to commentators');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '5');
-      var tn = document.createTextNode('Go to likers');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var saveBtn = document.createElement("button");
-      saveBtn.setAttribute('onclick', 'saveBtnClick()');
-      saveBtn.setAttribute('id', 'save-big-photos-btn');
-      var saveBtnTxt = document.createTextNode('Save photos');
-      saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
-      saveBtn.appendChild(saveBtnTxt);
-      navDiv.appendChild(saveBtn);
-
-      break;
-    case '2':
-      //2 - tags
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '0');
-      var tn = document.createTextNode('Go to photos');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '1');
-      var tn = document.createTextNode('Go to posts/comments');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '3');
-      var tn = document.createTextNode('Go to locations');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '4');
-      var tn = document.createTextNode('Go to commentators');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '5');
-      var tn = document.createTextNode('Go to likers');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      break;
-    case '3':
-      //3 - locations
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '0');
-      var tn = document.createTextNode('Go to photos');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '1');
-      var tn = document.createTextNode('Go to posts/comments');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '2');
-      var tn = document.createTextNode('Go to tags');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '4');
-      var tn = document.createTextNode('Go to commentators');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '5');
-      var tn = document.createTextNode('Go to likers');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-      break;
-    case '4':
-      //4 - commentors
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '0');
-      var tn = document.createTextNode('Go to photos');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '1');
-      var tn = document.createTextNode('Go to posts/comments');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '2');
-      var tn = document.createTextNode('Go to tags');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '3');
-      var tn = document.createTextNode('Go to locations');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '5');
-      var tn = document.createTextNode('Go to likers');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      break;
-    case '5':
-      //5 - likers
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '0');
-      var tn = document.createTextNode('Go to photos');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '1');
-      var tn = document.createTextNode('Go to posts/comments');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '2');
-      var tn = document.createTextNode('Go to tags');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '3');
-      var tn = document.createTextNode('Go to locations');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-
-      var btn1 = document.createElement('button');
-      btn1.setAttribute('onclick', 'goToNextTab(this)');
-      btn1.setAttribute('data-next-tab', '4');
-      var tn = document.createTextNode('Go to commentators');
-      btn1.appendChild(tn);
-      navDiv.appendChild(btn1);
-      break;
+  if (myMode == '1') {
+    var saveBtn = document.createElement("button");
+    saveBtn.setAttribute('onclick', 'saveBtnClick()');
+    saveBtn.setAttribute('id', 'save-big-photos-btn');
+    var saveBtnTxt = document.createTextNode('save photos');
+    saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
+    saveBtn.appendChild(saveBtnTxt);
+    navDiv.appendChild(saveBtn);
   }
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '0');
+  btn1.setAttribute('id', 'photos-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('photos');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '1');
+  btn1.setAttribute('id', 'posts-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('posts/comments');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '2');
+  btn1.setAttribute('id', 'tags-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('tags');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '3');
+  btn1.setAttribute('id', 'locations-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('locations');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '4');
+  btn1.setAttribute('id', 'commentators-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('commentators');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
+
+  var btn1 = document.createElement('button');
+  btn1.setAttribute('onclick', 'goToNextTab(this)');
+  btn1.setAttribute('data-next-tab', '5');
+  btn1.setAttribute('id', 'likers-tab-btn');
+  btn1.classList.add('tab-btn');
+  var tn = document.createTextNode('likers');
+  btn1.appendChild(tn);
+  navTabDiv.appendChild(btn1);
 
   if (myMode === '1') {
     //1 - post/comments

@@ -21,6 +21,11 @@ ul#myList button.selected {
     border-radius: 5px;
 }
 
+button.tab-btn.selected {
+  background-color: #3b99fc;
+  color: white;
+}
+
 img.post {
     border: 1px solid black;
 }
@@ -57,7 +62,7 @@ p#loading-p {
 div.nav {
   padding: 5px;
   margin: 5px;
-  display: inline-block;
+  /*display: inline-block;*/
 }
 
 div.elements {
@@ -87,7 +92,8 @@ ul#myList button {
   margin: 1px;
 }
 
-div#nav button {
+div#nav button,
+div#nav-tab button {
   margin-left: 5px;
 }
 
