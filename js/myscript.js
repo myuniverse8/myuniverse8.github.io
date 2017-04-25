@@ -1224,7 +1224,7 @@ processMediaObj = function(objs) {
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
         imgEl.setAttribute('src', myObjs[i].profile_picture);
-        imgEl.setAttribute('class', "profile-picture");
+        imgEl.setAttribute('class', "post-hover");
         spanEl.appendChild(imgEl);
         btn.appendChild(spanEl);
         t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
@@ -1286,9 +1286,7 @@ processMediaObjPosts = function(objects) {
     }
 
     commentTxt = commentTxt + '</p>';
-    //      commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</p>';
 
-    //    commentTxt = commentTxt + '</b> (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post</a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo</a>)</p>';
     node = document.createElement("li");
     node.innerHTML = commentTxt;
 
@@ -1306,7 +1304,6 @@ processMediaObjPosts = function(objects) {
         }
 
         commentTxt = commentTxt + '"><i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '<span><img class="post-hover" src="' + posts[i].comments[j].profile_picture + '"/></span></a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i></p>';
-        //  commentTxt = commentTxt + '">' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '</a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post</a>)</p>';
 
         node = document.createElement("li");
         node.innerHTML = commentTxt;
@@ -1344,7 +1341,6 @@ selDropCommentsChanged = function(elem) {
       break;
     case 'comm_date':
       $('#incl-post-caption').prop("disabled", true);
-      // document.getElementById('own-replies').checked = true;
       document.getElementById('incl-comments').checked = true;
       document.getElementById('incl-post-caption').checked = false;
 
