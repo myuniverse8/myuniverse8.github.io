@@ -17,12 +17,10 @@ ul#photos-data-list {
   ul#myList button.selected {
       background-color: #3b99fc;
       color: white;
-      border-radius: 5px;
   }
 
   ul#myList button {
     border: 1px solid black;
-    border-radius: 5px;
     background-color: white;
     margin: 1px;
   }
@@ -46,7 +44,8 @@ li.comments {
 }
 
 p#loading-p {
-    margin: 1px;
+    margin: 0px;
+    padding: 0px;
 }
 
 img.post-hover {
@@ -55,12 +54,6 @@ img.post-hover {
 
 li.own-reply {
   color:gray;
-}
-
-
-div#nav button,
-div#nav-tab button {
-  /*margin-left: 5px;*/
 }
 
 div.before-post-link {
