@@ -1,10 +1,12 @@
-ul#myList {
+ul#myList,
+ul#photos-data-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-  ul#myList li {
+  ul#myList li,
+  ul#photos-data-list li {
       display: inline-block;
   }
 
@@ -144,8 +146,8 @@ img.profile-picture {
 
 /* Mobile first */
 img.post {
-  width: 55px;
-  height: 55px;
+  width: 50px;
+  height: 50px;
   margin: 1px;
 }
 
