@@ -4,7 +4,7 @@ input#endda {
     width: 300px;
 }
 #sel-drop-search {
-    width: 250px;
+    width: 150px;
 }
 
 ul#myList,
@@ -187,5 +187,9 @@ button.user-btn span {display:none}
     div#loading-info,
     li.comments {
         font-size: 14px;
+    }
+
+    #sel-drop-search {
+        width: 300px;
     }
 }
