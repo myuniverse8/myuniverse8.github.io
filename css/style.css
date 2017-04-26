@@ -113,8 +113,6 @@ div.before-post-link {
 
 div.img-info {
   position:absolute;
-  left: 10px;
-  top: 10px;
   display: none;
 }
   div.img-info p {
@@ -143,4 +141,44 @@ img.profile-picture {
   width: 50px;
   height: 50px;
   border: 1px solid black;
+}
+
+/* Mobile first */
+img.post {
+  width: 55px;
+  height: 55px;
+}
+
+div.img-info {
+  font-size: 5px;
+  left: 3px;
+  top: 3px;
+}
+
+@media only screen and (min-width: 600px) {
+    /* For tablets: */
+    img.post {
+      width: 100px;
+      height: 100px;
+    }
+
+    div.img-info {
+      font-size: 10px;
+      left: 5px;
+      top: 5px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+    img.post {
+      width: 152px;
+      height: 152px;
+    }
+
+    div.img-info {
+      font-size: 14px;
+      left: 10px;
+      top: 10px;
+    }
 }
