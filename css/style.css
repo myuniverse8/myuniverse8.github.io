@@ -1,6 +1,7 @@
 input#nickname,
 input#begda,
-input#endda {
+input#endda,
+#sel-drop-search {
     width: 300px;
 }
 

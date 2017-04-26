@@ -732,11 +732,16 @@ beforeItemsProcessing = function() {
   }
 
   if (myMode !== '0') {
-    navDiv.appendChild(label);
-    navDiv.appendChild(selDrop);
+    var divGroup = document.createElement('div');
+    divGroup.classList.add("form-group");
+    divGroup.appendChild(label);
+    selDrop.classList.add("form-control");
+    divGroup.appendChild(selDrop);
+    navDiv.appendChild(divGroup);
   }
 
   if (myMode == '1') {
+    var saveBtnDiv = document.createElement("div")
     var saveBtn = document.createElement("button");
     saveBtn.setAttribute('onclick', 'saveBtnClick()');
     saveBtn.setAttribute('id', 'save-big-photos-btn');
@@ -745,7 +750,8 @@ beforeItemsProcessing = function() {
     var saveBtnTxt = document.createTextNode('save photos');
     saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
     saveBtn.appendChild(saveBtnTxt);
-    navDiv.appendChild(saveBtn);
+    saveBtnDiv.appendChild(saveBtn)
+    navDiv.appendChild(saveBtnDiv);
   }
 
   var btn1 = document.createElement('button');
@@ -820,16 +826,19 @@ beforeItemsProcessing = function() {
 
     var node = document.createElement("div");
     node.classList.add("nav-comments");
-    node.innerHTML = '<label for="incl-post-caption">Display post captions</label><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">';
+    node.classList.add("checkbox");
+    node.innerHTML = '<label for="incl-post-caption"><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">display post captions</label>';
     divNavTmp.appendChild(node);
     node = document.createElement("div");
     node.classList.add("nav-comments");
-    node.innerHTML = '<label for="incl-comments">Display comments</label><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">';
+    node.classList.add("checkbox");
+    node.innerHTML = '<label for="incl-comments"><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">display comments</label>';
     divNavTmp.appendChild(node);
     node = document.createElement("div");
     node.classList.add("nav-comments");
     node.classList.add("own-replies");
-    node.innerHTML = '<label for="own-replies">Display own replies</label><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">';
+    node.classList.add("checkbox");
+    node.innerHTML = '<label for="own-replies"><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">display own replies</label>';
     divNavTmp.appendChild(node);
     navDiv.appendChild(divNavTmp);
   }
