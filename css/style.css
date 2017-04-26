@@ -85,7 +85,7 @@ div#loading-info {
     color: white;
     opacity: 0.8;
     z-index: 1;
-    font-size: 5px;
+    font-size: 10px;
 }
 
 img.post {
@@ -100,7 +100,7 @@ div.img-info {
 }
 
 div.img-info {
-    font-size: 5px;
+    font-size: 10px;
 }
 
 li.comments  {
@@ -121,11 +121,11 @@ button.user-btn span {display:none}
     div.img-info {
       left: 5px;
       top: 5px;
-      font-size: 10px;
+      font-size: 14px;
     }
 
     div#loading-info {
-        font-size: 10px;
+        font-size: 14px;
     }
 
     li.comments  {
