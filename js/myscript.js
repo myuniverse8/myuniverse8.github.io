@@ -685,10 +685,6 @@ beforeItemsProcessing = function() {
     case '3':
     case '4':
     case '5':
-      // opt = document.createElement("option");
-      // opt.setAttribute('value', 'space');
-      // selDrop.appendChild(opt);
-
       opt = document.createElement("option");
       opt.setAttribute('value', 'name');
       opt.innerHTML = 'by name';
@@ -746,7 +742,7 @@ beforeItemsProcessing = function() {
     saveBtn.setAttribute('onclick', 'saveBtnClick()');
     saveBtn.setAttribute('id', 'save-big-photos-btn');
     saveBtn.classList.add('btn');
-    saveBtn.classList.add('btn-default');
+    saveBtn.classList.add('btn-primary');
     var saveBtnTxt = document.createTextNode('save photos');
     saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
     saveBtn.appendChild(saveBtnTxt);
@@ -760,7 +756,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'photos-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('photos');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -771,7 +767,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'posts-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('posts/comments');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -782,7 +778,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'tags-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('tags');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -793,7 +789,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'locations-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('locations');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -804,7 +800,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'commentators-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('commentators');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -815,7 +811,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'likers-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-default');
+  btn1.classList.add('btn-primary');
   var tn = document.createTextNode('likers');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -967,14 +963,14 @@ objBtnClick = function(elem) {
         return obj.tagName === dataValue;
       })[0];
       var tag = dataValue.substring(1)
-      htmlTxt = '<a target="_blank" href="https://www.instagram.com/explore/tags/' + tag + '">' + dataValue + '</a>';
+      htmlTxt = '<button type="button" class="btn btn-link"><a target="_blank" href="https://www.instagram.com/explore/tags/' + tag + '">' + dataValue + '</a></button>';
       break;
     case '3':
       //3 - locations
       myFoundElem = myCockpit.locations.filter(function(obj) {
         return obj.locName === dataValue;
       })[0];
-      htmlTxt = '<a target="_blank" title="Open google map with this location" href="https://www.google.de/maps/place/' + dataValue + '">' + dataValue + '</a>';
+      htmlTxt = '<button type="button" class="btn btn-link"><a target="_blank" title="Open google map with this location" href="https://www.google.de/maps/place/' + dataValue + '">' + dataValue + '</a></button>';
       break;
     case '4':
       //4 - commentors
@@ -982,7 +978,7 @@ objBtnClick = function(elem) {
         return obj.comName === dataValue;
       })[0];
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a>';
+      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
       break;
     case '5':
       //5 - likers
@@ -990,7 +986,7 @@ objBtnClick = function(elem) {
         return obj.likerName === dataValue;
       })[0];
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a>';
+      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
       break;
   }
 
@@ -1051,6 +1047,8 @@ processMediaObj = function(objs) {
     var btn = document.createElement("button");
 
     btn.classList.add('clipboard-btn');
+    btn.classList.add('btn');
+    btn.classList.add('btn-default');
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
     switch (myMode) {
@@ -1072,7 +1070,7 @@ processMediaObj = function(objs) {
         btn.setAttribute('data-clipboard-text', myObjs[i].comName);
         btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
         t = document.createTextNode(myObjs[i].comName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].comCnt + ')');
-        btn.setAttribute('class', "user-btn");
+        btn.classList.add("user-btn");
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
         imgEl.setAttribute('src', myObjs[i].profile_picture);
@@ -1085,7 +1083,7 @@ processMediaObj = function(objs) {
         btn.setAttribute('data-str-value', myObjs[i].likerName);
         btn.setAttribute('data-clipboard-text', myObjs[i].likerName);
         btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
-        btn.setAttribute('class', "user-btn");
+        btn.classList.add("user-btn");
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
         imgEl.setAttribute('src', myObjs[i].profile_picture);

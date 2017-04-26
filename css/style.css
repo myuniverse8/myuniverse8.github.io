@@ -1,8 +1,10 @@
 input#nickname,
 input#begda,
-input#endda,
-#sel-drop-search {
+input#endda {
     width: 300px;
+}
+#sel-drop-search {
+    width: 250px;
 }
 
 ul#myList,
@@ -22,7 +24,7 @@ ul#photos-data-list {
   }
 
   ul#myList button.selected {
-      background-color: #3b99fc;
+      background-color: #428bca;
       color: white;
   }
 
@@ -33,13 +35,13 @@ ul#photos-data-list {
   }
 
   ul#myList button:active {
-    background-color: #3b99fc;
+    background-color: #428bca;
     color: white;
   }
 
 button.tab-btn.selected {
-  background-color: #3b99fc;
-  color: white;
+  background-color: white;
+  color: #428bca;
 }
 
 div#nav-tab button {
