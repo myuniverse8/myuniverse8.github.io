@@ -40,8 +40,8 @@ ul#photos-data-list {
   }
 
 button.tab-btn.selected {
-  background-color: white;
-  color: #428bca;
+  background-color: #428bca;
+  color: white;
 }
 
 div#nav-tab button {

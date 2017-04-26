@@ -742,7 +742,7 @@ beforeItemsProcessing = function() {
     saveBtn.setAttribute('onclick', 'saveBtnClick()');
     saveBtn.setAttribute('id', 'save-big-photos-btn');
     saveBtn.classList.add('btn');
-    saveBtn.classList.add('btn-primary');
+    saveBtn.classList.add('btn-default');
     var saveBtnTxt = document.createTextNode('save photos');
     saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
     saveBtn.appendChild(saveBtnTxt);
@@ -756,7 +756,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'photos-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('photos');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -767,7 +767,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'posts-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('posts/comments');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -778,7 +778,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'tags-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('tags');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -789,7 +789,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'locations-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('locations');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -800,7 +800,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'commentators-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('commentators');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -811,7 +811,7 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('id', 'likers-tab-btn');
   btn1.classList.add('tab-btn');
   btn1.classList.add('btn');
-  btn1.classList.add('btn-primary');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('likers');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -978,15 +978,23 @@ objBtnClick = function(elem) {
         return obj.comName === dataValue;
       })[0];
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
+      var str1 = '';
+      if (myFoundElem.realName) {
+        str1 = ' - ' + myFoundElem.realName;
+      }
+      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + str1 + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
       break;
     case '5':
       //5 - likers
       var myFoundElem = myCockpit.likers.filter(function(obj) {
         return obj.likerName === dataValue;
       })[0];
+      var str1 = '';
+      if (myFoundElem.realName) {
+        str1 = ' - ' + myFoundElem.realName;
+      }
       profilePicture = elem.getAttribute('data-profile-picture');
-      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
+      htmlTxt = '<button type="button" class="btn btn-link"><a class="with-hover-img" target="_blank" href="http://instagram.com/' + dataValue + '">' + dataValue + str1 + '<span><img class="profile-picture" src="' + profilePicture + '"/></span></a></button>';
       break;
   }
 
@@ -1069,7 +1077,7 @@ processMediaObj = function(objs) {
         btn.setAttribute('data-str-value', myObjs[i].comName);
         btn.setAttribute('data-clipboard-text', myObjs[i].comName);
         btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
-        t = document.createTextNode(myObjs[i].comName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].comCnt + ')');
+        t = document.createTextNode(myObjs[i].comName + ' (' + myObjs[i].comCnt + ')');
         btn.classList.add("user-btn");
         spanEl = document.createElement('span');
         imgEl = document.createElement('img');
@@ -1090,7 +1098,7 @@ processMediaObj = function(objs) {
         imgEl.setAttribute('class', "post-hover");
         spanEl.appendChild(imgEl);
         btn.appendChild(spanEl);
-        t = document.createTextNode(myObjs[i].likerName + ' - ' + myObjs[i].realName + ' (' + myObjs[i].likerCnt + ')');
+        t = document.createTextNode(myObjs[i].likerName + ' (' + myObjs[i].likerCnt + ')');
         break;
     }
 
