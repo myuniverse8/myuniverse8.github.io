@@ -1,17 +1,31 @@
-ul.photos, ul.comments, ul.tags, ul.locations, ul.commentors, ul.likers {
+ul#myList {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-ul.photos li, ul.tags li, ul.locations li, ul.commentors li, ul.likers li {
-    margin-left: 5px;
-    display: inline;
-}
+  ul#myList li {
+      display: inline-block;
+  }
 
-img.post {
-  margin-bottom: 5px;
-}
+  ul#myList button.selected {
+      background-color: #3b99fc;
+      color: white;
+      border-radius: 5px;
+  }
+
+  ul#myList button {
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+    margin: 1px;
+  }
+
+  ul#myList button:active {
+    background-color: #3b99fc;
+    color: white;
+  }
+
 
 div.nav-comments {
     padding: 5px;
@@ -19,11 +33,6 @@ div.nav-comments {
     display: inline-block;
 }
 
-ul#myList button.selected {
-    background-color: #3b99fc;
-    color: white;
-    border-radius: 5px;
-}
 
 button.tab-btn.selected {
   background-color: #3b99fc;
@@ -89,21 +98,11 @@ p.own-reply {
   color:gray;
 }
 
-ul#myList button {
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: white;
-  margin: 1px;
-}
+
 
 div#nav button,
 div#nav-tab button {
   margin-left: 5px;
-}
-
-ul#myList button:active {
-  background-color: #3b99fc;
-  color: white;
 }
 
 div.before-post-link {
@@ -145,8 +144,9 @@ img.profile-picture {
 
 /* Mobile first */
 img.post {
-  width: 55px;
-  height: 55px;
+  width: 45px;
+  height: 45px;
+  margin: 1px;
 }
 
 div.img-info {
