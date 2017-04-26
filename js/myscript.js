@@ -740,6 +740,8 @@ beforeItemsProcessing = function() {
     var saveBtn = document.createElement("button");
     saveBtn.setAttribute('onclick', 'saveBtnClick()');
     saveBtn.setAttribute('id', 'save-big-photos-btn');
+    saveBtn.classList.add('btn');
+    saveBtn.classList.add('btn-default');
     var saveBtnTxt = document.createTextNode('save photos');
     saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
     saveBtn.appendChild(saveBtnTxt);
@@ -751,6 +753,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '0');
   btn1.setAttribute('id', 'photos-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('photos');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -760,6 +764,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '1');
   btn1.setAttribute('id', 'posts-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('posts/comments');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -769,6 +775,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '2');
   btn1.setAttribute('id', 'tags-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('tags');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -778,6 +786,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '3');
   btn1.setAttribute('id', 'locations-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('locations');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -787,6 +797,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '4');
   btn1.setAttribute('id', 'commentators-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('commentators');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -796,6 +808,8 @@ beforeItemsProcessing = function() {
   btn1.setAttribute('data-next-tab', '5');
   btn1.setAttribute('id', 'likers-tab-btn');
   btn1.classList.add('tab-btn');
+  btn1.classList.add('btn');
+  btn1.classList.add('btn-default');
   var tn = document.createTextNode('likers');
   btn1.appendChild(tn);
   navTabDiv.appendChild(btn1);
@@ -1026,6 +1040,7 @@ processMediaObj = function(objs) {
   for (var i = 0; i < myObjs.length; i++) {
     var node = document.createElement("li");
     var btn = document.createElement("button");
+
     btn.classList.add('clipboard-btn');
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers

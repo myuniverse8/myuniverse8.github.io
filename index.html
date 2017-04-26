@@ -2,48 +2,56 @@
 <html>
 
 <head>
-    <title>MyInstCockpit</title>
+  <title>MyInstCockpit</title>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link rel="stylesheet" type="text/css" href="css/style.css"  media="screen">
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
-    <script type="text/javascript" src="lib/jquery-3.2.0.min.js"></script>
-    <script type="text/javascript" src="js/myinstacockpit.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="lib/jquery-3.2.0.min.js"></script>
+  <script type="text/javascript" src="js/myinstacockpit.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <div class="elements">
-        <input type="text" id="nickname" name="nickname" value="myuniverse8" onfocus="this.select();" placeholder="Enter nickname">
+  <div class="container">
+  <div class="elements">
+    <div class="form-group">
+      <input type="text" class="form-control" id="nickname" name="nickname" value="myuniverse8" onfocus="this.select();" placeholder="Enter nickname">
     </div>
-    <div class="elements">
-        <label for="dates">filter data using dates</label>
-        <input type="checkbox" id="dates" name="dates" onchange="toggleDatesCheckbox(this)">
-    </div>
-    <div id="dates" hidden class="elements">
-        <label for="begda">date from</label>
-        <input type="date" name="begda" id="begda">
-        <label for="begda">to</label>
-        <input type="date" name="endda" id="endda">
-    </div>
-    <div class="elements">
-        <label for="testmode">process only last 20 records</label>
-        <input type="checkbox" id="testmode" name="testmode" checked>
-    </div>
-    <div class="elements">
-        <button type="button" id="photos-btn" data-opt='0' onclick="optBtnClick(this)">photos</button>
-        <button type="button" data-opt='1' onclick="optBtnClick(this)">posts/comments</button>
-        <button type="button" data-opt='2' onclick="optBtnClick(this)">tags</button>
-        <button type="button" data-opt='3' onclick="optBtnClick(this)">locations</button>
-        <button type="button" data-opt='4' onclick="optBtnClick(this)">commentators</button>
-        <button type="button" data-opt='5' onclick="optBtnClick(this)">likers</button>
-    </div>
-    <div>
-        <a target="_blank" href="https://github.com/myuniverse8/myuniverse8.github.io/blob/master/README.md">READme</a>
-    </div>
+  </div>
+  <div class="elements">
+    <div class="checkbox">
+    <label for="dates"><input type="checkbox" id="dates" name="dates" onchange="toggleDatesCheckbox(this)">filter data using dates</label>
+  </div>
+  </div>
+  <div class="form-group">
+  <div id="dates" hidden class="elements">
+    <label for="begda">from</label>
+    <input type="date" name="begda" id="begda" class="form-control">
+    <label for="begda">to</label>
+    <input type="date" name="endda" id="endda" class="form-control">
+  </div>
+</div>
+  <div class="elements">
+    <div class="checkbox">
+    <label><input type="checkbox" id="testmode" name="testmode" checked>process only last 20 records</label>
+  </div>
+  </div>
+  <div class="elements">
+    <button type="button" class="btn btn-default" id="photos-btn" data-opt='0' onclick="optBtnClick(this)">photos</button>
+    <button type="button" class="btn btn-default" data-opt='1' onclick="optBtnClick(this)">posts/comments</button>
+    <button type="button" class="btn btn-default" data-opt='2' onclick="optBtnClick(this)">tags</button>
+    <button type="button" class="btn btn-default" data-opt='3' onclick="optBtnClick(this)">locations</button>
+    <button type="button" class="btn btn-default" data-opt='4' onclick="optBtnClick(this)">commentators</button>
+    <button type="button" class="btn btn-default" data-opt='5' onclick="optBtnClick(this)">likers</button>
+  </div>
+  <div>
+    <a target="_blank" href="https://github.com/myuniverse8/myuniverse8.github.io/blob/master/README.md">READme</a>
+  </div>
+</div>
 </body>
 
 </html>

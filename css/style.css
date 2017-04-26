@@ -1,3 +1,9 @@
+input#nickname,
+input#begda,
+input#endda {
+    width: 300px;
+}
+
 ul#myList,
 ul#photos-data-list {
     list-style: none;
@@ -33,6 +39,10 @@ ul#photos-data-list {
 button.tab-btn.selected {
   background-color: #3b99fc;
   color: white;
+}
+
+div#nav-tab button {
+  margin: 1px;
 }
 
 img.post {
