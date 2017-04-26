@@ -45,10 +45,6 @@ img.post {
     border: 1px solid black;
 }
 
-img.post:hover {
-    opacity: 0.3;
-}
-
 p.comments {
     margin: 1px;
 }
@@ -121,23 +117,6 @@ div.img-info {
       margin: 0;
   }
 
-a.post-photo-link:hover+div {
-  display: block;
-  z-index: -1;
-}
-
-p.comments a,
-a.with-hover-img,
-button.user-btn { position:relative; }
-
-p.comments a span,
-a.with-hover-img span,
-button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
-
-p.comments a:hover span,
-a.with-hover-img:hover span,
-button.user-btn:hover span { display:block; }
-
 img.profile-picture {
   width: 50px;
   height: 50px;
@@ -156,6 +135,10 @@ div.img-info {
   left: 3px;
   top: 3px;
 }
+
+p.comments a span,
+a.with-hover-img span,
+button.user-btn span {display:none}
 
 @media only screen and (min-width: 600px) {
     /* For tablets: */
@@ -183,4 +166,29 @@ div.img-info {
       left: 10px;
       top: 10px;
     }
+
+    a.post-photo-link:hover+div {
+      display: block;
+      z-index: -1;
+    }
+
+    img.post:hover {
+        opacity: 0.3;
+    }
+
+    ul#myList {
+      margin-left: 3px;
+    }
+
+    p.comments a,
+    a.with-hover-img,
+    button.user-btn { position:relative; }
+
+    p.comments a span,
+    a.with-hover-img span,
+    button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
+
+    p.comments a:hover span,
+    a.with-hover-img:hover span,
+    button.user-btn:hover span { display:block; }
 }
