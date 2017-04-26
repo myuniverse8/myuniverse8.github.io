@@ -685,9 +685,9 @@ beforeItemsProcessing = function() {
     case '3':
     case '4':
     case '5':
-      opt = document.createElement("option");
-      opt.setAttribute('value', 'space');
-      selDrop.appendChild(opt);
+      // opt = document.createElement("option");
+      // opt.setAttribute('value', 'space');
+      // selDrop.appendChild(opt);
 
       opt = document.createElement("option");
       opt.setAttribute('value', 'name');
