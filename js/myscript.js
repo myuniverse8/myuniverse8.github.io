@@ -312,19 +312,19 @@ updateTitle = function() {
 
 togglePostCaptionCheckbox = function(element) {
   if (element.checked === true) {
-    $("ul#myList").find("p.postcaption").show();
+    $("ul#myList").find("li.postcaption").show();
   } else {
-    $("ul#myList").find("p.postcaption").hide();
+    $("ul#myList").find("li.postcaption").hide();
   }
 }
 
 toggleCommentsCheckbox = function(element) {
   if (element.checked === true) {
-    $("ul#myList").find("p.comment").show();
+    $("ul#myList").find("li.comment").show();
     var ownReply = document.getElementById('own-replies');
     toggleOwnRepliesCheckbox(ownReply);
   } else {
-    $("ul#myList").find("p.comment").hide();
+    $("ul#myList").find("li.comment").hide();
   }
 }
 
@@ -339,9 +339,9 @@ toggleCheckboxes = function() {
 
 toggleOwnRepliesCheckbox = function(element) {
   if (element.checked === true) {
-    $("ul#myList").find("p.own-reply").show();
+    $("ul#myList").find("li.own-reply").show();
   } else {
-    $("ul#myList").find("p.own-reply").hide();
+    $("ul#myList").find("li.own-reply").hide();
   }
 }
 
@@ -984,8 +984,6 @@ objBtnClick = function(elem) {
       })[0];
 
       if (myFoundPost) {
-        //var photoTxt = '<div class="before-post-link"><a class="post-photo-link" target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a><div id="img-info" class="img-info"><p>likes: ' + myFoundPost.likescnt + ' </p><p>comments: ' + myFoundPost.commentscnt + '</p></div></div>';
-        //var photoTxt = '<a target="_blank" href="' + myFoundPost.link + '"><img class="post" src="' + myFoundPost.thumbnail + '"></img></a>';
         var node = document.createElement("li");
         node.innerHTML = getPhotoTxt(myFoundPost);
         myDataList.appendChild(node);
@@ -1087,16 +1085,16 @@ processMediaObj = function(objs) {
 
 processMediaObjComments = function(objects) {
   for (var i = 0; i < objects.length; i++) {
-    var commentTxt = '<p class="comments ';
+    var node = document.createElement("li");
+    node.classList.add('comments');
     if (objects[i].user === myNickname) {
-      commentTxt = commentTxt + 'own-reply';
+        node.classList.add('own-reply');
     } else {
-      commentTxt = commentTxt + 'comment';
+        node.classList.add('comment');
     }
 
-    commentTxt = commentTxt + '"><i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i></p>';
+    commentTxt = '<i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i>';
 
-    var node = document.createElement("li");
     node.innerHTML = commentTxt;
     document.getElementById("myList").appendChild(node);
   }
@@ -1119,8 +1117,7 @@ processMediaObjPosts = function(objects) {
   for (i = lastPostProcessed; i < postsLength; i++) {
     var commentsLength = posts[i].commentscnt;
 
-    commentTxt = '<p class="postcaption comments">' + getDateStr(posts[i].date)
-    commentTxt = commentTxt + ' - (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)';
+    commentTxt = getDateStr(posts[i].date) + ' - (likes: ' + posts[i].likescnt + ', comments: ' + posts[i].commentscnt + ', <a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>, <a target="_blank" href="' + posts[i].bigsizelink + '">big photo<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)';
 
     if (posts[i].caption !== '') {
       commentTxt = commentTxt + ' - ' + posts[i].caption;
@@ -1128,9 +1125,9 @@ processMediaObjPosts = function(objects) {
       commentTxt = commentTxt + ' - nocaption';
     }
 
-    commentTxt = commentTxt + '</p>';
-
     node = document.createElement("li");
+    node.classList.add("postcaption");
+    node.classList.add("comments");
     node.innerHTML = commentTxt;
 
     document.getElementById("myList").appendChild(node);
@@ -1139,16 +1136,17 @@ processMediaObjPosts = function(objects) {
     var commentsLength = commentsObj.length;
     if (commentsLength > 0) {
       for (j = 0; j < commentsLength; j++) {
-        commentTxt = '<p class="comments ';
+        node = document.createElement("li");
+        node.classList.add("comments");
+
         if (posts[i].comments[j].user === myNickname) {
-          commentTxt = commentTxt + 'own-reply';
+          node.classList.add("own-reply");
         } else {
-          commentTxt = commentTxt + 'comment';
+          node.classList.add("comment");
         }
 
-        commentTxt = commentTxt + '"><i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '<span><img class="post-hover" src="' + posts[i].comments[j].profile_picture + '"/></span></a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i></p>';
+        commentTxt = '<i>' + getDateStr(posts[i].comments[j].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + posts[i].comments[j].user + '">' + posts[i].comments[j].user + '<span><img class="post-hover" src="' + posts[i].comments[j].profile_picture + '"/></span></a> : ' + posts[i].comments[j].text + ' (<a target="_blank" href="' + posts[i].link + '">post<span><img class="post-hover" src="' + posts[i].thumbnail + '"/></span></a>)</i>';
 
-        node = document.createElement("li");
         node.innerHTML = commentTxt;
         document.getElementById("myList").appendChild(node);
       }

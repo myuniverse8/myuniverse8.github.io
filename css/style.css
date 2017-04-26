@@ -10,6 +10,10 @@ ul#photos-data-list {
       display: inline-block;
   }
 
+  ul#myList.comments li {
+    display: block;
+  }
+
   ul#myList button.selected {
       background-color: #3b99fc;
       color: white;
@@ -28,14 +32,6 @@ ul#photos-data-list {
     color: white;
   }
 
-
-div.nav-comments {
-    padding: 5px;
-    margin: 5px;
-    display: inline-block;
-}
-
-
 button.tab-btn.selected {
   background-color: #3b99fc;
   color: white;
@@ -45,62 +41,26 @@ img.post {
     border: 1px solid black;
 }
 
-p.comments {
-    margin: 1px;
-}
-
-p.comment,
-p.own-reply
- {
-  margin-left: 10px;
-}
-
-div#loading-info {
-    position: fixed;
-    right: 0px;
-    top: 0px;
-    padding: 3px;
-    background-color: grey;
-    color: white;
-    opacity: 0.8;
-    z-index: 1;
+li.comments {
+    margin: 0px;
 }
 
 p#loading-p {
     margin: 1px;
 }
 
-div.nav {
-  padding: 5px;
-  margin: 5px;
-  /*display: inline-block;*/
-}
-
-div.elements {
-    margin: 5px;
-}
-
-div#photos-by-data {
-    margin-top: 10px;
-}
-
-div#btn-info {
-    margin: 10px 10px;
-}
-
 img.post-hover {
   border: 1px solid black;
 }
 
-p.own-reply {
+li.own-reply {
   color:gray;
 }
 
 
-
 div#nav button,
 div#nav-tab button {
-  margin-left: 5px;
+  /*margin-left: 5px;*/
 }
 
 div.before-post-link {
@@ -124,6 +84,17 @@ img.profile-picture {
 }
 
 /* Mobile first */
+div#loading-info {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    background-color: grey;
+    color: white;
+    opacity: 0.8;
+    z-index: 1;
+    font-size: 5px;
+}
+
 img.post {
   width: 50px;
   height: 50px;
@@ -131,12 +102,17 @@ img.post {
 }
 
 div.img-info {
-  font-size: 5px;
   left: 3px;
   top: 3px;
 }
 
-p.comments a span,
+div#loading-info,
+div.img-info,
+li.comments  {
+    font-size: 5px;
+}
+
+li.comments a span,
 a.with-hover-img span,
 button.user-btn span {display:none}
 
@@ -148,9 +124,14 @@ button.user-btn span {display:none}
     }
 
     div.img-info {
-      font-size: 10px;
       left: 5px;
       top: 5px;
+    }
+
+    div#loading-info,
+    div.img-info,
+    li.comments  {
+        font-size: 10px;
     }
 }
 
@@ -162,7 +143,6 @@ button.user-btn span {display:none}
     }
 
     div.img-info {
-      font-size: 14px;
       left: 10px;
       top: 10px;
     }
@@ -180,15 +160,22 @@ button.user-btn span {display:none}
       margin-left: 3px;
     }
 
-    p.comments a,
+    li.comments a,
     a.with-hover-img,
     button.user-btn { position:relative; }
 
-    p.comments a span,
+    li.comments a span,
     a.with-hover-img span,
     button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
 
-    p.comments a:hover span,
+    li.comments a:hover span,
     a.with-hover-img:hover span,
     button.user-btn:hover span { display:block; }
+
+    div#loading-info,
+    p.comments,
+    div.img-info,
+    li.comments {
+        font-size: 14px;
+    }
 }
