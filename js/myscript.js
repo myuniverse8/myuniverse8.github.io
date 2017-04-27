@@ -1021,7 +1021,7 @@ objBtnClick = function(elem) {
     }
   }
 
-  document.getElementById("photos-by-data").scrollIntoView();
+  document.getElementById("btn-info").scrollIntoView();
 }
 
 processMediaObj = function(objs) {

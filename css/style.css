@@ -6,11 +6,6 @@
     z-index: 99; /* Make sure it does not overlap */
 }
 
-#myBtn:hover {
-    background-color: #428bca; /* Add a dark-grey background on hover */
-    color: white;
-}
-
 input#nickname,
 input#begda,
 input#endda {
