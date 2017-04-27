@@ -664,22 +664,22 @@ beforeItemsProcessing = function() {
       //1 - post/comments
       opt = document.createElement("option");
       opt.setAttribute('value', 'space');
-      opt.innerHTML = 'by post date';
+      opt.innerHTML = 'sort by post date';
       selDrop.appendChild(opt);
 
       opt = document.createElement("option");
       opt.setAttribute('value', 'comm_date');
-      opt.innerHTML = 'by comment date (without posts)';
+      opt.innerHTML = 'sort by comment date (without posts)';
       selDrop.appendChild(opt);
 
       opt = document.createElement("option");
       opt.setAttribute('value', 'posts');
-      opt.innerHTML = 'by comments count';
+      opt.innerHTML = 'sort by comments count';
       selDrop.appendChild(opt);
 
       opt = document.createElement("option");
       opt.setAttribute('value', 'likes');
-      opt.innerHTML = 'by likes count';
+      opt.innerHTML = 'sort by likes count';
       selDrop.appendChild(opt);
 
       selDrop.setAttribute('onchange', 'selDropCommentsChanged(this)');
@@ -690,12 +690,12 @@ beforeItemsProcessing = function() {
     case '5':
       opt = document.createElement("option");
       opt.setAttribute('value', 'name');
-      opt.innerHTML = 'by name';
+      opt.innerHTML = 'sort by name';
       selDrop.appendChild(opt);
 
       opt = document.createElement("option");
       opt.setAttribute('value', 'count');
-      opt.innerHTML = 'by count';
+      opt.innerHTML = 'sort by count';
       selDrop.appendChild(opt);
 
       selDrop.setAttribute('onchange', 'selDropChanged(this)');
@@ -733,7 +733,7 @@ beforeItemsProcessing = function() {
   if (myMode !== '0') {
     var divGroup = document.createElement('div');
     divGroup.classList.add("form-group");
-    divGroup.appendChild(label);
+    // divGroup.appendChild(label);
     selDrop.classList.add("form-control");
     divGroup.appendChild(selDrop);
     navDiv.appendChild(divGroup);
