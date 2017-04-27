@@ -1,8 +1,8 @@
 #myBtn {
     display: none; /* Hidden by default */
     position: fixed; /* Fixed/sticky position */
-    bottom: 5px; /* Place the button at the bottom of the page */
-    right: 5px; /* Place the button 30px from the right */
+    bottom: 30px; /* Place the button at the bottom of the page */
+    right: 20px; /* Place the button 30px from the right */
     z-index: 99; /* Make sure it does not overlap */
 }
 
@@ -152,11 +152,6 @@ button.user-btn span {display:none}
     li.comments  {
         font-size: 14px;
     }
-
-    #myBtn {
-        bottom: 30px; /* Place the button at the bottom of the page */
-        right: 20px; /* Place the button 30px from the right */
-    }§
 }
 
 @media only screen and (min-width: 768px) {
