@@ -233,7 +233,9 @@ function getURLParameter(name) {
 }
 
 // When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
+window.onscroll = function() {
+  scrollFunction()
+};
 
 window.onload = function() {
   var clipboard = new Clipboard('.clipboard-btn');
@@ -273,17 +275,28 @@ window.onload = function() {
   loadData(myUrl);
 };
 
-$( window ).resize(function() {
+$(window).resize(function() {
   updatePhotosDivSize();
 });
 
 updatePhotosDivSize = function() {
   viewWidth = $(window).width();
-  var newWidth = viewWidth/7;
-  newWidth = newWidth - 5;
-  if (newWidth > 152) {
+  var newWidth = 0;
+
+  if (viewWidth <= 600) {
+    newWidth = viewWidth / 6;
+  }
+
+  if ((viewWidth > 600) & (viewWidth <= 768)) {
+    newWidth = viewWidth / 8;
+  }
+
+  if ((newWidth > 152) || (viewWidth > 768)) {
     newWidth = 152;
   }
+
+  newWidth = newWidth - 2;
+
   $('div.before-post-link').width(newWidth);
   $('div.before-post-link').height(newWidth);
 }
@@ -1138,9 +1151,9 @@ processMediaObjComments = function(objects) {
     var node = document.createElement("li");
     node.classList.add('comments');
     if (objects[i].user === myNickname) {
-        node.classList.add('own-reply');
+      node.classList.add('own-reply');
     } else {
-        node.classList.add('comment');
+      node.classList.add('comment');
     }
 
     commentTxt = '<i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i>';
@@ -1365,15 +1378,15 @@ sortObjList = function(option) {
 }
 
 function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("myBtn").style.display = "block";
-    } else {
-        document.getElementById("myBtn").style.display = "none";
-    }
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    document.getElementById("myBtn").style.display = "block";
+  } else {
+    document.getElementById("myBtn").style.display = "none";
+  }
 }
 
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() {
-    document.body.scrollTop = 0; // For Chrome, Safari and Opera
-    document.documentElement.scrollTop = 0; // For IE and Firefox
+  document.body.scrollTop = 0; // For Chrome, Safari and Opera
+  document.documentElement.scrollTop = 0; // For IE and Firefox
 }
