@@ -25,35 +25,35 @@ window.onload = function() {
     nickname.focus();
 }
 
-function optBtnClick(elem) {
-    getCurrentValues();
-    var option = elem.getAttribute('data-opt');
+function goBtnClick() {
+  getCurrentValues();
+  var option = $("#sel-mode").val();
 
-    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-    switch (option) {
-        case '0':
-            myWinName = 'myphotos_';
-            break;
-        case '1':
-            myWinName = 'mycomments_';
-            break;
-        case '2':
-            myWinName = 'mytags_';
-            break;
-        case '3':
-            myWinName = 'mylocations_';
-            break;
-        case '4':
-            myWinName = 'mycommentors_';
-            break;
-        case '5':
-            myWinName = 'mylikers_';
-            break;
-    }
+  //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+  switch (option) {
+      case '0':
+          myWinName = 'myphotos_';
+          break;
+      case '1':
+          myWinName = 'mycomments_';
+          break;
+      case '2':
+          myWinName = 'mytags_';
+          break;
+      case '3':
+          myWinName = 'mylocations_';
+          break;
+      case '4':
+          myWinName = 'mycommentors_';
+          break;
+      case '5':
+          myWinName = 'mylikers_';
+          break;
+  }
 
-    myWinName = myWinName + myNickname;
-    myUrl = 'newpage.html?nickname=' + myNickname + '&mode=' + option;
-    openWindow();
+  myWinName = myWinName + myNickname;
+  myUrl = 'newpage.html?nickname=' + myNickname + '&mode=' + option;
+  openWindow();
 }
 
 function openWindow() {
