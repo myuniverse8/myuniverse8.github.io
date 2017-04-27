@@ -382,6 +382,13 @@ toggleOwnRepliesCheckbox = function(element) {
   }
 }
 
+$(document).ready(function() {
+    $('#nickname').click(function(e){
+        $(this).focus();
+    });
+    $('#nickname').trigger('click');
+});
+
 loadData = function(mediaUrl) {
   var xhr = new XMLHttpRequest();
   var postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
