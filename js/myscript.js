@@ -281,6 +281,8 @@ $(window).resize(function() {
 
 updatePhotosDivSize = function() {
   viewWidth = $(window).width();
+
+  console.log(viewWidth);
   var newWidth = 0;
 
   if (viewWidth <= 600) {
@@ -291,7 +293,11 @@ updatePhotosDivSize = function() {
     newWidth = viewWidth / 8;
   }
 
-  if ((newWidth > 152) || (viewWidth > 768)) {
+  if ((viewWidth > 768) & (viewWidth <= 1024)) {
+    newWidth = viewWidth / 10;
+  }
+
+  if ((newWidth > 152) || (viewWidth > 1024)) {
     newWidth = 152;
   }
 
