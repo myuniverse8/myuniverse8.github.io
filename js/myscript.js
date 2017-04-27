@@ -645,6 +645,7 @@ goToNextTab = function(elem) {
   processObjectsByMode();
   updateSearchDropdown();
   updateNavTabButtonSelection();
+  updatePhotosDivSize();
 }
 
 updateSearchDropdown = function() {
