@@ -21,9 +21,16 @@ window.onload = function() {
     todayStr = yyyy + '-' + mm + '-01';
     document.getElementById('begda').value = todayStr;
 
-    var nickname = document.getElementById("nickname");
-    nickname.focus();
+    // var nickname = document.getElementById("nickname");
+    // nickname.focus();
 }
+
+$(document).ready(function() {
+    $('#nickname').click(function(e){
+        $(this).focus();
+    });
+    $('#nickname').trigger('click');
+});
 
 function goBtnClick() {
   getCurrentValues();
