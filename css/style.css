@@ -67,6 +67,8 @@ div#nav-tab button {
 
 img.post {
     border: 1px solid black;
+    width: 100%;
+    height: 100%;
 }
 
 li.comments {
@@ -118,9 +120,7 @@ div#loading-info {
     font-size: 10px;
 }
 
-img.post {
-  width: 65px;
-  height: 65px;
+div.before-post-link {
   margin: 1px;
 }
 
@@ -143,10 +143,6 @@ button.user-btn span {display:none}
 
 @media only screen and (min-width: 600px) {
     /* For tablets: */
-    img.post {
-      width: 100px;
-      height: 100px;
-    }
 
     div.img-info {
       left: 5px;
@@ -165,10 +161,6 @@ button.user-btn span {display:none}
 
 @media only screen and (min-width: 768px) {
     /* For desktop: */
-    img.post {
-      width: 152px;
-      height: 152px;
-    }
 
     div.img-info {
       left: 10px;

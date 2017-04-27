@@ -273,6 +273,21 @@ window.onload = function() {
   loadData(myUrl);
 };
 
+$( window ).resize(function() {
+  updatePhotosDivSize();
+});
+
+updatePhotosDivSize = function() {
+  viewWidth = $(window).width();
+  var newWidth = viewWidth/7;
+  newWidth = newWidth - 5;
+  if (newWidth > 152) {
+    newWidth = 152;
+  }
+  $('div.before-post-link').width(newWidth);
+  $('div.before-post-link').height(newWidth);
+}
+
 updateTitle = function() {
   myTitle = myNickname + '(';
 
@@ -378,6 +393,7 @@ loadData = function(mediaUrl) {
 
       processObjectsByMode();
       updateSearchDropdown();
+      updatePhotosDivSize();
     }
   }
 }
@@ -1022,6 +1038,7 @@ objBtnClick = function(elem) {
   }
 
   document.getElementById("btn-info").scrollIntoView();
+  updatePhotosDivSize();
 }
 
 processMediaObj = function(objs) {
