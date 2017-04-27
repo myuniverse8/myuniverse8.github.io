@@ -6,12 +6,20 @@
     z-index: 99; /* Make sure it does not overlap */
 }
 
+select#sel-mode {
+  display:inline-block;
+}
+
 input#nickname,
 input#begda,
-input#endda,
-select#sel-mode {
+input#endda {
     width: 300px;
 }
+
+select#sel-mode {
+    width: 255px;
+}
+
 #sel-drop-search {
     width: 150px;
 }
