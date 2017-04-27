@@ -10,14 +10,18 @@ select#sel-mode {
   display:inline-block;
 }
 
+div#main-cont {
+    margin-top: 10px;
+}
+
 input#nickname,
 input#begda,
 input#endda {
-    width: 300px;
+    width: 280px;
 }
 
 select#sel-mode {
-    width: 230px;
+    width: 200px;
 }
 
 #sel-drop-search {
