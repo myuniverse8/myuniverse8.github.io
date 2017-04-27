@@ -295,7 +295,7 @@ updatePhotosDivSize = function() {
     newWidth = 152;
   }
 
-  newWidth = newWidth - 2;
+  newWidth = newWidth - 2.5;
 
   $('div.before-post-link').width(newWidth);
   $('div.before-post-link').height(newWidth);
