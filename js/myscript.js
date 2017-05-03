@@ -398,7 +398,7 @@ loadData = function(mediaUrl) {
     if (xhr.readyState != 4) return;
 
     if (xhr.status != 200) {
-      console.log('Error getting data from server : ' + xhr.status + ': ' + xhr.statusText);
+      console.log('Error getting data from server: ' + xhr.status + ': ' + xhr.statusText);
       $('p#loading-p').css('color', 'red').text('Data loading error!');
       $('select#sel-drop-search').prop("disabled", false);
       $('#save-big-photos-btn').prop("disabled", false);
