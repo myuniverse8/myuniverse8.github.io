@@ -282,7 +282,7 @@ $(window).resize(function() {
 updatePhotosDivSize = function() {
   viewWidth = $(window).width();
 
-  console.log(viewWidth);
+  //console.log(viewWidth);
   var newWidth = 0;
 
   if (viewWidth <= 600) {
