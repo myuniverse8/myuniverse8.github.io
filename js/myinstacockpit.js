@@ -32,6 +32,13 @@ $(document).ready(function() {
     $('#nickname').trigger('click');
 });
 
+function openWindow() {
+    var begda = document.getElementById('begda').value;
+    var endda = document.getElementById('endda').value;
+    myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + begda + '&endda=' + endda + '&dates=' + myUseDates;
+    myWin = window.open(myUrl, myWinName);
+}
+
 function goBtnClick() {
   getCurrentValues();
   var option = $("#sel-mode").val();
@@ -61,13 +68,6 @@ function goBtnClick() {
   myWinName = myWinName + myNickname;
   myUrl = 'newpage.html?nickname=' + myNickname + '&mode=' + option;
   openWindow();
-}
-
-function openWindow() {
-    var begda = document.getElementById('begda').value;
-    var endda = document.getElementById('endda').value;
-    myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + begda + '&endda=' + endda + '&dates=' + myUseDates;
-    myWin = window.open(myUrl, myWinName);
 }
 
 function getCurrentValues() {
