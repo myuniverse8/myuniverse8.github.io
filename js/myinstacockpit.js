@@ -21,16 +21,8 @@ window.onload = function() {
     todayStr = yyyy + '-' + mm + '-01';
     document.getElementById('begda').value = todayStr;
 
-    // var nickname = document.getElementById("nickname");
-    // nickname.focus();
-}
-
-$(document).ready(function() {
-    // $('#nickname').click(function(e){
-    //     $(this).focus();
-    // });
     $('#nickname').trigger('focus');
-});
+}
 
 function openWindow() {
     var begda = document.getElementById('begda').value;
@@ -93,6 +85,7 @@ toggleDatesCheckbox = function(element) {
 
 $(document).keypress(function (e) {
     if (e.which == 13) {
+        e.preventDefault();
         $('#go-btn').click();
     }
 });
