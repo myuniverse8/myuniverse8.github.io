@@ -26,10 +26,10 @@ window.onload = function() {
 }
 
 $(document).ready(function() {
-    $('#nickname').click(function(e){
-        $(this).focus();
-    });
-    $('#nickname').trigger('click');
+    // $('#nickname').click(function(e){
+    //     $(this).focus();
+    // });
+    $('#nickname').trigger('focus');
 });
 
 function openWindow() {
@@ -93,7 +93,6 @@ toggleDatesCheckbox = function(element) {
 
 $(document).keypress(function (e) {
     if (e.which == 13) {
-        var elem = document.getElementById("photos-btn");
-        optBtnClick(elem);
+        $('#go-btn').click();
     }
 });
