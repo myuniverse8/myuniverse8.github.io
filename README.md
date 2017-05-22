@@ -2,7 +2,7 @@
 Small and useful tool for Instagram.
 
 Features:
-  - get photos of provided user
+  - get photos of provided user with possibility to get only last 20 entries
   - get posts with comments (including own replies) with possibility to sort them by post date/comment date/comments count/likes count
   - get tags/locations/commentators/likers of selected photos with possibility to sort by name or by photos count of selected option
   - download big photos of loaded posts
