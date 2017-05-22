@@ -1,4 +1,6 @@
 var myInstApp = (function() {
+  'use strict';
+
   var myNickname = '';
   var myUrl = '';
   var myTestMode = '';
@@ -184,13 +186,13 @@ var myInstApp = (function() {
     this.tagName = tagName;
     this.tagCnt = 1;
     this.postIds = [];
-  };
+  }
 
   function MyLocation(locName) {
     this.locName = locName;
     this.locCnt = 1;
     this.postIds = [];
-  };
+  }
 
   function MyCommentor(comName, realName, profile_picture) {
     this.comName = comName;
@@ -198,7 +200,7 @@ var myInstApp = (function() {
     this.comCnt = 1;
     this.profile_picture = profile_picture;
     this.postIds = [];
-  };
+  }
 
   function MyLiker(likerName, realName, profile_picture) {
     this.likerName = likerName;
@@ -206,14 +208,14 @@ var myInstApp = (function() {
     this.likerCnt = 1;
     this.profile_picture = profile_picture;
     this.postIds = [];
-  };
+  }
 
   function MyComment(date, user, text, profile_picture) {
     this.date = date;
     this.user = user;
     this.text = text;
     this.profile_picture = profile_picture;
-  };
+  }
 
   function MyAloneComment(date, user, text, post_id, post_link, post_thumbnail, profile_picture) {
     this.date = date;
@@ -223,11 +225,11 @@ var myInstApp = (function() {
     this.post_link = post_link;
     this.post_thumbnail = post_thumbnail;
     this.profile_picture = profile_picture;
-  };
+  }
 
   function MyLike(user) {
     this.user = user;
-  };
+  }
 
   function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
@@ -236,7 +238,240 @@ var myInstApp = (function() {
   // When the user scrolls down 20px from the top of the document, show the button
   window.onscroll = function() {
     scrollFunction()
-  };
+  }
+
+  function beforeItemsProcessing() {
+    clearMyList();
+
+    var opt;
+    var navTabDiv = document.getElementById("nav-tab");
+    navTabDiv.innerHTML = '';
+    navTabDiv.classList.add("nav");
+
+    var navDiv = document.getElementById("nav");
+    navDiv.innerHTML = '';
+    navDiv.classList.add("nav");
+
+    var contentDiv = document.getElementById("tmp-content");
+    contentDiv.innerHTML = '';
+    var selDrop = document.createElement("select");
+
+    selDrop.setAttribute('id', 'sel-drop-search');
+    $('#nav').show();
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+      case '0':
+        //0 - photos
+        $('#nav').hide();
+        break;
+      case '1':
+        //1 - post/comments
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'space');
+        opt.innerHTML = 'sort by post date';
+        selDrop.appendChild(opt);
+
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'comm_date');
+        opt.innerHTML = 'sort by comment date (without posts)';
+        selDrop.appendChild(opt);
+
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'posts');
+        opt.innerHTML = 'sort by comments count';
+        selDrop.appendChild(opt);
+
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'likes');
+        opt.innerHTML = 'sort by likes count';
+        selDrop.appendChild(opt);
+
+        selDrop.setAttribute('onchange', 'myInstApp.selDropCommentsChanged(this)');
+        break;
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'name');
+        opt.innerHTML = 'sort by name';
+        selDrop.appendChild(opt);
+
+        opt = document.createElement("option");
+        opt.setAttribute('value', 'count');
+        opt.innerHTML = 'sort by count';
+        selDrop.appendChild(opt);
+
+        selDrop.setAttribute('onchange', 'myInstApp.selDropChanged(this)');
+        break;
+    }
+
+    var label = document.createElement('label');
+    label.setAttribute('for', 'sel-drop-search');
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+      case '1':
+        //1 - post/comments
+        label.innerHTML = 'Sort posts: ';
+        break;
+      case '2':
+        //2 - tags
+        label.innerHTML = 'Sort tags: ';
+        break;
+      case '3':
+        //3 - locations
+        label.innerHTML = 'Sort locations: ';
+        break;
+      case '4':
+        //4 - commentors
+        label.innerHTML = 'Sort commentators: ';
+        break;
+      case '5':
+        //5 - likers
+        label.innerHTML = 'Sort likers: ';
+        break;
+    }
+
+    if (myMode !== '0') {
+      var divGroup = document.createElement('div');
+      divGroup.classList.add("form-group");
+      // divGroup.appendChild(label);
+      selDrop.classList.add("form-control");
+      divGroup.appendChild(selDrop);
+      navDiv.appendChild(divGroup);
+    }
+
+    if (myMode == '1') {
+      var saveBtnDiv = document.createElement("div")
+      var saveBtn = document.createElement("button");
+      saveBtn.setAttribute('onclick', 'myInstApp.saveBtnClick()');
+      saveBtn.setAttribute('id', 'save-big-photos-btn');
+      saveBtn.classList.add('btn');
+      saveBtn.classList.add('btn-default');
+      var saveBtnTxt = document.createTextNode('save photos');
+      saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
+      saveBtn.appendChild(saveBtnTxt);
+      saveBtnDiv.appendChild(saveBtn)
+      navDiv.appendChild(saveBtnDiv);
+    }
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '0');
+    btn1.setAttribute('id', 'photos-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('photos');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '1');
+    btn1.setAttribute('id', 'posts-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('posts/comments');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '2');
+    btn1.setAttribute('id', 'tags-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('tags');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '3');
+    btn1.setAttribute('id', 'locations-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('locations');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '4');
+    btn1.setAttribute('id', 'commentators-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('commentators');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    var btn1 = document.createElement('button');
+    btn1.setAttribute('onclick', 'myInstApp.goToNextTab(this)');
+    btn1.setAttribute('data-next-tab', '5');
+    btn1.setAttribute('id', 'likers-tab-btn');
+    btn1.classList.add('tab-btn');
+    btn1.classList.add('btn');
+    btn1.classList.add('btn-default');
+    var tn = document.createTextNode('likers');
+    btn1.appendChild(tn);
+    navTabDiv.appendChild(btn1);
+
+    if (myMode === '1') {
+      //1 - post/comments
+      var divNavTmp = document.createElement("div");
+
+      var node = document.createElement("div");
+      node.classList.add("nav-comments");
+      node.classList.add("checkbox");
+      node.innerHTML = '<label for="incl-post-caption"><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="myInstApp.togglePostCaptionCheckbox(this)">display post captions</label>';
+      divNavTmp.appendChild(node);
+      node = document.createElement("div");
+      node.classList.add("nav-comments");
+      node.classList.add("checkbox");
+      node.innerHTML = '<label for="incl-comments"><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="myInstApp.toggleCommentsCheckbox(this)">display comments</label>';
+      divNavTmp.appendChild(node);
+      node = document.createElement("div");
+      node.classList.add("nav-comments");
+      node.classList.add("own-replies");
+      node.classList.add("checkbox");
+      node.innerHTML = '<label for="own-replies"><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="myInstApp.toggleOwnRepliesCheckbox(this)">display own replies</label>';
+      divNavTmp.appendChild(node);
+      navDiv.appendChild(divNavTmp);
+    }
+
+    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+    switch (myMode) {
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+        var photosDiv = document.createElement("div");
+        var photosUl = document.createElement("ul");
+
+        photosDiv.setAttribute("id", "photos-by-data");
+        photosUl.setAttribute("id", "photos-data-list");
+
+        var infoBtnDiv = document.createElement("div");
+        infoBtnDiv.setAttribute("id", "btn-info");
+        contentDiv.appendChild(infoBtnDiv);
+
+        contentDiv.appendChild(photosDiv);
+        contentDiv.appendChild(photosDiv);
+
+        photosUl.classList.add("photos");
+        photosDiv.appendChild(photosUl);
+        break;
+    }
+
+    updateInfoText();
+  }
 
   window.onload = function() {
     var clipboard = new Clipboard('.clipboard-btn');
@@ -274,14 +509,10 @@ var myInstApp = (function() {
     updateNavTabButtonSelection();
 
     loadData(myUrl);
-  };
+  }
 
-  $(window).resize(function() {
-    updatePhotosDivSize();
-  });
-
-  updatePhotosDivSize = function() {
-    viewWidth = $(window).width();
+  function updatePhotosDivSize() {
+    var viewWidth = $(window).width();
 
     //console.log(viewWidth);
     var newWidth = 0;
@@ -308,7 +539,11 @@ var myInstApp = (function() {
     $('div.before-post-link').height(newWidth);
   }
 
-  updateTitle = function() {
+  $(window).resize(function() {
+    updatePhotosDivSize();
+  })
+
+  function updateTitle() {
     myTitle = myNickname + '(';
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
@@ -348,42 +583,7 @@ var myInstApp = (function() {
     document.title = myTitle;
   }
 
-  togglePostCaptionCheckbox = function(element) {
-    if (element.checked === true) {
-      $("ul#myList").find("li.postcaption").show();
-    } else {
-      $("ul#myList").find("li.postcaption").hide();
-    }
-  }
-
-  toggleCommentsCheckbox = function(element) {
-    if (element.checked === true) {
-      $("ul#myList").find("li.comment").show();
-      var ownReply = document.getElementById('own-replies');
-      toggleOwnRepliesCheckbox(ownReply);
-    } else {
-      $("ul#myList").find("li.comment").hide();
-    }
-  }
-
-  toggleCheckboxes = function() {
-    var elem = document.getElementById('own-replies');
-    toggleOwnRepliesCheckbox(elem);
-    elem = document.getElementById('incl-comments');
-    toggleCommentsCheckbox(elem);
-    elem = document.getElementById('incl-post-caption');
-    togglePostCaptionCheckbox(elem);
-  }
-
-  toggleOwnRepliesCheckbox = function(element) {
-    if (element.checked === true) {
-      $("ul#myList").find("li.own-reply").show();
-    } else {
-      $("ul#myList").find("li.own-reply").hide();
-    }
-  }
-
-  loadData = function(mediaUrl) {
+  function loadData(mediaUrl) {
     var xhr = new XMLHttpRequest();
     var postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
 
@@ -418,7 +618,7 @@ var myInstApp = (function() {
     }
   }
 
-  updateNavTabButtonSelection = function() {
+  function updateNavTabButtonSelection() {
     var tabBtn;
 
     $('button.tab-btn').removeClass('selected');
@@ -452,7 +652,7 @@ var myInstApp = (function() {
     tabBtn.classList.add('selected');
   }
 
-  updateInfoText = function() {
+  function updateInfoText() {
     var txt = myNickname;
 
     var length = myCockpit.posts.length;
@@ -463,7 +663,7 @@ var myInstApp = (function() {
     $('p#loading-p').css('color', 'white').text(txt);
   }
 
-  collectData = function(mediaObj) {
+  function collectData(mediaObj) {
     var i = 0;
     var j = 0;
     var x = 0;
@@ -615,13 +815,13 @@ var myInstApp = (function() {
     }
   }
 
-  getDateStr = function(d) {
+  function getDateStr(d) {
     var date = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
     var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
     return date + "-" + month + "-" + d.getFullYear();
   }
 
-  processMediaObjPhotos = function(mediaObj) {
+  function processMediaObjPhotos(mediaObj) {
     var i;
     var postsLength = myCockpit.posts.length;
 
@@ -634,7 +834,7 @@ var myInstApp = (function() {
     lastPostProcessed = i;
   }
 
-  getPhotoTxt = function(mediaObj) {
+  function getPhotoTxt(mediaObj) {
     var place = '';
     if (mediaObj.location) {
       place = '<p> place: ' + mediaObj.location + '</p>';
@@ -643,19 +843,7 @@ var myInstApp = (function() {
     return photoTxt;
   }
 
-  goToNextTab = function(elem) {
-    lastPostProcessed = 0;
-    myMode = elem.attributes['data-next-tab'].nodeValue;
-    document.getElementById('myList').setAttribute('class', '');
-    updateTitle();
-    beforeItemsProcessing();
-    processObjectsByMode();
-    updateSearchDropdown();
-    updateNavTabButtonSelection();
-    updatePhotosDivSize();
-  }
-
-  updateSearchDropdown = function() {
+  function updateSearchDropdown() {
     var sel = document.getElementById('sel-drop-search');
     var value;
 
@@ -672,241 +860,7 @@ var myInstApp = (function() {
 
   }
 
-  beforeItemsProcessing = function() {
-    clearMyList();
-
-    var opt;
-    var navTabDiv = document.getElementById("nav-tab");
-    navTabDiv.innerHTML = '';
-    navTabDiv.classList.add("nav");
-
-    var navDiv = document.getElementById("nav");
-    navDiv.innerHTML = '';
-    navDiv.classList.add("nav");
-
-    var contentDiv = document.getElementById("tmp-content");
-    contentDiv.innerHTML = '';
-    var selDrop = document.createElement("select");
-
-    selDrop.setAttribute('id', 'sel-drop-search');
-    $('#nav').show();
-
-    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-    switch (myMode) {
-      case '0':
-        //0 - photos
-        $('#nav').hide();
-        break;
-      case '1':
-        //1 - post/comments
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'space');
-        opt.innerHTML = 'sort by post date';
-        selDrop.appendChild(opt);
-
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'comm_date');
-        opt.innerHTML = 'sort by comment date (without posts)';
-        selDrop.appendChild(opt);
-
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'posts');
-        opt.innerHTML = 'sort by comments count';
-        selDrop.appendChild(opt);
-
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'likes');
-        opt.innerHTML = 'sort by likes count';
-        selDrop.appendChild(opt);
-
-        selDrop.setAttribute('onchange', 'selDropCommentsChanged(this)');
-        break;
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'name');
-        opt.innerHTML = 'sort by name';
-        selDrop.appendChild(opt);
-
-        opt = document.createElement("option");
-        opt.setAttribute('value', 'count');
-        opt.innerHTML = 'sort by count';
-        selDrop.appendChild(opt);
-
-        selDrop.setAttribute('onchange', 'selDropChanged(this)');
-        break;
-    }
-
-
-    var label = document.createElement('label');
-    label.setAttribute('for', 'sel-drop-search');
-
-    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-    switch (myMode) {
-      case '1':
-        //1 - post/comments
-        label.innerHTML = 'Sort posts: ';
-        break;
-      case '2':
-        //2 - tags
-        label.innerHTML = 'Sort tags: ';
-        break;
-      case '3':
-        //3 - locations
-        label.innerHTML = 'Sort locations: ';
-        break;
-      case '4':
-        //4 - commentors
-        label.innerHTML = 'Sort commentators: ';
-        break;
-      case '5':
-        //5 - likers
-        label.innerHTML = 'Sort likers: ';
-        break;
-    }
-
-    if (myMode !== '0') {
-      var divGroup = document.createElement('div');
-      divGroup.classList.add("form-group");
-      // divGroup.appendChild(label);
-      selDrop.classList.add("form-control");
-      divGroup.appendChild(selDrop);
-      navDiv.appendChild(divGroup);
-    }
-
-    if (myMode == '1') {
-      var saveBtnDiv = document.createElement("div")
-      var saveBtn = document.createElement("button");
-      saveBtn.setAttribute('onclick', 'saveBtnClick()');
-      saveBtn.setAttribute('id', 'save-big-photos-btn');
-      saveBtn.classList.add('btn');
-      saveBtn.classList.add('btn-default');
-      var saveBtnTxt = document.createTextNode('save photos');
-      saveBtn.setAttribute('title', 'Save big photos of downloaded posts to zip file');
-      saveBtn.appendChild(saveBtnTxt);
-      saveBtnDiv.appendChild(saveBtn)
-      navDiv.appendChild(saveBtnDiv);
-    }
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '0');
-    btn1.setAttribute('id', 'photos-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('photos');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '1');
-    btn1.setAttribute('id', 'posts-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('posts/comments');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '2');
-    btn1.setAttribute('id', 'tags-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('tags');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '3');
-    btn1.setAttribute('id', 'locations-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('locations');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '4');
-    btn1.setAttribute('id', 'commentators-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('commentators');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    var btn1 = document.createElement('button');
-    btn1.setAttribute('onclick', 'goToNextTab(this)');
-    btn1.setAttribute('data-next-tab', '5');
-    btn1.setAttribute('id', 'likers-tab-btn');
-    btn1.classList.add('tab-btn');
-    btn1.classList.add('btn');
-    btn1.classList.add('btn-default');
-    var tn = document.createTextNode('likers');
-    btn1.appendChild(tn);
-    navTabDiv.appendChild(btn1);
-
-    if (myMode === '1') {
-      //1 - post/comments
-      var divNavTmp = document.createElement("div");
-
-      var node = document.createElement("div");
-      node.classList.add("nav-comments");
-      node.classList.add("checkbox");
-      node.innerHTML = '<label for="incl-post-caption"><input type="checkbox" class="nav-input" id="incl-post-caption" name="incl-post-caption" checked onchange="togglePostCaptionCheckbox(this)">display post captions</label>';
-      divNavTmp.appendChild(node);
-      node = document.createElement("div");
-      node.classList.add("nav-comments");
-      node.classList.add("checkbox");
-      node.innerHTML = '<label for="incl-comments"><input type="checkbox" class="nav-input" id="incl-comments" name="incl-comments" onchange="toggleCommentsCheckbox(this)">display comments</label>';
-      divNavTmp.appendChild(node);
-      node = document.createElement("div");
-      node.classList.add("nav-comments");
-      node.classList.add("own-replies");
-      node.classList.add("checkbox");
-      node.innerHTML = '<label for="own-replies"><input type="checkbox" class="nav-input" id="own-replies" name="own-replies" onchange="toggleOwnRepliesCheckbox(this)">display own replies</label>';
-      divNavTmp.appendChild(node);
-      navDiv.appendChild(divNavTmp);
-    }
-
-    //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
-    switch (myMode) {
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-        var photosDiv = document.createElement("div");
-        var photosUl = document.createElement("ul");
-
-        photosDiv.setAttribute("id", "photos-by-data");
-        photosUl.setAttribute("id", "photos-data-list");
-
-        var infoBtnDiv = document.createElement("div");
-        infoBtnDiv.setAttribute("id", "btn-info");
-        contentDiv.appendChild(infoBtnDiv);
-
-        contentDiv.appendChild(photosDiv);
-        contentDiv.appendChild(photosDiv);
-
-        photosUl.classList.add("photos");
-        photosDiv.appendChild(photosUl);
-        break;
-    }
-
-    updateInfoText();
-  }
-
-  processObjectsByMode = function() {
+  function processObjectsByMode() {
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
     switch (myMode) {
       case '0':
@@ -927,63 +881,24 @@ var myInstApp = (function() {
     }
   }
 
-  saveBtnClick = function() {
-    var zip = new JSZip();
-    var imgLinks = [];
-
-    for (var x = 0; x < myCockpit.posts.length; x++) {
-      imgLinks.push(myCockpit.posts[x].bigsizelink);
-    }
-
-    var count = imgLinks.length;
-    var j = 0;
-
-    for (var i = 0; i < count; i++) {
-      JSZipUtils.getBinaryContent(imgLinks[i], function(err, data) {
-        if (err) {
-          console.error("Problem when downloading img: " + imgLinks[i]);
-        } else {
-          j++;
-          $('p#loading-p').css('color', 'yellow').text('Downloading photo ' + j + ' of ' + count + ' ... ');
-          zip.file("picture" + j + ".jpg", data, {
-            binary: true
-          });
-
-          if (j === count) {
-            $('p#loading-p').css('color', 'white').text('Done');
-
-            setTimeout(updateInfoText, 2500);
-
-            zip.generateAsync({
-                type: "blob"
-              })
-              .then(function(content) {
-                saveAs(content, myNickname + "_insta_big_photos.zip");
-              });
-          }
-        }
-      });
-    }
-  }
-
-  clearBtnsSelection = function() {
+  function clearBtnsSelection() {
     $('ul#myList button').removeClass('selected');
   }
 
-  setSelectedButton = function(elem) {
+  function setSelectedButton(elem) {
     elem.classList.add('selected');
   };
 
-  beforeBtnClicked = function() {
+  function beforeBtnClicked() {
     clearBtnsSelection();
     clearInfoDiv();
   }
 
-  clearInfoDiv = function() {
+  function clearInfoDiv() {
     document.getElementById("btn-info").innerHTML = '';
   }
 
-  objBtnClick = function(elem) {
+  function objBtnClick(elem) {
     beforeBtnClicked();
     setSelectedButton(elem);
 
@@ -1062,7 +977,7 @@ var myInstApp = (function() {
     updatePhotosDivSize();
   }
 
-  processMediaObj = function(objs) {
+  function processMediaObj(objs) {
     var myList = document.getElementById("myList");
     var myObjs = objs;
     var t;
@@ -1154,7 +1069,7 @@ var myInstApp = (function() {
     }
   }
 
-  processMediaObjComments = function(objects) {
+  function processMediaObjComments(objects) {
     for (var i = 0; i < objects.length; i++) {
       var node = document.createElement("li");
       node.classList.add('comments');
@@ -1164,14 +1079,14 @@ var myInstApp = (function() {
         node.classList.add('comment');
       }
 
-      commentTxt = '<i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i>';
+      var commentTxt = '<i>' + getDateStr(objects[i].date) + ' - ' + '<a target="_blank" href="http://instagram.com/' + objects[i].user + '">' + objects[i].user + '<span><img class="post-hover" src="' + objects[i].profile_picture + '"/></span></a> : ' + objects[i].text + ' (<a target="_blank" href="' + objects[i].post_link + '">post<span><img class="post-hover" src="' + objects[i].post_thumbnail + '"/></span></a>)</i>';
 
       node.innerHTML = commentTxt;
       document.getElementById("myList").appendChild(node);
     }
   }
 
-  processMediaObjPosts = function(objects) {
+  function processMediaObjPosts(objects) {
     var i = 0;
     var j = 0;
     var commentTxt;
@@ -1224,62 +1139,16 @@ var myInstApp = (function() {
       }
     }
 
-    toggleCheckboxes();
+    myInstApp.toggleCheckboxes();
     lastPostProcessed = i;
   }
 
-  clearMyList = function() {
+  function clearMyList() {
     var myList = document.getElementById("myList");
     myList.innerHTML = '';
   }
 
-  selDropChanged = function(elem) {
-    sortObjList(elem.options[elem.selectedIndex].value);
-  }
-
-  selDropCommentsChanged = function(elem) {
-    var slicedObjs = myCockpit.posts.slice(0);
-    var objs;
-    clearMyList();
-    lastPostProcessed = 0;
-    var option = elem.options[elem.selectedIndex].value;
-
-    $('#incl-post-caption').prop("disabled", false);
-    document.getElementById('incl-post-caption').checked = true;
-
-    switch (option) {
-      case 'space':
-        processMediaObjPosts();
-        break;
-      case 'comm_date':
-        $('#incl-post-caption').prop("disabled", true);
-        document.getElementById('incl-comments').checked = true;
-        document.getElementById('incl-post-caption').checked = false;
-
-        slicedObjs = myCockpit.comments.slice(0);
-        objs = slicedObjs.sort(function(a, b) {
-          return b.date.getTime() - a.date.getTime();
-        });
-        processMediaObjComments(objs);
-        break;
-      case 'likes':
-        objs = slicedObjs.sort(function(a, b) {
-          return b.likescnt - a.likescnt;
-        });
-        processMediaObjPosts(objs);
-        break;
-      case 'posts':
-        objs = slicedObjs.sort(function(a, b) {
-          return b.commentscnt - a.commentscnt;
-        });
-        processMediaObjPosts(objs);
-        break;
-    }
-
-    toggleCheckboxes();
-  }
-
-  sortObjList = function(option) {
+  function sortObjList(option) {
     var objs;
     var slicedObjs;
 
@@ -1398,4 +1267,138 @@ var myInstApp = (function() {
     document.body.scrollTop = 0; // For Chrome, Safari and Opera
     document.documentElement.scrollTop = 0; // For IE and Firefox
   }
+
+  return {
+    selDropCommentsChanged: function(elem) {
+      var slicedObjs = myCockpit.posts.slice(0);
+      var objs;
+      clearMyList();
+      lastPostProcessed = 0;
+      var option = elem.options[elem.selectedIndex].value;
+
+      $('#incl-post-caption').prop("disabled", false);
+      document.getElementById('incl-post-caption').checked = true;
+
+      switch (option) {
+        case 'space':
+          processMediaObjPosts();
+          break;
+        case 'comm_date':
+          $('#incl-post-caption').prop("disabled", true);
+          document.getElementById('incl-comments').checked = true;
+          document.getElementById('incl-post-caption').checked = false;
+
+          slicedObjs = myCockpit.comments.slice(0);
+          objs = slicedObjs.sort(function(a, b) {
+            return b.date.getTime() - a.date.getTime();
+          });
+          processMediaObjComments(objs);
+          break;
+        case 'likes':
+          objs = slicedObjs.sort(function(a, b) {
+            return b.likescnt - a.likescnt;
+          });
+          processMediaObjPosts(objs);
+          break;
+        case 'posts':
+          objs = slicedObjs.sort(function(a, b) {
+            return b.commentscnt - a.commentscnt;
+          });
+          processMediaObjPosts(objs);
+          break;
+      }
+
+      myInstApp.toggleCheckboxes();
+    },
+
+    selDropChanged: function(elem) {
+      sortObjList(elem.options[elem.selectedIndex].value);
+    },
+
+    goToNextTab: function(elem) {
+      lastPostProcessed = 0;
+      myMode = elem.attributes['data-next-tab'].nodeValue;
+      document.getElementById('myList').setAttribute('class', '');
+      updateTitle();
+      beforeItemsProcessing();
+      processObjectsByMode();
+      updateSearchDropdown();
+      updateNavTabButtonSelection();
+      updatePhotosDivSize();
+    },
+
+    saveBtnClick: function() {
+      var zip = new JSZip();
+      var imgLinks = [];
+
+      for (var x = 0; x < myCockpit.posts.length; x++) {
+        imgLinks.push(myCockpit.posts[x].bigsizelink);
+      }
+
+      var count = imgLinks.length;
+      var j = 0;
+
+      for (var i = 0; i < count; i++) {
+        JSZipUtils.getBinaryContent(imgLinks[i], function(err, data) {
+          if (err) {
+            console.error("Problem when downloading img: " + imgLinks[i]);
+          } else {
+            j++;
+            $('p#loading-p').css('color', 'yellow').text('Downloading photo ' + j + ' of ' + count + ' ... ');
+            zip.file("picture" + j + ".jpg", data, {
+              binary: true
+            });
+
+            if (j === count) {
+              $('p#loading-p').css('color', 'white').text('Done');
+
+              setTimeout(updateInfoText, 2500);
+
+              zip.generateAsync({
+                  type: "blob"
+                })
+                .then(function(content) {
+                  saveAs(content, myNickname + "_insta_big_photos.zip");
+                });
+            }
+          }
+        });
+      }
+    },
+
+    toggleOwnRepliesCheckbox: function(element) {
+      if (element.checked === true) {
+        $("ul#myList").find("li.own-reply").show();
+      } else {
+        $("ul#myList").find("li.own-reply").hide();
+      }
+    },
+
+    togglePostCaptionCheckbox: function(element) {
+      if (element.checked === true) {
+        $("ul#myList").find("li.postcaption").show();
+      } else {
+        $("ul#myList").find("li.postcaption").hide();
+      }
+    },
+
+    toggleCommentsCheckbox: function(element) {
+      if (element.checked === true) {
+        $("ul#myList").find("li.comment").show();
+        var ownReply = document.getElementById('own-replies');
+        myInstApp.toggleOwnRepliesCheckbox(ownReply);
+      } else {
+        $("ul#myList").find("li.comment").hide();
+      }
+    },
+
+    toggleCheckboxes: function() {
+      var elem = document.getElementById('own-replies');
+      myInstApp.toggleOwnRepliesCheckbox(elem);
+      elem = document.getElementById('incl-comments');
+      myInstApp.toggleCommentsCheckbox(elem);
+      elem = document.getElementById('incl-post-caption');
+      myInstApp.togglePostCaptionCheckbox(elem);
+    }
+  } //end of return
 })();
