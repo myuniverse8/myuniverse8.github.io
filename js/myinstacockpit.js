@@ -1,10 +1,3 @@
-var myNickname = '';
-var myWin = '';
-var myUrl = '';
-var myTestMode = '';
-var myUseDates = '';
-var myWinName = '';
-
 window.onload = function() {
     var today = new Date();
     var dd = today.getDate();
@@ -24,16 +17,17 @@ window.onload = function() {
     $('#nickname').trigger('focus');
 }
 
-function openWindow() {
+function openWindow(myWinName, myUrl, currentValues) {
     var begda = document.getElementById('begda').value;
     var endda = document.getElementById('endda').value;
-    myUrl = myUrl + '&testmode=' + myTestMode + '&begda=' + begda + '&endda=' + endda + '&dates=' + myUseDates;
+    myUrl = myUrl + '&testmode=' + currentValues.myTestMode + '&begda=' + begda + '&endda=' + endda + '&dates=' + currentValues.myUseDates;
     myWin = window.open(myUrl, myWinName);
 }
 
 function goBtnClick() {
-  getCurrentValues();
+  var currentValues = getCurrentValues();
   var option = $("#sel-mode").val();
+  var myWinName;
 
   //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
   switch (option) {
@@ -57,21 +51,26 @@ function goBtnClick() {
           break;
   }
 
-  myWinName = myWinName + myNickname;
-  myUrl = 'newpage.html?nickname=' + myNickname + '&mode=' + option;
-  openWindow();
+  myWinName = myWinName + currentValues.myNickname;
+  myUrl = 'newpage.html?nickname=' + currentValues.myNickname + '&mode=' + option;
+  openWindow(myWinName, myUrl, currentValues);
 }
 
 function getCurrentValues() {
-    myNickname = document.getElementById('nickname').value;
-    myTestMode = '';
+    var currentValues = {};
+
+    currentValues.myNickname = document.getElementById('nickname').value;
+    currentValues.myTestMode = '';
+
     if (document.getElementById('testmode').checked) {
-        myTestMode = 'X';
+        currentValues.myTestMode = 'X';
     };
-    myUseDates = '';
+    currentValues.myUseDates = '';
     if (document.getElementById('dates').checked) {
-        myUseDates = 'X';
+        currentValues.myUseDates = 'X';
     };
+
+    return currentValues;
 }
 
 toggleDatesCheckbox = function(element) {
