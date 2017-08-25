@@ -1,64 +1,74 @@
 #myBtn {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 30px; /* Place the button at the bottom of the page */
-    right: 20px; /* Place the button 30px from the right */
-    z-index: 99; /* Make sure it does not overlap */
+  /* TOP button */
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Fixed/sticky position */
+  bottom: 30px;
+  /* Place the button at the bottom of the page */
+  right: 20px;
+  /* Place the button 30px from the right */
+  z-index: 99;
+  /* Make sure it does not overlap */
 }
 
 select#sel-mode {
-  display:inline-block;
+  display: inline-block;
 }
 
 div#main-cont {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
-input#nickname,
-input#begda,
-input#endda {
-    width: 280px;
+input#nickname, input#begda, input#endda {
+  width: 280px;
 }
 
 select#sel-mode {
-    width: 180px;
+  width: 180px;
 }
 
-#sel-drop-search {
-    width: 150px;
+.sel-drop {
+  width: 150px;
 }
 
-ul#myList,
-ul#photos-data-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+ul#myList, ul#photos-data-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-  ul#myList li,
-  ul#photos-data-list li {
-      display: inline-block;
-  }
+ul#myList li, ul#photos-data-list li {
+  display: inline-block;
+}
 
-  ul#myList.comments li {
+ul#myList.comments li {
+  display: block;
+}
+
+ul#myList button.selected {
+  background-color: #428bca;
+  color: white;
+}
+
+ul#myList button.selected img.btn-img {
+  opacity: 0.3;
+}
+
+  ul#myList button.selected div.img-info {
     display: block;
   }
 
-  ul#myList button.selected {
-      background-color: #428bca;
-      color: white;
-  }
+ul#myList button {
+  border: 1px solid black;
+  background-color: white;
+  margin: 1px;
+}
 
-  ul#myList button {
-    border: 1px solid black;
-    background-color: white;
-    margin: 1px;
-  }
-
-  ul#myList button:active {
-    background-color: #428bca;
-    color: white;
-  }
+ul#myList button:active {
+  background-color: #428bca;
+  color: white;
+}
 
 button.tab-btn.selected {
   background-color: #428bca;
@@ -70,18 +80,18 @@ div#nav-tab button {
 }
 
 img.post {
-    border: 1px solid black;
-    width: 100%;
-    height: 100%;
+  border: 1px solid black;
+  width: 100%;
+  height: 100%;
 }
 
 li.comments {
-    margin: 0px;
+  margin: 0px;
 }
 
 p#loading-p {
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 img.post-hover {
@@ -89,7 +99,7 @@ img.post-hover {
 }
 
 li.own-reply {
-  color:gray;
+  color: gray;
 }
 
 div.before-post-link {
@@ -97,14 +107,24 @@ div.before-post-link {
   display: inline-block;
 }
 
+div.before-btn-img {
+  position: relative;
+}
+
+div.before-btn-img:hover div.img-info {
+  display: block;
+}
+
 div.img-info {
-  position:absolute;
+  position: absolute;
   display: none;
 }
-  div.img-info p {
-      padding: 0;
-      margin: 0;
-  }
+
+div.img-info p {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
 
 img.profile-picture {
   width: 50px;
@@ -113,15 +133,16 @@ img.profile-picture {
 }
 
 /* Mobile first */
+
 div#loading-info {
-    position: fixed;
-    right: 0px;
-    bottom: 0px;
-    background-color: grey;
-    color: white;
-    opacity: 0.8;
-    z-index: 1;
-    font-size: 10px;
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  background-color: grey;
+  color: white;
+  opacity: 0.8;
+  z-index: 1;
+  font-size: 10px;
 }
 
 div.before-post-link {
@@ -134,75 +155,75 @@ div.img-info {
 }
 
 div.img-info {
-    font-size: 10px;
+  font-size: 10px;
 }
 
-li.comments  {
-    font-size: 10px;
+li.comments {
+  font-size: 10px;
 }
 
-li.comments a span,
-a.with-hover-img span,
-button.user-btn span {display:none}
+li.comments a span, a.with-hover-img span, button.user-btn span {
+  display: none
+}
+
+.user-btn-with-pic {
+  padding: 0;
+}
 
 @media only screen and (min-width: 600px) {
-    /* For tablets: */
-
-    div.img-info {
-      left: 5px;
-      top: 5px;
-      font-size: 14px;
-    }
-
-    div#loading-info {
-        font-size: 14px;
-    }
-
-    li.comments  {
-        font-size: 14px;
-    }
+  /* For tablets: */
+  div.img-info {
+    left: 5px;
+    top: 5px;
+    font-size: 14px;
+  }
+  div#loading-info {
+    font-size: 14px;
+  }
+  li.comments {
+    font-size: 14px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
-    /* For desktop: */
+  /* For desktop: */
+  div.img-info {
+    left: 10px;
+    top: 10px;
+    font-size: 14px;
+  }
+  a.post-photo-link:hover+div {
+    display: block;
+    z-index: -1;
+  }
+  img.post:hover {
+    opacity: 0.3;
+  }
 
-    div.img-info {
-      left: 10px;
-      top: 10px;
-      font-size: 14px;
-    }
+  img.btn-img:hover {
+    opacity: 0.3;
+  }
 
-    a.post-photo-link:hover+div {
-      display: block;
-      z-index: -1;
-    }
-
-    img.post:hover {
-        opacity: 0.3;
-    }
-
-    ul#myList {
-      margin-left: 3px;
-    }
-
-    li.comments a,
-    a.with-hover-img,
-    button.user-btn { position:relative; }
-
-    li.comments a span,
-    a.with-hover-img span,
-    button.user-btn span { position:absolute; top: 20px; left: 20px; display:none; z-index:1; }
-
-    li.comments a:hover span,
-    a.with-hover-img:hover span,
-    button.user-btn:hover span { display:block; }
-
-    div#loading-info,
-    li.comments {
-        font-size: 14px;
-    }
-
-    #sel-drop-search {
-        width: 300px;
-    }
+  ul#myList {
+    margin-left: 3px;
+  }
+  li.comments a, a.with-hover-img, button.user-btn {
+    position: relative;
+  }
+  li.comments a span, a.with-hover-img span, button.user-btn span {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: none;
+    z-index: 1;
+  }
+  li.comments a:hover span, a.with-hover-img:hover span, button.user-btn:hover span {
+    display: block;
+  }
+  div#loading-info, li.comments {
+    font-size: 14px;
+  }
+  .sel-drop {
+    width: 300px;
+  }
 }

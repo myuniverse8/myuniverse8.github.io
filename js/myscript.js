@@ -10,7 +10,9 @@ var myInstApp = (function() {
   var myBegda;
   var myEndda;
   var myUseDates;
-  var myMode = 0; //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+  var myMode = "0"; //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
+  var myDisplayMode = "0"; //display mode for commenators and likers
+  //0 - text, 1 - pictures
 
   ////0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
   // switch (myMode) {
@@ -255,8 +257,10 @@ var myInstApp = (function() {
     var contentDiv = document.getElementById("tmp-content");
     contentDiv.innerHTML = '';
     var selDrop = document.createElement("select");
+    var selDropView = document.createElement("select");
 
     selDrop.setAttribute('id', 'sel-drop-search');
+    selDropView.setAttribute('id', 'sel-drop-view');
     $('#nav').show();
 
     //0 - photos, 1 - post/comments, 2 - tags, 3 - locations, 4 - commentors, 5 - likers
@@ -307,6 +311,20 @@ var myInstApp = (function() {
         break;
     }
 
+    if (myMode === "4" || myMode === "5") {
+      opt = document.createElement("option");
+      opt.setAttribute('value', '0');
+      opt.innerHTML = 'display as text';
+      selDropView.appendChild(opt);
+
+      opt = document.createElement("option");
+      opt.setAttribute('value', '1');
+      opt.innerHTML = 'display as pictures';
+      selDropView.appendChild(opt);
+
+      selDropView.setAttribute('onchange', 'myInstApp.selDropViewChanged(this)');
+    }
+
     var label = document.createElement('label');
     label.setAttribute('for', 'sel-drop-search');
 
@@ -339,7 +357,13 @@ var myInstApp = (function() {
       divGroup.classList.add("form-group");
       // divGroup.appendChild(label);
       selDrop.classList.add("form-control");
+      selDrop.classList.add("sel-drop");
       divGroup.appendChild(selDrop);
+      if (myMode === "4" || myMode === "5") {
+        selDropView.classList.add("form-control");
+        selDropView.classList.add("sel-drop");
+        divGroup.appendChild(selDropView);
+      }
       navDiv.appendChild(divGroup);
     }
 
@@ -537,6 +561,9 @@ var myInstApp = (function() {
 
     $('div.before-post-link').width(newWidth);
     $('div.before-post-link').height(newWidth);
+
+    $('img.btn-img').width(newWidth);
+    $('img.btn-img').height(newWidth);
   }
 
   $(window).resize(function() {
@@ -591,7 +618,8 @@ var myInstApp = (function() {
 
     xhr.send();
     $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
-    $('select#sel-drop-search').prop("disabled", true);
+    // $('select#sel-drop-search').prop("disabled", true);
+    $('select.sel-drop').prop("disabled", true);
     $('#save-big-photos-btn').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
@@ -601,10 +629,12 @@ var myInstApp = (function() {
       if (xhr.status != 200) {
         console.log('Error getting data from server: ' + xhr.status + ': ' + xhr.statusText);
         $('p#loading-p').css('color', 'red').text('Data loading error!');
-        $('select#sel-drop-search').prop("disabled", false);
+        // $('select#sel-drop-search').prop("disabled", false);
+        $('select.sel-drop').prop("disabled", false);
         $('#save-big-photos-btn').prop("disabled", false);
       } else {
-        $('select#sel-drop-search').prop("disabled", false);
+        // $('select#sel-drop-search').prop("disabled", false);
+        $('select.sel-drop').prop("disabled", false);
         $('#save-big-photos-btn').prop("disabled", false);
         updateInfoText();
 
@@ -847,6 +877,8 @@ var myInstApp = (function() {
     var sel = document.getElementById('sel-drop-search');
     var value;
 
+    myDisplayMode = "0";
+
     switch (myMode) {
       case '2':
       case '3':
@@ -857,7 +889,6 @@ var myInstApp = (function() {
         sel.value = value;
         break;
     }
-
   }
 
   function processObjectsByMode() {
@@ -1009,6 +1040,7 @@ var myInstApp = (function() {
     for (var i = 0; i < myObjs.length; i++) {
       var node = document.createElement("li");
       var btn = document.createElement("button");
+      var divNode = document.createElement("div");
 
       btn.classList.add('clipboard-btn');
       btn.classList.add('btn');
@@ -1030,23 +1062,38 @@ var myInstApp = (function() {
           break;
         case '4':
           //4 - commentors
-          btn.setAttribute('data-str-value', myObjs[i].comName);
-          btn.setAttribute('data-clipboard-text', myObjs[i].comName);
-          btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
-          t = document.createTextNode(myObjs[i].comName + ' (' + myObjs[i].comCnt + ')');
-          btn.classList.add("user-btn");
-          spanEl = document.createElement('span');
-          imgEl = document.createElement('img');
-          imgEl.setAttribute('src', myObjs[i].profile_picture);
-          imgEl.setAttribute('class', "post-hover");
-          spanEl.appendChild(imgEl);
-          btn.appendChild(spanEl);
-          break;
+            btn.setAttribute('data-str-value', myObjs[i].comName);
+            btn.setAttribute('data-clipboard-text', myObjs[i].comName);
+            btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
+
+            if (myDisplayMode === "1") {
+              btn.classList.remove('btn');
+              divNode.innerHTML = '<div class="before-btn-img"><div id="img-info" class="img-info"><p>name: ' + myObjs[i].comName + '</p><p>comments: ' + myObjs[i].comCnt + '</p></div><img class="btn-img" src="' + myObjs[i].profile_picture + '"></img></div>';
+              t = divNode;
+              btn.classList.add("user-btn-with-pic");
+            } else {
+                btn.classList.add("user-btn");
+                t = document.createTextNode(myObjs[i].comName + ' (' + myObjs[i].comCnt + ')');
+                spanEl = document.createElement('span');
+                imgEl = document.createElement('img');
+                imgEl.setAttribute('src', myObjs[i].profile_picture);
+                imgEl.setAttribute('class', "post-hover");
+                spanEl.appendChild(imgEl);
+                btn.appendChild(spanEl);
+            }
+            break;
         case '5':
           //5 - likers
           btn.setAttribute('data-str-value', myObjs[i].likerName);
           btn.setAttribute('data-clipboard-text', myObjs[i].likerName);
           btn.setAttribute('data-profile-picture', myObjs[i].profile_picture);
+
+          if (myDisplayMode === "1") {
+            btn.classList.remove('btn');
+            divNode.innerHTML = '<div class="before-btn-img"><div id="img-info" class="img-info"><p>name: ' + myObjs[i].likerName + '</p><p>comments: ' + myObjs[i].likerCnt + '</p></div><img class="btn-img" src="' + myObjs[i].profile_picture + '"></img></div>';
+            t = divNode;
+            btn.classList.add("user-btn-with-pic");
+          } else {
           btn.classList.add("user-btn");
           spanEl = document.createElement('span');
           imgEl = document.createElement('img');
@@ -1055,6 +1102,7 @@ var myInstApp = (function() {
           spanEl.appendChild(imgEl);
           btn.appendChild(spanEl);
           t = document.createTextNode(myObjs[i].likerName + ' (' + myObjs[i].likerCnt + ')');
+        }
           break;
       }
 
@@ -1313,6 +1361,14 @@ var myInstApp = (function() {
 
     selDropChanged: function(elem) {
       sortObjList(elem.options[elem.selectedIndex].value);
+    },
+
+    selDropViewChanged: function(elem) {
+      // objects must be sorted as well
+      myDisplayMode = elem.options[elem.selectedIndex].value;
+      var sortParam = document.getElementById("sel-drop-search").value;
+      sortObjList(sortParam);
+      updatePhotosDivSize();
     },
 
     goToNextTab: function(elem) {
