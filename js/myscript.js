@@ -1361,6 +1361,7 @@ var myInstApp = (function() {
 
     selDropChanged: function(elem) {
       sortObjList(elem.options[elem.selectedIndex].value);
+      updatePhotosDivSize();
     },
 
     selDropViewChanged: function(elem) {
