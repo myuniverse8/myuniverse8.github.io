@@ -2,6 +2,7 @@ var myInstApp = (function() {
   'use strict';
 
   var myNickname = '';
+  var myId = '';
   var myUrl = '';
   var myTestMode = '';
   var myTitle = '';
@@ -513,7 +514,9 @@ var myInstApp = (function() {
     myCockpit = new MyCockpit();
 
     myNickname = getURLParameter('nickname');
-    myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
+    // myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/media/';
+    myUrl = 'https://cors-anywhere.herokuapp.com/https://www.instagram.com/' + myNickname + '/?__a=1';
+    
     myTestMode = getURLParameter('testmode');
     myBegda = new Date(getURLParameter('begda'));
     myEndda = new Date(getURLParameter('endda'));
@@ -704,107 +707,122 @@ var myInstApp = (function() {
     var dateForSearchComm;
     var stopSearch = '';
     var addPost = '';
+    var mediaData = {};
+    
+    //debugger;
 
-    var itemsLength = mediaObj.items.length;
+    if (typeof mediaObj.graphql !== 'undefined') {
+      mediaData = mediaObj.graphql.user;
+      myId = mediaData.id;
+    } else {
+      mediaData = mediaObj.data.user;
+    }
+    var itemsLength = mediaData.edge_owner_to_timeline_media.edges.length;
+    //mediaObj.graphql.edge_owner_to_timeline_media.page_info.end_cursor
 
     for (i = 0; i < itemsLength; i++) {
-      //console.log(mediaObj.items[i]);
+      var currItem = mediaData.edge_owner_to_timeline_media.edges[i].node;
+      //console.log(currItem);
 
       addPost = '';
 
-      d = new Date(+mediaObj.items[i].created_time * 1000);
+      d = new Date(+currItem.taken_at_timestamp * 1000);
 
       dateForSearch = d;
       dateForSearch.setHours(0);
       dateForSearch.setMinutes(0);
       dateForSearch.setSeconds(0);
 
-      fullSizeLnk = mediaObj.items[i].images.standard_resolution.url;
-      fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
+      fullSizeLnk = currItem.display_url;
+      //fullSizeLnk = fullSizeLnk.replace('s640x640', 's1080x1080');
 
-      var caption = mediaObj.items[i].caption ? mediaObj.items[i].caption.text : '';
+      var caption = '';
 
-      for (x = 0; x < mediaObj.items[i].likes.data.length; x++) {
-        myCockpit.updateLikers(mediaObj.items[i].likes.data[x].username, mediaObj.items[i].likes.data[x].full_name, mediaObj.items[i].id, mediaObj.items[i].likes.data[x].profile_picture);
+      if (currItem.edge_media_to_caption.edges.length > 0) {
+        caption = currItem.edge_media_to_caption.edges[0].node.text; //currItem.caption ? currItem.caption.text : '';
       }
 
-      if (caption !== '') {
-        myCockpit.updateTags(caption, mediaObj.items[i].id);
-      }
+      // for (x = 0; x < currItem.likes.data.length; x++) {
+      //   myCockpit.updateLikers(currItem.likes.data[x].username, currItem.likes.data[x].full_name, currItem.id, currItem.likes.data[x].profile_picture);
+      // }
 
-      var location = mediaObj.items[i].location ? mediaObj.items[i].location.name : '';
+      // if (caption !== '') {
+      //   myCockpit.updateTags(caption, currItem.id);
+      // }
 
-      if (location != '') {
-        myCockpit.updateLocations(location, mediaObj.items[i].id);
-      }
+      var location = ''; //currItem.location ? currItem.location.name : '';
 
-      var post = new MyPost(mediaObj.items[i].id,
-        mediaObj.items[i].link,
-        mediaObj.items[i].user.username,
+      // if (location != '') {
+      //   myCockpit.updateLocations(location, currItem.id);
+      // }
+
+      var post = new MyPost(currItem.id,
+        'https://www.instagram.com/p/' + currItem.shortcode + '/', //currItem.link,
+        'username', //currItem.user.username,
         d,
         location,
         caption,
-        mediaObj.items[i].images.thumbnail.url,
+        currItem.thumbnail_src,
         fullSizeLnk,
-        mediaObj.items[i].likes.count,
-        mediaObj.items[i].comments.count
+        0,//currItem.likes.count,
+        0 //currItem.comments.count
       );
 
-      var commentsObj = mediaObj.items[i].comments;
-      if (commentsObj.count > 0) {
-        for (j = 0; j < commentsObj.data.length; j++) {
-          d = new Date(+commentsObj.data[j].created_time * 1000);
-          dateForSearchComm = d;
-          dateForSearchComm.setHours(0);
-          dateForSearchComm.setMinutes(0);
-          dateForSearchComm.setSeconds(0);
+      // var commentsObj = currItem.comments;
+      // if (commentsObj.count > 0) {
+      //   for (j = 0; j < commentsObj.data.length; j++) {
+      //     d = new Date(+commentsObj.data[j].created_time * 1000);
+      //     dateForSearchComm = d;
+      //     dateForSearchComm.setHours(0);
+      //     dateForSearchComm.setMinutes(0);
+      //     dateForSearchComm.setSeconds(0);
 
-          var comment = new MyComment(d,
-            commentsObj.data[j].from.username,
-            commentsObj.data[j].text,
-            commentsObj.data[j].from.profile_picture
-          );
+      //     var comment = new MyComment(d,
+      //       commentsObj.data[j].from.username,
+      //       commentsObj.data[j].text,
+      //       commentsObj.data[j].from.profile_picture
+      //     );
 
-          var aloneComment = new MyAloneComment(d,
-            commentsObj.data[j].from.username,
-            commentsObj.data[j].text,
-            mediaObj.items[i].id,
-            mediaObj.items[i].link,
-            mediaObj.items[i].images.thumbnail.url,
-            commentsObj.data[j].from.profile_picture
-          );
+      //     var aloneComment = new MyAloneComment(d,
+      //       commentsObj.data[j].from.username,
+      //       commentsObj.data[j].text,
+      //       currItem.id,
+      //       currItem.link,
+      //       currItem.images.thumbnail.url,
+      //       commentsObj.data[j].from.profile_picture
+      //     );
 
-          if (myUseDates === 'X') {
-            if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
-              addPost = 'X';
-              post.addComment(comment);
-              myCockpit.addComment(aloneComment);
-              myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
-              if (commentsObj.data[j].from.username !== myNickname) {
-                myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
-              }
-            }
-          } else {
-            addPost = 'X';
-            post.addComment(comment);
-            myCockpit.addComment(aloneComment);
-            myCockpit.updateTags(commentsObj.data[j].text, mediaObj.items[i].id);
-            if (commentsObj.data[j].from.username !== myNickname) {
-              myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
-            }
-          }
-        }
-      } else {
-        addPost = 'X';
-      }
+      //     if (myUseDates === 'X') {
+      //       if ((dateForSearchComm >= myBegda) & (dateForSearchComm <= myEndda)) {
+      //         addPost = 'X';
+      //         post.addComment(comment);
+      //         myCockpit.addComment(aloneComment);
+      //         myCockpit.updateTags(commentsObj.data[j].text, currItem.id);
+      //         if (commentsObj.data[j].from.username !== myNickname) {
+      //           myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
+      //         }
+      //       }
+      //     } else {
+      //       addPost = 'X';
+      //       post.addComment(comment);
+      //       myCockpit.addComment(aloneComment);
+      //       myCockpit.updateTags(commentsObj.data[j].text, currItem.id);
+      //       if (commentsObj.data[j].from.username !== myNickname) {
+      //         myCockpit.updateCommentors(commentsObj.data[j].from.username, commentsObj.data[j].from.full_name, mediaObj.items[i].id, commentsObj.data[j].from.profile_picture);
+      //       }
+      //     }
+      //   }
+      // } else {
+         addPost = 'X';
+      // }
 
-      var likesObj = mediaObj.items[i].likes;
-      if (likesObj.count > 0) {
-        for (j = 0; j < likesObj.data.length; j++) {
-          var like = new MyLike(likesObj.data[j].username);
-          post.addLike(like);
-        }
-      }
+      // var likesObj = currItem.likes;
+      // if (likesObj.count > 0) {
+      //   for (j = 0; j < likesObj.data.length; j++) {
+      //     var like = new MyLike(likesObj.data[j].username);
+      //     post.addLike(like);
+      //   }
+      // }
 
       if (myMode === '1') { //1 - post/comments
         if (addPost === 'X') {
@@ -831,16 +849,20 @@ var myInstApp = (function() {
         }
       }
 
-      if (i === (itemsLength - 1)) {
-        nextUrl = myUrl + '?max_id=' + mediaObj.items[i].id;
-      }
+      // if (i === (itemsLength - 1)) {
+      //   nextUrl = myUrl + '?max_id=' + mediaObj.edge_owner_to_timeline_media.page_info.end_cursor;
+      // }
     }
 
     updateInfoText();
 
-    if (mediaObj.more_available === true) {
+   // debugger;
+
+    if (mediaData.edge_owner_to_timeline_media.page_info.has_next_page === true) {
       if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
-        loadData(nextUrl);
+        //nextUrl = myUrl + '&max_id=' + mediaData.edge_owner_to_timeline_media.page_info.end_cursor;
+        nextUrl = 'https://cors-anywhere.herokuapp.com/https://instagram.com/graphql/query/?query_id=17888483320059182&id=' + myId + '&first=1000&after=' + mediaData.edge_owner_to_timeline_media.page_info.end_cursor;
+        setTimeout(function() { loadData(nextUrl) }, 15000);
       }
     }
   }
