@@ -1058,7 +1058,7 @@ var myInstApp = (function() {
           myObjs = myCockpit.likers;
           break;
       }
-    }
+    } 
 
     for (var i = 0; i < myObjs.length; i++) {
       var node = document.createElement("li");
