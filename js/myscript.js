@@ -615,15 +615,12 @@ var myInstApp = (function() {
 
   function loadData(mediaUrl) {
     var xhr = new XMLHttpRequest();
-    var postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+
+    updateInfoText("1");
 
     xhr.open('GET', mediaUrl, true);
 
     xhr.send();
-    $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
-    // $('select#sel-drop-search').prop("disabled", true);
-    $('select.sel-drop').prop("disabled", true);
-    $('#save-big-photos-btn').prop("disabled", true);
 
     xhr.onreadystatechange = function() {
 
@@ -639,7 +636,6 @@ var myInstApp = (function() {
         // $('select#sel-drop-search').prop("disabled", false);
         $('select.sel-drop').prop("disabled", false);
         $('#save-big-photos-btn').prop("disabled", false);
-        updateInfoText();
 
         var mediaObj = JSON.parse(xhr.responseText);
         collectData(mediaObj);
@@ -647,6 +643,7 @@ var myInstApp = (function() {
         processObjectsByMode();
         updateSearchDropdown();
         updatePhotosDivSize();
+        //updateInfoText();
       }
     }
   }
@@ -685,15 +682,31 @@ var myInstApp = (function() {
     tabBtn.classList.add('selected');
   }
 
-  function updateInfoText() {
-    var txt = myNickname;
+  function updateInfoText(option) {
 
-    var length = myCockpit.posts.length;
-    if (length > 0) {
-      txt = txt + '. ' + myCockpit.posts.length + ' posts';
+    //debugger;  
+    // option 1 - in process
+    if (typeof option === "undefined") {
+      var txt = myNickname;
+      var length = myCockpit.posts.length;
+      if (length > 0) {
+        txt = txt + '. ' + myCockpit.posts.length + ' posts';
+      }
+      $('p#loading-p').css('color', 'white').text(txt);      
+    } else {
+      switch (option) {
+        case "1":
+          var postsCnt = myCockpit.posts ? myCockpit.posts.length : 0;
+          $('p#loading-p').css('color', 'yellow').text('Data is loading ... ' + postsCnt + ' posts');
+          // $('select#sel-drop-search').prop("disabled", true);
+          $('select.sel-drop').prop("disabled", true);
+          $('#save-big-photos-btn').prop("disabled", true);
+          break;
+      
+        default:
+          break;
+      }
     }
-
-    $('p#loading-p').css('color', 'white').text(txt);
   }
 
   function collectData(mediaObj) {
@@ -756,7 +769,7 @@ var myInstApp = (function() {
       //   myCockpit.updateLocations(location, currItem.id);
       // }
 
-      debugger;
+      //debugger;
       var post = new MyPost(currItem.id,
         'https://www.instagram.com/p/' + currItem.shortcode + '/', //currItem.link,
         'username', //currItem.user.username,
@@ -765,8 +778,8 @@ var myInstApp = (function() {
         caption, 
         currItem.thumbnail_src,
         fullSizeLnk,
-        currItem.edge_liked_by.count,//currItem.likes.count,
-        currItem.edge_media_to_comment.count //currItem.comments.count
+        currItem.edge_liked_by ? currItem.edge_liked_by.count : 0,//currItem.likes.count,
+        currItem.edge_media_to_comment ? currItem.edge_media_to_comment.count : 0  //currItem.comments.count
       );
 
       // var commentsObj = currItem.comments;
@@ -857,12 +870,11 @@ var myInstApp = (function() {
 
     updateInfoText();
 
-   // debugger;
-
     if (mediaData.edge_owner_to_timeline_media.page_info.has_next_page === true) {
       if ((myTestMode !== 'X') & (stopSearch !== 'X')) {
         //nextUrl = myUrl + '&max_id=' + mediaData.edge_owner_to_timeline_media.page_info.end_cursor;
         nextUrl = 'https://cors-anywhere.herokuapp.com/https://instagram.com/graphql/query/?query_id=17888483320059182&id=' + myId + '&first=1000&after=' + mediaData.edge_owner_to_timeline_media.page_info.end_cursor;
+        updateInfoText("1");
         setTimeout(function() { loadData(nextUrl) }, 15000);
       }
     }
