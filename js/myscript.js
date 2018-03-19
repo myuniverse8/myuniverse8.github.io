@@ -639,7 +639,7 @@ var myInstApp = (function() {
 
         var mediaObj = JSON.parse(xhr.responseText);
 
-        debugger;
+       // debugger;
 
         collectData(mediaObj);
 
