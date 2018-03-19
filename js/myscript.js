@@ -756,16 +756,17 @@ var myInstApp = (function() {
       //   myCockpit.updateLocations(location, currItem.id);
       // }
 
+      debugger;
       var post = new MyPost(currItem.id,
         'https://www.instagram.com/p/' + currItem.shortcode + '/', //currItem.link,
         'username', //currItem.user.username,
         d,
         location,
-        caption,
+        caption, 
         currItem.thumbnail_src,
         fullSizeLnk,
-        0,//currItem.likes.count,
-        0 //currItem.comments.count
+        currItem.edge_liked_by.count,//currItem.likes.count,
+        currItem.edge_media_to_comment.count //currItem.comments.count
       );
 
       // var commentsObj = currItem.comments;
