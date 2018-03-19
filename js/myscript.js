@@ -638,12 +638,17 @@ var myInstApp = (function() {
         $('#save-big-photos-btn').prop("disabled", false);
 
         var mediaObj = JSON.parse(xhr.responseText);
+
+        debugger;
+
         collectData(mediaObj);
 
         processObjectsByMode();
         updateSearchDropdown();
         updatePhotosDivSize();
         //updateInfoText();
+
+       
       }
     }
   }
@@ -777,8 +782,8 @@ var myInstApp = (function() {
         location,
         caption, 
         currItem.thumbnail_src,
-        fullSizeLnk,
-        currItem.edge_liked_by ? currItem.edge_liked_by.count : 0,//currItem.likes.count,
+        fullSizeLnk,              
+        currItem.edge_media_preview_like ? currItem.edge_media_preview_like.count : 0,//currItem.likes.count,        
         currItem.edge_media_to_comment ? currItem.edge_media_to_comment.count : 0  //currItem.comments.count
       );
 
