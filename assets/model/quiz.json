@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "name": "My Quiz1"
+  },
+  "tasks": [
+    {
+      "id": "task1",
+      "info": "task1 info",
+      "answer": "111"
+    },
+    {
+      "id": "task2",
+      "info": "task2 info",
+      "answer": "222"
+    }
+  ],
+  "success": {
+    "info": "Success INFO!"
+  }
+}

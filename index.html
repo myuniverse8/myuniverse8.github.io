@@ -1,79 +1,27 @@
-<!-- https://habrahabr.ru/post/339620/
-     cd Users\rebel80\Documents\frontend\myuniverse8.github.io
-    https://stackoverflow.com/questions/40542335/how-to-get-all-images-of-hashtag-in-instagram-without-api
-    https://stackoverflow.com/questions/49265013/instagram-a-1max-id-end-cursor-isnt-working-for-public-user-feeds
-
-
-    https://git-scm.com/book/ru/v1/%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-Git-%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B9
-
-    git add .
-    git commit -m ""
-    git push
--->
-
 <!DOCTYPE html>
-
-
-<html>
-
-<head>
-  <title>MyInstCockpit</title>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
-
-  <script type="text/javascript" src="lib/jquery-3.2.0.min.js"></script>
-  <script type="text/javascript" src="js/myinstacockpit.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
-</head>
-
-<body>
-  <div class="container" id="main-cont">
-    <div class="elements">
-      <div class="form-group">
-        <form  autocomplete="on">
-        <input type="text" class="form-control" id="nickname" name="nickname" value="myuniverse8"  onfocus="this.select();" onclick="this.select();" placeholder="Enter nickname">
-        </form>
-      </div>
-    </div>
-    <div class="elements">
-      <div class="checkbox">
-        <label for="dates"><input type="checkbox" id="dates" name="dates" onchange="toggleDatesCheckbox(this)">filter data using dates</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <div id="dates" hidden class="elements">
-        <label for="begda">from</label>
-        <input type="date" name="begda" id="begda" class="form-control">
-        <label for="begda">to</label>
-        <input type="date" name="endda" id="endda" class="form-control">
-      </div>
-    </div>
-    <div class="elements">
-      <div class="checkbox">
-        <label><input type="checkbox" id="testmode" name="testmode" checked>process last 12 records</label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <button type="button" id="go-btn" class="btn btn-default" onclick="goBtnClick()">Get started</button>
-
-      <select class="form-control" id="sel-mode">
-      <option value="0">with photos</option>
-      <option value="1">with posts/comments</option>
-      <option value="2">with tags</option>
-      <option value="3">with locations</option>
-      <option value="4">with commentators</option>
-      <option value="5">with likers</option>
-    </select>
-    </div>
-    <div>
-      <button type="button" class="btn btn-link"><a target="_blank" href="https://github.com/myuniverse8/myuniverse8.github.io/blob/master/README.md">READme</a></button>
-    </div>
-  </div>
-</body>
-
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Quiz</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  <link rel="stylesheet" href="styles.09e2c710755c8867a460.css"></head>
+  <body>
+    <app-root></app-root>
+  <script src="runtime-es2015.edb2fcf2778e7bf1d426.js" type="module"></script><script src="runtime-es5.edb2fcf2778e7bf1d426.js" nomodule defer></script><script src="polyfills-es5.ef4b1e1fc703b3ff76e3.js" nomodule defer></script><script src="polyfills-es2015.2987770fde9daa1d8a2e.js" type="module"></script><script src="main-es2015.2235011bc13a73ee590c.js" type="module"></script><script src="main-es5.2235011bc13a73ee590c.js" nomodule defer></script></body>
 </html>
