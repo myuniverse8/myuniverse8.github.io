@@ -1,20 +1,25 @@
 {
   "settings": {
-    "name": "My Quiz1"
+    "name": "Тестовое задание"
   },
   "tasks": [
     {
+      "id": "task0",
+      "info": "Как тебя зовут?",
+      "answer": "Daniil"
+    },
+    {
       "id": "task1",
-      "info": "task1 info",
-      "answer": "111"
+      "info": "2 + 2 = ",
+      "answer": "4"
     },
     {
       "id": "task2",
-      "info": "task2 info",
-      "answer": "222"
+      "info": "5 + 5 =",
+      "answer": "10"
     }
   ],
   "success": {
-    "info": "Success INFO!"
+    "info": "Ура, ты подебил!!!"
   }
 }
