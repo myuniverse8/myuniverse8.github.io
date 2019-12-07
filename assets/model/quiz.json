@@ -1,21 +1,44 @@
 {
   "settings": {
-    "name": "Тестовое задание"
+    "name": "Тестовая игра"
   },
   "tasks": [
     {
-      "id": "task0",
-      "info": "Как тебя зовут?",
-      "answer": "Daniil"
+      "id": "1",
+      "question": "Как тебя зовут?",
+      "answer": ["Daniil", "Daniel", "Даниил"]
     },
     {
-      "id": "task1",
-      "info": "2 + 2 = ",
+      "id": "2",
+      "question": "2 + 2 = ",
       "answer": "4"
     },
     {
-      "id": "task2",
-      "info": "5 + 5 =",
+      "id": "3",
+      "question": "200 + 350 = ",
+      "answer": "550"
+    },
+    {
+      "id": "4",
+      "question": "Назовите столицу Мадагаскара",
+      "images": [
+        { "fileName": "04_01.jpg", "descr": "Остров" },
+        { "fileName": "04_02.jpeg", "descr": "Красота" }
+      ],
+      "answer": [
+        "антананариву",
+        "antananarivu",
+        "Antananarivo",
+        "Антананари́ву",
+        "Тананари́ве",
+        "Tananarive",
+        "Та́на",
+        "Tana"
+      ]
+    },
+    {
+      "id": "5",
+      "question": "5 + 5 =",
       "answer": "10"
     }
   ],
